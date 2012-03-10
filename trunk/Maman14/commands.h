@@ -1,6 +1,6 @@
 typedef struct
 {
-	char name[5];
+	char *name;
 	char binary_code[5];
 } Command;
 
