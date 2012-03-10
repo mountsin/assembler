@@ -1,12 +1,12 @@
-typedef struct symbole
+typedef struct symbol
 {
 	char *name;
 	int address;
-	struct symbole *next;
-	struct symbole *prev;
+	struct symbol *next;
+	struct symbol *prev;
 
-} Symbole;
+} Symbol;
 
-Symbole *symboles_list;
+Symbol *symbols_list;
 
-void add_symbole(char *name, int address);
+void add_symbol(char *name, int address);

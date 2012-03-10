@@ -1,10 +1,10 @@
 #include "symbols.h"
 
-void add_symbole(char *name, int address)
+void add_symbol(char *name, int address)
 {
-	Symbole temp_symbole;
-	temp_symbole.name = name;
-	temp_symbole.address = address;
-	temp_symbole.next = symboles_list;
-	symboles_list = &temp_symbole;
+	Symbol temp_symbol;
+	temp_symbol.name = name;
+	temp_symbol.address = address;
+	temp_symbol.next = symbols_list;
+	symbols_list = &temp_symbol;
 }
