@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 void process_file(char *filename);
 void process_line(char *line);
@@ -6,10 +7,13 @@ void process_line(char *line);
 void main(int argc, char *argv[])
 {
 	int i;
+	char filename[100];
 
-	for(i = 1; i < argc; i++)
+	for(i = 1; i < argc; i++)					/* files loop */
 	{
-		process_file(argv[i]);
+		strcpy(filename, argv[i]);
+		strcat(filename, ".as");
+		process_file(filename);
 	}
 
 	getchar();
@@ -17,18 +21,26 @@ void main(int argc, char *argv[])
 
 void process_file(char *filename)
 {
-	FILE *file;
+	FILE *fp;
 	char line[81];
 
-	file = fopen(filename,"r");
-	while(fgets(line,80,file))
+	fp = fopen(filename,"r");
+	while(fgets(line,80,fp))
 	{
-		process_line(line); /* first scan */
+		process_line(line);							/* first scan */
 	}
-	fclose(file);
+	fclose(fp);
 }
 
 void process_line(char *line)
 {
-	puts(line);
+	char *delimiters = "\t\n\r ,";
+	char *token;
+
+	puts(line);	/* for debug */
+
+	token = strtok(line, delimiters);
+	if(line[0] == ';')
+		puts("DEBUG: Comment line");
+	
 }
