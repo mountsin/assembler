@@ -11,6 +11,8 @@ void main(int argc, char *argv[])
 	{
 		process_file(argv[i]);
 	}
+
+	getchar();
 }
 
 void process_file(char *filename)
@@ -28,5 +30,5 @@ void process_file(char *filename)
 
 void process_line(char *line)
 {
-
+	puts(line);
 }
