@@ -6,6 +6,7 @@ void process_line(char *line);
 
 void main(int argc, char *argv[])
 {
+	/*test*/
 	int i;
 	char filename[100];
 
