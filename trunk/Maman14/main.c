@@ -37,7 +37,7 @@ void process_file(char *filename)
 	}
 	fclose(fp);
 }
-
+/*sefi test*/
 void process_line(char *line)
 {
 	char *delimiters = " ,\t\n\r";
