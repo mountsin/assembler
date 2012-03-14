@@ -60,7 +60,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="commands.h" />
+    <ClInclude Include="data_structs.h" />
     <ClInclude Include="symbols.h" />
   </ItemGroup>
   <ItemGroup>

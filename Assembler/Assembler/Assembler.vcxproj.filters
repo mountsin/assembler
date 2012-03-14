@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="commands.h">
+    <ClInclude Include="symbols.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="symbols.h">
+    <ClInclude Include="data_structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
