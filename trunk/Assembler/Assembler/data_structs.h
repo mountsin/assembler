@@ -55,7 +55,7 @@ enum paramTypeEnum
 
 
 //=========== Complex Elements ==================================
-//cmdParam - represent a parameter of assembly command
+//CmdParam - represent a parameter of assembly command
 typedef struct
 {
 	enum paramTypeEnum paramType;
@@ -63,10 +63,10 @@ typedef struct
 }
 CmdParam;
 
-//asmCommand - represent an assembly command
+//AssemblyStatement - represent an assembly command
 typedef struct
 {
-	char label[20];				//string or null
+	char label[20];					//string or null
 	enum cmd command;				//cmd enum
 	enum status (*covert2MachineCode)(char *, enum cmd ,CmdParam,CmdParam);	//HERE IS WHEN YOU PUT YOU FUNCTION
 	char *source_operand;			//first parameter (nullable)
@@ -75,7 +75,7 @@ typedef struct
 AssemblyStatement;
 
 
-// commandRule - define an assembly command binary code and legitimate addressing methods (0-4)
+// CommandRule - define an assembly command binary code and legitimate addressing methods (0-4)
 typedef struct
 {
 	enum cmd  cmdType;
@@ -84,6 +84,8 @@ typedef struct
 	int destAddressing[5];	 //legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
 } CommandRule;
 
+
+/* Used to find parse the command name from the file and convert it to the apropriate enum value */
 typedef struct
 {
 	char *name;
@@ -144,12 +146,12 @@ typedef struct labelNode
 }
 LabelNode;
 
-//errorCollector (linked list of structs) of all errors
+//ErrorCollector (linked list of structs) of all errors
 typedef struct error
 {
 	struct error *next;  
 	enum status errType;			//type of error
-	enum cmd cmdType;			//type of command caused the error
-	int lineNumber;			//assembly (input) file line number
-}
+	enum cmd cmdType;				//type of command caused the error
+	int lineNumber;					//assembly (input) file line number
+}	
 ErrorCollector;
