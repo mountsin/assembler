@@ -24,9 +24,24 @@
     <ClInclude Include="first_scan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< .mine
     <ClInclude Include="second_scan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="compiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="global_functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="global_parameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+=======
+    <ClInclude Include="second_scan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+>>>>>>> .r40
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -38,9 +53,24 @@
     <ClCompile Include="first_scan.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< .mine
     <ClCompile Include="second_scan.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="compiler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="global_functions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\global_parameters.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+=======
+    <ClCompile Include="second_scan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+>>>>>>> .r40
   </ItemGroup>
   <ItemGroup>
     <None Include="pa.as" />
