@@ -14,7 +14,7 @@ enum addressingMethod
 	INDEX,
 	DOUBLE_INDEX,
 	REGISTER,
-}
+};
 
 
 //cmd = define command / instruction type
@@ -91,7 +91,7 @@ typedef struct
 {
 	enum cmd cmd_type;
 	char *name;
-	char binary_code[5];
+	char *binary_code;
 	int source_addressing_options[5]; //legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
 	int dest_addressing_options[5];	 //legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
 } CommandStruct;
@@ -117,7 +117,7 @@ CommandStruct commands_list[] =
 	JSR,		"jsr", "1101", EMPTY_ARRAY, {1,EMPTY,EMPTY,EMPTY,EMPTY},
 	RTS,		"rts", "1110", EMPTY_ARRAY, EMPTY_ARRAY,
 	STOP,		"stop","1111", EMPTY_ARRAY, EMPTY_ARRAY,
-	UNKNOWN_CMD,0	  ,""	 , EMPTY_ARRAY, EMPTY_ARRAY
+	UNKNOWN_CMD,""	  ,""	 , EMPTY_ARRAY, EMPTY_ARRAY
 
 };
 
