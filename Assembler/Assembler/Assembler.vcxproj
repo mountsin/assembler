@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -64,7 +64,6 @@
     <ClInclude Include="compiler.h" />
     <ClInclude Include="global_parameters.h" />
     <ClInclude Include="global_functions.h" />
-    <ClInclude Include="second_scan.h" />
     <ClInclude Include="first_scan.h" />
     <ClInclude Include="second_scan.h" />
     <ClInclude Include="symbols.h" />
@@ -76,7 +75,6 @@
     <ClCompile Include="second_scan.c" />
     <ClCompile Include="first_scan.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="second_scan.c" />
     <ClCompile Include="symbols.c" />
   </ItemGroup>
   <ItemGroup>
