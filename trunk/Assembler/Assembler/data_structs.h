@@ -89,63 +89,36 @@ AssemblyStatement;
 // CommandRule - define an assembly command binary code and legitimate addressing methods (0-4)
 typedef struct
 {
-	enum cmd  cmdType;
-	char binary_code[5];
-	int sourceAddressing[5]; //legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
-	int destAddressing[5];	 //legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
-} CommandRule;
-
-
-/* Used to find parse the command name from the file and convert it to the apropriate enum value */
-typedef struct
-{
+	enum cmd cmd_type;
 	char *name;
-	enum cmd command;
-} ConvertCommand; 
-
-ConvertCommand commands[] = 
-{
-	"mov", MOV,
-	"cmp", CMP,
-	"add", ADD,
-	"sub", SUB,
-	"not", NOT,
-	"clr", CLR,
-	"lea", LEA,
-	"inc", INC,
-	"dec", DEC,
-	"jmp", JMP,
-	"bne", BNE,
-	"red", RED,
-	"prn", PRN,
-	"jsr", JSR,
-	"rts", RTS,
-	"stop", STOP,
-	0,UNKNOWN_CMD
-};
-
+	char binary_code[5];
+	int source_addressing_options[5]; //legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
+	int dest_addressing_options[5];	 //legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
+} CommandStruct;
 
 //===================  Tables & Collectors ==========================
 
 //commandRules - table(array) contains each assembly command and its rules
-CommandRule commandRules[] = 
+CommandStruct commands_list[] = 
 {
-	MOV, "0000", {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	CMP, "0001", {0,1,2,3,4}, {0,1,2,3,4},
-	ADD, "0010", {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	SUB, "0011", {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	NOT, "0100", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	CLR, "0101", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	LEA, "0110", {1,2,3,EMPTY,EMPTY},{1,2,3,4,EMPTY},
-	INC, "0111", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	DEC, "1000", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	JMP, "1001", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	BNE, "1010", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	RED, "1011", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	PRN, "1100", EMPTY_ARRAY, {0,1,2,3,4},
-	JSR, "1101", EMPTY_ARRAY, {1,EMPTY,EMPTY,EMPTY,EMPTY},
-	RTS, "1110", EMPTY_ARRAY, EMPTY_ARRAY,
-	STOP, "1111",EMPTY_ARRAY, EMPTY_ARRAY
+	MOV,		"mov", "0000", {0,1,2,3,4}, {1,2,3,4,EMPTY},
+	CMP,		"cmp", "0001", {0,1,2,3,4}, {0,1,2,3,4},
+	ADD,		"add", "0010", {0,1,2,3,4}, {1,2,3,4,EMPTY},
+	SUB,		"sub", "0011", {0,1,2,3,4}, {1,2,3,4,EMPTY},
+	NOT,		"not", "0100", EMPTY_ARRAY, {1,2,3,4,EMPTY},
+	CLR,		"clr", "0101", EMPTY_ARRAY, {1,2,3,4,EMPTY},
+	LEA,		"lea", "0110", {1,2,3,EMPTY,EMPTY},{1,2,3,4,EMPTY},
+	INC,		"inc", "0111", EMPTY_ARRAY, {1,2,3,4,EMPTY},
+	DEC,		"dec", "1000", EMPTY_ARRAY, {1,2,3,4,EMPTY},
+	JMP,		"jmp", "1001", EMPTY_ARRAY, {1,2,3,4,EMPTY},
+	BNE,		"bne", "1010", EMPTY_ARRAY, {1,2,3,4,EMPTY},
+	RED,		"red", "1011", EMPTY_ARRAY, {1,2,3,4,EMPTY},
+	PRN,		"prn", "1100", EMPTY_ARRAY, {0,1,2,3,4},
+	JSR,		"jsr", "1101", EMPTY_ARRAY, {1,EMPTY,EMPTY,EMPTY,EMPTY},
+	RTS,		"rts", "1110", EMPTY_ARRAY, EMPTY_ARRAY,
+	STOP,		"stop","1111", EMPTY_ARRAY, EMPTY_ARRAY,
+	UNKNOWN_CMD,0	  ,""	 , EMPTY_ARRAY, EMPTY_ARRAY
+
 };
 
 //Table (linked list of structs) of all assembly Labels

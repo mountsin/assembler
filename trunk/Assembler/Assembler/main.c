@@ -15,8 +15,8 @@ void main(int argc, char *argv[])
 		strcpy(filename, argv[i]);
 		strcat(filename, ".as");
 		first_scan(filename); //TODO: implement
-		second_scan();//TODO: implement
-		compile_and_write_output(filename);//TODO: implement
+		//second_scan();//TODO: implement
+		//compile_and_write_output(filename);//TODO: implement
 	}
 
 	//TODO: remove (testing)

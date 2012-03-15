@@ -1,3 +1,5 @@
+#include "data_structs.h"
+
 void first_scan(char *filename);
 void read_file(char *filename);
 void read_line_and_build_statement_struct(char *line);

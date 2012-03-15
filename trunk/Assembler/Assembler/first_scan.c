@@ -1,9 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 #include "first_scan.h"
-#include "data_structs.h"
 
 #define LINE_SIZE 100
-
 
 void first_scan(char *filename)
 {
@@ -76,13 +75,12 @@ char *get_next_token(char *delimiters)
 
 enum cmd parse_command(char *command_name)
 {
-	ConvertCommand *tmp;
-	for(tmp = commands; tmp->name && strcmp(command_name, tmp->name); tmp++);
-	return tmp->command;
+	CommandStruct *tmp;
+	for(tmp = commands_list; tmp->name && strcmp(command_name, tmp->name); tmp++);
+	return tmp->cmd_type;
 }
 
 void debug_output(char *what)
 {
 	puts(what);
 }
-
