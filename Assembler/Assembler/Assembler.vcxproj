@@ -61,11 +61,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="data_structs.h" />
+    <ClInclude Include="compiler.h" />
+    <ClInclude Include="global_parameters.h" />
+    <ClInclude Include="global_functions.h" />
+    <ClInclude Include="second_scan.h" />
     <ClInclude Include="first_scan.h" />
     <ClInclude Include="second_scan.h" />
     <ClInclude Include="symbols.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="compiler.c" />
+    <ClCompile Include="Debug\global_parameters.c" />
+    <ClCompile Include="global_functions.c" />
+    <ClCompile Include="second_scan.c" />
     <ClCompile Include="first_scan.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="second_scan.c" />
