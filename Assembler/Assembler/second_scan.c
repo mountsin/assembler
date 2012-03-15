@@ -1,7 +1,5 @@
-#include "second_scan.h"
-
-
-
+#include "global_parameters.h"
+void second_scan(char *filename);
 
 
 void second_scan()
@@ -9,6 +7,4 @@ void second_scan()
 
 }
 
-void compile_and_write_output(char *filename)
-{
-}
+
