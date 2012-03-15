@@ -61,9 +61,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="data_structs.h" />
+    <ClInclude Include="first_scan.h" />
     <ClInclude Include="symbols.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="first_scan.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="symbols.c" />
   </ItemGroup>
