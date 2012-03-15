@@ -6,6 +6,17 @@
 
 //===== enums ==================
 
+//addressingMethod - addresing method (0-4)
+enum addressingMethod
+{	
+	IMMEDIATE,
+	DIRECT,
+	INDEX,
+	DOUBLE_INDEX,
+	REGISTER,
+}
+
+
 //cmd = define command / instruction type
 enum cmd 
 {
@@ -146,7 +157,9 @@ typedef struct labelNode
 }
 LabelNode;
 
-//ErrorCollector (linked list of structs) of all errors
+/**
+* ErrorCollector (linked list of structs) of all errors
+*/
 typedef struct error
 {
 	struct error *next;  
@@ -155,3 +168,21 @@ typedef struct error
 	int lineNumber;					//assembly (input) file line number
 }	
 ErrorCollector;
+
+/**
+* compiler_Node (linked list of structs) table of nodes
+* each represent a compiled machine code line
+*/
+typedef struct compiler_Node
+{
+	struct compiler_Node *next;  
+	char *label;
+	int address;
+	enum cmd cmdType;							//type of command
+	enum addressingMethod sourceAddressing;
+	enum addressingMethod targetAddressing;
+	char *source_operand;			//first parameter (nullable)
+	char *target_operand;			//second parameter (nullable)
+	char *binary_machine_code; //"101010110" "STR" "&L STR"
+}	
+compiler_Node;
