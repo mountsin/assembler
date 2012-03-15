@@ -21,12 +21,18 @@
     <ClInclude Include="data_structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="first_scan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="symbols.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="first_scan.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
