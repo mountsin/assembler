@@ -17,7 +17,7 @@ void second_scan(compiler_node compiler_node_header)
 	*/
 	compiler_node h = compiler_node_header;
 
-	while(h != 0)
+	//while(h != 0) //sefi: compile error
 	{
 
 	}

@@ -1,4 +1,3 @@
-
 #define EMPTY -1
 #define EMPTY_ARRAY {-1,-1,-1,-1,-1}
 
@@ -83,6 +82,7 @@ typedef struct
 	enum cmd cmd_type;
 	char *name;
 	char *binary_code;
+	char number_of_words;
 	int source_addressing_options[5]; //legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
 	int dest_addressing_options[5];	 //legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
 } CommandStruct;
@@ -101,28 +101,7 @@ AssemblyStatement;
 
 //===================  Tables & Collectors ==========================
 
-//commands_list - table(array) contains each assembly command and its rules
-CommandStruct commands_list[] = 
-{
-	MOV,		"mov", "0000", {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	CMP,		"cmp", "0001", {0,1,2,3,4}, {0,1,2,3,4},
-	ADD,		"add", "0010", {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	SUB,		"sub", "0011", {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	NOT,		"not", "0100", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	CLR,		"clr", "0101", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	LEA,		"lea", "0110", {1,2,3,EMPTY,EMPTY},{1,2,3,4,EMPTY},
-	INC,		"inc", "0111", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	DEC,		"dec", "1000", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	JMP,		"jmp", "1001", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	BNE,		"bne", "1010", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	RED,		"red", "1011", EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	PRN,		"prn", "1100", EMPTY_ARRAY, {0,1,2,3,4},
-	JSR,		"jsr", "1101", EMPTY_ARRAY, {1,EMPTY,EMPTY,EMPTY,EMPTY},
-	RTS,		"rts", "1110", EMPTY_ARRAY, EMPTY_ARRAY,
-	STOP,		"stop","1111", EMPTY_ARRAY, EMPTY_ARRAY,
-	UNKNOWN_CMD,""	  ,""	 , EMPTY_ARRAY, EMPTY_ARRAY
 
-};
 
 
 //Table (linked list of structs) of all assembly Labels
