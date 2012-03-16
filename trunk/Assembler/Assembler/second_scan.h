@@ -1,0 +1,1 @@
+void second_scan(compiler_node compiler_node_header);

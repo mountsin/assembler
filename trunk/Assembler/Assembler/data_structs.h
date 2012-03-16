@@ -25,21 +25,27 @@ enum cmd
 	DATA,				//.data
 	STRING,				//.string
 	ENTRY,				//.entry
-	EXTERNAL,			//.extern
+	EXTERN,			//.extern
 	UNKNOWN_CMD = 99
 };
 
-//addressingMethod - addresing method (0-4)
-enum addressingMethod
+//addressing_method - addresing method (0-4)
+enum addressing_method
 {	
 	IMMEDIATE,
 	DIRECT,
 	INDEX,
 	DOUBLE_INDEX,
-	REGISTER,
+	REGISTER
 };
 
-
+//addressing_method - addresing method (0-4)
+enum linker_enum
+{	
+	ABSOLUTE,
+	RELOCATABLE,
+	EXTERNAL
+};
 
 //status = define current command status (can be extended)
 enum status 
@@ -135,7 +141,7 @@ typedef struct error
 {
 	struct error *next;  
 	enum status errType;			//type of error
-	enum cmd cmdType;				//type of command caused the error
+	enum cmd cmd_type;				//type of command caused the error
 	int lineNumber;					//assembly (input) file line number
 }	
 ErrorCollector;
@@ -144,16 +150,18 @@ ErrorCollector;
 * compiler_Node (linked list of structs) table of nodes
 * each represent a compiled machine code line
 */
-typedef struct compiler_Node
+typedef struct compiler_node
 {
 	struct compiler_Node *next;  
 	char *label;
 	int address;
-	enum cmd cmdType;							//type of command
-	enum addressingMethod sourceAddressing;
-	enum addressingMethod targetAddressing;
+	enum cmd cmd_type;							//type of command
+	enum addressing_method sourceAddressing;
+	enum addressing_method targetAddressing;
 	char *source_operand;			//first parameter (nullable)
 	char *target_operand;			//second parameter (nullable)
 	char *binary_machine_code; //"101010110" "STR" "&L STR"
+	int flag_is_linker_needed;   /* linker flag needed for non-data machine code lines*/
+	enum linker_enum linker_flag;
 }	
-CompilerNode;
+compiler_node;
