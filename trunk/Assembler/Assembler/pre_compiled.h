@@ -26,5 +26,5 @@ void add_compiler_node(char *label, int adress, enum cmd cmd_type,
 						enum addressing_method source_addressing,
 						enum addressing_method target_addressing,
 						char *source_operand,
-						char *target_operand,
-						char *binary_machine_code);
+						char *target_operand);
+
