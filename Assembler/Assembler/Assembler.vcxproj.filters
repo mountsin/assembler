@@ -33,6 +33,12 @@
     <ClInclude Include="global_functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CuTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AllTests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -51,6 +57,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="compile_and_write_output.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CuTest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AllTests.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestFirstScan.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

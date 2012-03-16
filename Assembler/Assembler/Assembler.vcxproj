@@ -60,7 +60,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AllTests.h" />
     <ClInclude Include="compile_and_write_output.h" />
+    <ClInclude Include="CuTest.h" />
     <ClInclude Include="data_structs.h" />
     <ClInclude Include="first_scan.h" />
     <ClInclude Include="global_functions.h" />
@@ -68,12 +70,15 @@
     <ClInclude Include="symbols.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AllTests.c" />
     <ClCompile Include="compile_and_write_output.c" />
+    <ClCompile Include="CuTest.c" />
     <ClCompile Include="first_scan.c" />
     <ClCompile Include="global_functions.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="second_scan.c" />
     <ClCompile Include="symbols.c" />
+    <ClCompile Include="TestFirstScan.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="pa.as" />

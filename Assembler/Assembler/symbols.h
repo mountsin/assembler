@@ -1,9 +1,8 @@
 enum symbol_type
 {
-	DATA,
-	CODE
+	INSTRUCTION,
+	OPCODE
 };
-
 
 typedef struct symbol
 {
