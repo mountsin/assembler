@@ -21,6 +21,18 @@
     <ClInclude Include="data_structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="first_scan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="second_scan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compile_and_write_output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="global_functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -29,7 +41,16 @@
     <ClCompile Include="symbols.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\global_parameters.c">
+    <ClCompile Include="global_functions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="first_scan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="second_scan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compile_and_write_output.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
