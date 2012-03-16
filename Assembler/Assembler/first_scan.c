@@ -4,6 +4,7 @@
 #include "first_scan.h"
 #include "symbols.h"
 #include "error.h"
+#include "pre_compiled.h"
 
 
 #define LINE_SIZE 100
@@ -18,11 +19,14 @@ typedef enum boolean
 void read_line_and_build_statement_struct(char *line);
 void validate_label(char *token, AssemblyStatement *stmt);
 enum cmd parse_command(char *command_name);
-char *get_next_token();
+char *get_first_token(char *text);
+char *get_next_token(void);
 char *get_token(char *text);
 void process_statement(AssemblyStatement stmt);
 void debug_output(char *what);
 void parse_and_load_data(AssemblyStatement *stmt, int *dc);
+enum addressing_method get_source_addressing(char *source_operand);
+enum addressing_method get_target_addressing(char *target_operand);
 
 //commands_list - table(array) contains each assembly command and its rules
 CommandStruct commands_list[] = 
@@ -55,6 +59,7 @@ void first_scan(char *filename)
 		dc = 0,				/* Data counter */
 		line_number = 1;	/* line counter for the errors report */
 	AssemblyStatement stmt; /* Each code line will be parsed and stored in this temporary struct */
+	CompilerNode compiler_node;
 
 	fp = fopen(filename,"r");
 	while(fgets(line,LINE_SIZE,fp))
@@ -79,14 +84,22 @@ void first_scan(char *filename)
 		if(stmt.label)
 			add_symbol(stmt.label,ic,OPCODE);
 
-		
-
+		add_compiler_node(stmt.label,ic,stmt.command,get_source_addressing(stmt.source_operand),get_target_addressing(stmt.target_operand),stmt.source_operand,stmt.target_operand);
 
 		ic += commands_list[stmt.command].number_of_words;
 		line_number++;
 	}
 	fclose(fp);
 }
+
+enum addressing_method get_source_addressing(char *source_operand)
+{
+}
+
+enum addressing_method get_target_addressing(char *target_operand)
+{
+}
+
 
 void parse_and_load_data(AssemblyStatement *stmt, int *dc)
 {

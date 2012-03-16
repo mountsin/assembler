@@ -18,7 +18,5 @@ typedef struct external_symbol
 	struct external_symbol *next;
 } ExternalSymbol;
 
-
-
 void add_symbol(char *name, int address, enum symbol_type type);
 void add_external_symbol(char *name);
