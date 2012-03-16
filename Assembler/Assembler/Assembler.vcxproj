@@ -67,6 +67,7 @@
     <ClInclude Include="error.h" />
     <ClInclude Include="first_scan.h" />
     <ClInclude Include="global_functions.h" />
+    <ClInclude Include="pre_compiled.h" />
     <ClInclude Include="second_scan.h" />
     <ClInclude Include="symbols.h" />
   </ItemGroup>
@@ -78,6 +79,7 @@
     <ClCompile Include="first_scan.c" />
     <ClCompile Include="global_functions.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="pre_compiled.c" />
     <ClCompile Include="second_scan.c" />
     <ClCompile Include="symbols.c" />
     <ClCompile Include="TestFirstScan.c" />

@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <string.h>
-#include "data_structs.h"
+#include "second_scan.h"
 
-void second_scan(compiler_node compiler_node_header)
+void second_scan(CompilerNode *compiler_node_header)
 {
 	/*
 		search in all nodes:
 
-		1	if machine have been set - skipt to next step
+		1	if machine have been set - skip to next step
 
 			else - set code by labels table
 
@@ -15,10 +15,12 @@ void second_scan(compiler_node compiler_node_header)
 			set linkerEnum
 
 	*/
-	compiler_node h = compiler_node_header;
+	
+	/*CompilerNode *h = compiler_node_header;
 
-	//while(h != 0) //sefi: compile error
+	while(h != NULL) 
 	{
 
 	}
+	*/
 }

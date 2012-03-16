@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "CuTest.h"
 #include "first_scan.h"
 

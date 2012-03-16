@@ -1,4 +1,6 @@
+#include <stdio.h>
 #include <string.h>
+#include "data_structs.h"
 #include "first_scan.h"
 #include "symbols.h"
 #include "error.h"
@@ -44,13 +46,16 @@ CommandStruct commands_list[] =
 	UNKNOWN_CMD,""	  ,""	 , 0 , EMPTY_ARRAY, EMPTY_ARRAY
 };
 
-/* Read the as file line by line and process the statements */
+/* Read the assembly file, line by line and process the statements */
 void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	int ic = 0, dc = 0, line_number = 1;
-	AssemblyStatement stmt;
+	int ic = 0,				/* Instructions counter */
+		dc = 0,				/* Data counter */
+		line_number = 1;	/* line counter for the errors report */
+	AssemblyStatement stmt; /* Each code line will be parsed and stored in this temporary struct */
+
 	fp = fopen(filename,"r");
 	while(fgets(line,LINE_SIZE,fp))
 	{
@@ -73,6 +78,10 @@ void first_scan(char *filename)
 
 		if(stmt.label)
 			add_symbol(stmt.label,ic,OPCODE);
+
+		
+
+
 		ic += commands_list[stmt.command].number_of_words;
 		line_number++;
 	}
@@ -94,9 +103,7 @@ void parse_and_load_data(AssemblyStatement *stmt, int *dc)
 		case STRING:
 			*dc += strlen(stmt->target_operand)+1;
 			break;
-
 	}
-
 }
 
 /* Accept assembly code line and populate an AssemblyStatement struct */
@@ -172,4 +179,3 @@ void debug_output(char *what)
 {
 	puts(what);
 }
-
