@@ -24,8 +24,8 @@ enum cmd
 	DATA,				//.data
 	STRING,				//.string
 	ENTRY,				//.entry
-	EXTERN,			//.extern
-	UNKNOWN_CMD = 99
+	EXTERN	,			//.extern
+	UNKNOWN_CMD = 99	//TODO: duplicate with stasus enum values
 };
 
 //addressing_method - addresing method (0-4)
@@ -46,17 +46,7 @@ enum linker_enum
 	EXTERNAL
 };
 
-//status = define current command status (can be extended)
-enum status 
-{
-	OK,								//OK
-	UNKNOWN_COMMAND,				//assembly command is not recognized
-	LABEL_ALREADY_USED,				//trying to set a value to the same label already defined 
-	TOO_MUCH_PARAMS,				//number of parameters exceeding assembly command rules
-	MISSING_PARAMS,					//number of parameters is not enough for assembly command rules
-	LABEL_NOT_DEFINED,				//trying to use a label which not defined in the file
-	UNKNOWN_ERROR = 99				//other error
-};
+
 
 //paramType = define assembly command param type
 enum paramTypeEnum 
@@ -113,17 +103,7 @@ typedef struct labelNode
 }
 LabelNode;
 
-/**
-* ErrorCollector (linked list of structs) of all errors
-*/
-typedef struct error
-{
-	struct error *next;  
-	enum status errType;			//type of error
-	enum cmd cmd_type;				//type of command caused the error
-	int lineNumber;					//assembly (input) file line number
-}	
-ErrorCollector;
+
 
 /**
 * compiler_Node (linked list of structs) table of nodes

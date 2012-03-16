@@ -2,10 +2,18 @@
 
 void add_symbol(char *name, int address, enum symbol_type type)
 {
-	Symbol temp_symbol;
-	temp_symbol.name = name;
-	temp_symbol.type = type;
-	temp_symbol.address = address;
-	temp_symbol.next = symbols_list;
-	symbols_list = &temp_symbol;
+	Symbol tmp;
+	tmp.name = name;
+	tmp.type = type;
+	tmp.address = address;
+	tmp.next = symbols_list;
+	symbols_list = &tmp;
+}
+
+void add_external_symbol(char *name)
+{
+	ExternalSymbol tmp;
+	tmp.name = name;
+	tmp.next = external_symbols_list;
+	external_symbols_list = &tmp;
 }

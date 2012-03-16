@@ -1,10 +1,12 @@
 #include <string.h>
 #include "first_scan.h"
 #include "symbols.h"
+#include "error.h"
 
 
 #define LINE_SIZE 100
 
+//TODO: check if needed
 typedef enum boolean
 {
 	FALSE,
@@ -18,7 +20,7 @@ char *get_next_token();
 char *get_token(char *text);
 void process_statement(AssemblyStatement stmt);
 void debug_output(char *what);
-Boolean is_instruction(AssemblyStatement *stmt);
+void parse_and_load_data(AssemblyStatement *stmt, int *dc);
 
 //commands_list - table(array) contains each assembly command and its rules
 CommandStruct commands_list[] = 
@@ -47,19 +49,54 @@ void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	int ic = 0, dc = 0;
+	int ic = 0, dc = 0, line_number = 1;
 	AssemblyStatement stmt;
 	fp = fopen(filename,"r");
 	while(fgets(line,LINE_SIZE,fp))
 	{
 		read_line_and_build_statement_struct(line, &stmt);
-		if(is_instruction(&stmt))
+		if(stmt.command == UNKNOWN_CMD)
+			add_error(line_number, UNKNOWN_COMMAND);
+		if(stmt.command == DATA || stmt.command == STRING) /* Check if it's .data or .string instruction */
 		{
 			if(stmt.label)
 				add_symbol(stmt.label, dc, INSTRUCTION);
+			parse_and_load_data(&stmt, &dc);
+			continue;
 		}
+
+		if(stmt.command == EXTERN) /* Check if it's .extern instruction */
+		{
+			add_external_symbol(stmt.target_operand);
+			continue;
+		}
+
+		if(stmt.label)
+			add_symbol(stmt.label,ic,OPCODE);
+		ic += commands_list[stmt.command].number_of_words;
+		line_number++;
 	}
 	fclose(fp);
+}
+
+void parse_and_load_data(AssemblyStatement *stmt, int *dc)
+{
+	//TODO: Input validtaion and Error handling
+	char *tmp;
+
+	switch(stmt->command)
+	{
+		case DATA:
+			tmp = get_first_token(stmt->target_operand);
+			while(tmp != NULL)
+				*dc++;
+			break;
+		case STRING:
+			*dc += strlen(stmt->target_operand)+1;
+			break;
+
+	}
+
 }
 
 /* Accept assembly code line and populate an AssemblyStatement struct */
@@ -81,8 +118,17 @@ void read_line_and_build_statement_struct(char *line, AssemblyStatement *stmt)
 		debug_output(token);
 		validate_label(token, stmt);
 		stmt->command = parse_command(token);
+		if(stmt->command == UNKNOWN_COMMAND)
+		{
+			//TODO: Add error with ilne number
+		}
 		stmt->source_operand = get_next_token();
 		stmt->target_operand = get_next_token();
+		if(stmt->target_operand == NULL)
+		{
+			stmt->target_operand = stmt->source_operand;
+			stmt->source_operand = NULL;
+		}
 	}
 }
 
@@ -120,13 +166,6 @@ char *get_token(char *text)
 	char *temp;
 	temp = strtok(text, delimiters);
 	return temp;
-}
-
-Boolean is_instruction(AssemblyStatement *stmt)
-{
-	if(stmt->command == DATA || stmt->command == STRING)
-		return TRUE;
-	return FALSE;
 }
 
 void debug_output(char *what)
