@@ -1,4 +1,8 @@
+#include <stdio.h>
 #include "symbols.h"
+
+Symbol *symbols_list = NULL;
+ExternalSymbol *external_symbols_list = NULL;
 
 void add_symbol(char *name, int address, enum symbol_type type)
 {
