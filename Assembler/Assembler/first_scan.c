@@ -26,7 +26,6 @@ void process_statement(AssemblyStatement stmt);
 void debug_output(char *what);
 void parse_and_load_data(AssemblyStatement *stmt, int *dc);
 enum addressing_method get_source_addressing(char *source_operand);
-enum addressing_method get_target_addressing(char *target_operand);
 
 
 
@@ -106,11 +105,7 @@ void first_scan(char *filename)
 	}
 }
 
-enum addressing_method get_source_addressing(char *source_operand)
-{
-}
-
-enum addressing_method get_target_addressing(char *target_operand)
+enum addressing_method get_source_addressing_for(char *operand)
 {
 }
 
