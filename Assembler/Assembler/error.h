@@ -22,3 +22,4 @@ typedef struct error
 Error;
 
 void add_error(int line_number, enum error_type error);
+Error *get_errors_list();
