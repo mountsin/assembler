@@ -3,7 +3,7 @@
 #include "first_scan.h"
 #include "AllTests.h"
 
-//#define TEST
+#define TEST
 #define FILENAME_MAX 100
 
 

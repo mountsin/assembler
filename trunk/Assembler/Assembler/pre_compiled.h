@@ -28,3 +28,5 @@ void add_compiler_node(char *label, int adress, enum cmd cmd_type,
 						char *source_operand,
 						char *target_operand);
 
+int get_end_of_code_address();
+
