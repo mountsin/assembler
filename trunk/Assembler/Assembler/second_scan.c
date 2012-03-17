@@ -6,21 +6,41 @@ void second_scan(CompilerNode *compiler_node_header)
 {
 	/*
 		search in all nodes:
-
-		1	if machine have been set - skip to next step
+		1	
+			
+		2	if machine have been set - skip to next step
 
 			else - set code by labels table
 
-		2   if linker flag is needed
+		3   if linker flag is needed
 			set linkerEnum
 
 	*/
-	
-	/*CompilerNode *h = compiler_node_header;
+	char *current_label;
+	char *current_label_addr;
+
+
+	CompilerNode *h = compiler_node_header;
 
 	while(h != NULL) 
 	{
 
+		if(!is_binary_Str(h->binary_machine_code)) /* not a binary string*/
+		{
+			//h->binary_machine_code = get_label_address()
+	
+		}
 	}
-	*/
+	
+}
+
+int is_binary_Str(char *str)
+{
+	int i;
+	
+	for(i = 0; str[i]; i++)
+		if ( (str[i] != '0') && (str[i] != '1') ) /* not a binary string*/
+			return 0;
+
+	return 1;
 }

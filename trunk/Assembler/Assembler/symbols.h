@@ -1,22 +1,17 @@
-enum symbol_type
-{
-	INSTRUCTION,
-	OPCODE
-};
+
 
 typedef struct symbol
 {
 	char *name;
 	int address;
-	enum symbol_type type;
 	struct symbol *next;
 } Symbol;
 
-typedef struct external_symbol
-{
-	char *name;
-	struct external_symbol *next;
-} ExternalSymbol;
 
-void add_symbol(char *name, int address, enum symbol_type type);
-void add_external_symbol(char *name);
+void add_symbol(char *name, int address);
+void add_entry_symbol(char *name, int address);
+void add_external_symbol(char *name, int address);
+
+Symbol *get_next_symbol();
+Symbol *get_next_entry_symbol();
+Symbol *get_next_external_symbol();
