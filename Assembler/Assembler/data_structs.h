@@ -44,7 +44,8 @@ enum linker_enum
 {	
 	ABSOLUTE,
 	RELOCATABLE,
-	EXTERNAL
+	EXTERNAL,
+	NONE
 };
 
 
