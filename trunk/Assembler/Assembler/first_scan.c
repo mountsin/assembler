@@ -57,13 +57,17 @@ void first_scan(char *filename)
 	char line[LINE_SIZE];
 	int ic = 0,				/* Instructions counter */
 		dc = 0,				/* Data counter */
-		line_number = 1;	/* line counter for the errors report */
+		line_number = 0;	/* line counter for the errors report */
 	AssemblyStatement stmt; /* Each code line will be parsed and stored in this temporary struct */
 	CompilerNode compiler_node;
+	CommandStruct command_struct_from_validation_list;
 
 	fp = fopen(filename,"r");
+	if(fp)
+	{
 	while(fgets(line,LINE_SIZE,fp))
 	{
+		line_number++;
 		read_line_and_build_statement_struct(line, &stmt);
 		if(stmt.command == UNKNOWN_CMD)
 			add_error(line_number, UNKNOWN_COMMAND);
@@ -86,10 +90,16 @@ void first_scan(char *filename)
 
 		add_compiler_node(stmt.label,ic,stmt.command,get_source_addressing(stmt.source_operand),get_target_addressing(stmt.target_operand),stmt.source_operand,stmt.target_operand);
 
-		ic += commands_list[stmt.command].number_of_words;
-		line_number++;
+		command_struct_from_validation_list = commands_list[stmt.command];
+		ic += command_struct_from_validation_list.number_of_words;
+		
 	}
 	fclose(fp);
+	}
+	else
+	{
+		add_error(line_number,INPUT_FILE_FAILURE);
+	}
 }
 
 enum addressing_method get_source_addressing(char *source_operand)
@@ -127,6 +137,7 @@ void read_line_and_build_statement_struct(char *line, AssemblyStatement *stmt)
 
 	if(line[0] == ';')
 	{
+		stmt->command = COMMENT;
 		debug_output("DEBUG: Comment line");
 		return;
 	}
@@ -138,9 +149,9 @@ void read_line_and_build_statement_struct(char *line, AssemblyStatement *stmt)
 		debug_output(token);
 		validate_label(token, stmt);
 		stmt->command = parse_command(token);
-		if(stmt->command == UNKNOWN_COMMAND)
+		if(stmt->command == UNKNOWN_CMD)
 		{
-			//TODO: Add error with ilne number
+			//TODO: Add error with line number
 		}
 		stmt->source_operand = get_next_token();
 		stmt->target_operand = get_next_token();

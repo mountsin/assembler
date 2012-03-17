@@ -1,12 +1,14 @@
-//status = define current command status (can be extended)
+/* Status = define current command status (can be extended) */
 enum error_type 
 {
-	UNKNOWN_COMMAND,				//assembly command is not recognized
-	LABEL_ALREADY_USED,				//trying to set a value to the same label already defined 
-	TOO_MUCH_PARAMS,				//number of parameters exceeding assembly command rules
-	MISSING_PARAMS,					//number of parameters is not enough for assembly command rules
-	LABEL_NOT_DEFINED,				//trying to use a label which not defined in the file
-	UNKNOWN_ERROR = 99				//other error
+	COMMENT,						/* Comment line, the assembler will ignore */
+	INPUT_FILE_FAILURE,				/* One of the input file could not been opened */
+	UNKNOWN_COMMAND,				/* Assembly command is not recognized */
+	LABEL_ALREADY_USED,				/* Trying to set a value to the same label already defined */
+	TOO_MUCH_PARAMS,				/* Number of parameters exceeding assembly command rules */
+	MISSING_PARAMS,					/* Number of parameters is not enough for assembly command rules */
+	LABEL_NOT_DEFINED,				/* Trying to use a label which not defined in the file */
+	UNKNOWN_ERROR = 99				/* Other error */
 };
 
 /**
