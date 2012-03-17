@@ -1,7 +1,6 @@
 /* Status = define current command status (can be extended) */
 enum error_type 
 {
-	COMMENT,						/* Comment line, the assembler will ignore */
 	INPUT_FILE_FAILURE,				/* One of the input file could not been opened */
 	UNKNOWN_COMMAND,				/* Assembly command is not recognized */
 	LABEL_ALREADY_USED,				/* Trying to set a value to the same label already defined */

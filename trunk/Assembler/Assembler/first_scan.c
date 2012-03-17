@@ -69,6 +69,8 @@ void first_scan(char *filename)
 	{
 		line_number++;
 		read_line_and_build_statement_struct(line, &stmt);
+		if(stmt.command == COMMENT)
+			continue;
 		if(stmt.command == UNKNOWN_CMD)
 			add_error(line_number, UNKNOWN_COMMAND);
 		if(stmt.command == DATA || stmt.command == STRING) /* Check if it's .data or .string instruction */
@@ -142,7 +144,7 @@ void read_line_and_build_statement_struct(char *line, AssemblyStatement *stmt)
 		return;
 	}
 
-	token =  get_next_token();
+	token =  get_first_token(line);
 	if(token)
 	{
 		//TODO: remove (testing)

@@ -1,8 +1,8 @@
 #define EMPTY -1
 #define EMPTY_ARRAY {-1,-1,-1,-1,-1}
 
-//===== enums ==================
-//cmd = define command / instruction type
+/*===== enums ================== */
+/* cmd = define command / instruction type */
 enum cmd 
 {
 	MOV, 
@@ -21,14 +21,15 @@ enum cmd
 	JSR,
 	RTS,
 	STOP,
-	DATA,				//.data
-	STRING,				//.string
-	ENTRY,				//.entry
-	EXTERN	,			//.extern
+	DATA,				/* .data */
+	STRING,				/* .string */
+	ENTRY,				/* .entry */
+	EXTERN,				/* .extern */
+	COMMENT,			/* comment line the assmbler will ignore */
 	UNKNOWN_CMD = 99	//TODO: duplicate with stasus enum values
 };
 
-//addressing_method - addresing method (0-4)
+/* addressing_method - addresing method (0-4) */
 enum addressing_method
 {	
 	IMMEDIATE,
@@ -38,7 +39,7 @@ enum addressing_method
 	REGISTER
 };
 
-//addressing_method - addresing method (0-4)
+/* linker info enum */
 enum linker_enum
 {	
 	ABSOLUTE,
@@ -48,7 +49,7 @@ enum linker_enum
 
 
 
-//paramType = define assembly command param type
+/* paramType = define assembly command param type */
 enum paramTypeEnum 
 {
 	INT = 0,
@@ -58,7 +59,7 @@ enum paramTypeEnum
 };
 
 
-//CmdParam - represent a parameter of assembly command
+/* CmdParam - represent a parameter of assembly command */
 typedef struct
 {
 	enum paramTypeEnum paramType;
@@ -66,15 +67,15 @@ typedef struct
 }
 CmdParam;
 
-// CommandRule - define an assembly command binary code and legitimate addressing methods (0-4)
+/* CommandRule - define an assembly command binary code and legitimate addressing methods (0-4) */
 typedef struct
 {
 	enum cmd cmd_type;
 	char *name;
 	char *binary_code;
 	char number_of_words;
-	int source_addressing_options[5]; //legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
-	int dest_addressing_options[5];	 //legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed)
+	int source_addressing_options[5]; /* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
+	int dest_addressing_options[5];	  /* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 } CommandStruct;
 
 //=========== Complex Elements ==================================
