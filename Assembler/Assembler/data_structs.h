@@ -2,6 +2,14 @@
 #define EMPTY_ARRAY {-1,-1,-1,-1,-1}
 
 /*===== enums ================== */
+
+typedef enum boolean
+{
+	FALSE,
+	TRUE
+} Boolean;
+
+
 /* cmd = define command / instruction type */
 enum cmd 
 {

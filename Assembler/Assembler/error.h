@@ -16,8 +16,8 @@ enum error_type
 typedef struct error
 {
 	struct error *next;  
-	enum error_type type;			//type of error
-	int line_number;				//assembly (input) file line number
+	enum error_type type;			/* type of error */
+	int line_number;				/* assembly (input) file line number */
 }	
 Error;
 

@@ -10,7 +10,8 @@ void add_compiler_node(char *label, int adress, enum cmd cmd_type,
 						enum addressing_method source_addressing,
 						enum addressing_method target_addressing,
 						char *source_operand,
-						char *target_operand)
+						char *target_operand,
+						int line_number)
 {
 	CompilerNode tmp;
 	tmp.label = label;
@@ -20,6 +21,7 @@ void add_compiler_node(char *label, int adress, enum cmd cmd_type,
 	tmp.targetAddressing = target_addressing;
 	tmp.source_operand = source_operand;
 	tmp.target_operand = target_operand;
+	tmp.line_number = line_number;
 	set_binary_machine_code_to(&tmp);
 	tmp.next = compiler_nodes_list;
 	compiler_nodes_list = &tmp;
