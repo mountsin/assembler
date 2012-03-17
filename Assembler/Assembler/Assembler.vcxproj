@@ -83,6 +83,7 @@
     <ClCompile Include="second_scan.c" />
     <ClCompile Include="symbols.c" />
     <ClCompile Include="TestFirstScan.c" />
+    <ClCompile Include="TestSecondScan.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="pa.as" />

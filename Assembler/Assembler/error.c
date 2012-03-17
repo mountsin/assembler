@@ -13,3 +13,8 @@ void add_error(int line_number, enum error_type error)
 
 	printf("Error");
 }
+
+Error *get_errors_list()
+{
+	NULL;
+}
