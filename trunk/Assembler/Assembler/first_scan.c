@@ -9,12 +9,7 @@
 
 #define LINE_SIZE 100
 
-//TODO: check if needed
-typedef enum boolean
-{
-	FALSE,
-	TRUE
-} Boolean;
+
 
 void read_line_and_build_statement_struct(char *line);
 void validate_label(char *token, AssemblyStatement *stmt);
@@ -25,7 +20,7 @@ char *get_token(char *text);
 void process_statement(AssemblyStatement stmt);
 void debug_output(char *what);
 void parse_and_load_data(AssemblyStatement *stmt, int *dc);
-enum addressing_method get_source_addressing(char *source_operand);
+enum addressing_method get_addressing_for(char *source_operand);
 
 
 
@@ -92,7 +87,7 @@ void first_scan(char *filename)
 		if(stmt.label)
 			add_symbol(stmt.label,ic);
 
-		add_compiler_node(stmt.label,ic,stmt.command,get_source_addressing(stmt.source_operand),get_target_addressing(stmt.target_operand),stmt.source_operand,stmt.target_operand);
+		add_compiler_node(stmt.label,ic,stmt.command, get_addressing_for(stmt.source_operand), get_addressing_for(stmt.target_operand),stmt.source_operand,stmt.target_operand,line_number);
 
 		command_struct_from_validation_list = commands_list[stmt.command];
 		ic += command_struct_from_validation_list.number_of_words;
@@ -105,7 +100,7 @@ void first_scan(char *filename)
 	}
 }
 
-enum addressing_method get_source_addressing_for(char *operand)
+enum addressing_method get_addressing_for(char *operand)
 {
 }
 
