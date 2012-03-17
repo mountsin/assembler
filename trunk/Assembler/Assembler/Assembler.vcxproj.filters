@@ -80,6 +80,9 @@
     <ClCompile Include="pre_compiled.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestSecondScan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="pa.as" />

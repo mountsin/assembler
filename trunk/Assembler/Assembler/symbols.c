@@ -21,3 +21,8 @@ void add_external_symbol(char *name)
 	tmp.next = external_symbols_list;
 	external_symbols_list = &tmp;
 }
+
+Symbol *get_symbol_by_name(char *name)
+{
+	return NULL;
+}
