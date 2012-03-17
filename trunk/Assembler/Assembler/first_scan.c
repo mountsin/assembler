@@ -28,7 +28,9 @@ void parse_and_load_data(AssemblyStatement *stmt, int *dc);
 enum addressing_method get_source_addressing(char *source_operand);
 enum addressing_method get_target_addressing(char *target_operand);
 
-//commands_list - table(array) contains each assembly command and its rules
+
+
+/* Commands_list - table(array) contains each assembly command and its rules */
 CommandStruct commands_list[] = 
 {
 	MOV,		"mov", "0000", 3 , {0,1,2,3,4}, {1,2,3,4,EMPTY},
@@ -50,14 +52,15 @@ CommandStruct commands_list[] =
 	UNKNOWN_CMD,""	  ,""	 , 0 , EMPTY_ARRAY, EMPTY_ARRAY
 };
 
+int ic = 0;				/* Instructions counter */
+
 /* Read the assembly file, line by line and process the statements */
 void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	int ic = 0,				/* Instructions counter */
-		dc = 0,				/* Data counter */
-		line_number = 0;	/* line counter for the errors report */
+	int dc = 0,				/* Data counter */
+		line_number = 0;	/* Input file's line counter for the errors report */
 	AssemblyStatement stmt; /* Each code line will be parsed and stored in this temporary struct */
 	CompilerNode compiler_node;
 	CommandStruct command_struct_from_validation_list;
@@ -94,7 +97,6 @@ void first_scan(char *filename)
 
 		command_struct_from_validation_list = commands_list[stmt.command];
 		ic += command_struct_from_validation_list.number_of_words;
-		
 	}
 	fclose(fp);
 	}
@@ -204,4 +206,9 @@ char *get_token(char *text)
 void debug_output(char *what)
 {
 	puts(what);
+}
+
+int get_end_of_code_address()
+{
+	return ic;
 }
