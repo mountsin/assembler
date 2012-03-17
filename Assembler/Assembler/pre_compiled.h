@@ -15,7 +15,7 @@ typedef struct compiler_node
 	char *source_operand;						/* first parameter (nullable) */
 	char *target_operand;						/* second parameter (nullable) */
 	char *binary_machine_code;					/* "101010110" "STR" "&L STR" */
-	int flag_is_linker_needed;					/* linker flag needed for non-data machine code lines */
+	int is_second_scan_needed;					/* is second scan processing needed */
 	enum linker_enum linker_flag;
 }	
 CompilerNode;

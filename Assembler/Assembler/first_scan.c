@@ -76,19 +76,19 @@ void first_scan(char *filename)
 		if(stmt.command == DATA || stmt.command == STRING) /* Check if it's .data or .string instruction */
 		{
 			if(stmt.label)
-				add_symbol(stmt.label, dc, INSTRUCTION);
+				add_symbol(stmt.label, dc);
 			parse_and_load_data(&stmt, &dc);
 			continue;
 		}
 
 		if(stmt.command == EXTERN) /* Check if it's .extern instruction */
 		{
-			add_external_symbol(stmt.target_operand);
+			add_external_symbol(stmt.target_operand,0); 
 			continue;
 		}
 
 		if(stmt.label)
-			add_symbol(stmt.label,ic,OPCODE);
+			add_symbol(stmt.label,ic);
 
 		add_compiler_node(stmt.label,ic,stmt.command,get_source_addressing(stmt.source_operand),get_target_addressing(stmt.target_operand),stmt.source_operand,stmt.target_operand);
 
