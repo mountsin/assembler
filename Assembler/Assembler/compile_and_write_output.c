@@ -4,6 +4,10 @@
 #include "pre_compiled.h"
 #include "error.h"
 
+#define OBJECT_FILE_EXT		".ob"
+#define ENTRIES_FILE_EXT	".ent"
+#define EXTERNAL_FILE_EXT	".ext"
+
 #define GENERAL_ERROR_MESSAGE		"Error occurred while trying to compile the assembly file:"
 #define INPUT_FILE_OPEN_FAIL		"One of the input file could not been opened"
 #define UNKNOWN_ASSEMBLY_COMMAND	"Assembly command is not recognized"
@@ -63,14 +67,17 @@ void print_errors_report(Error *errors_collector)
 
 void create_file_ob(char *filename, CompilerNode *cn_list)
 {
+	FILE *fp;
 }
 
 void create_file_ent(char *filename, CompilerNode *cn_list)
 {
+	FILE *fp;
 }
 
 void create_file_ext(char *filename, CompilerNode *cn_list)
 {
+	FILE *fp;
 }
 
 
