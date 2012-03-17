@@ -102,6 +102,8 @@ void first_scan(char *filename)
 
 enum addressing_method get_addressing_for(char *operand)
 {
+	//TODO: implement
+
 }
 
 

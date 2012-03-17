@@ -32,3 +32,8 @@ void set_binary_machine_code_to(CompilerNode *compiler_node)
 {
 	//TODO: implement
 }
+
+CompilerNode *get_compiler_nodes_list()
+{
+	return compiler_nodes_list;
+}
