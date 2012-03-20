@@ -32,4 +32,9 @@ void main(int argc, char *argv[])
 	//TODO: remove (testing)
 	getchar();
 }
+
+void dispose_all()
+{
+	//TODO: dispose compiler node list and symbols list
+}
 #endif

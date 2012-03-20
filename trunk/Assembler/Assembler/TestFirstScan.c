@@ -21,10 +21,37 @@ void TestGetNextToken(CuTest *tc)
 	CuAssertStrEquals(tc, expected, actual);
 }
 
+void TestIsRegister(CuTest *tc)
+{
+	char input[] = "r1";
+	CuAssertTrue(tc,is_register(input));
+}
+void TestIsRegister2(CuTest *tc)
+{
+	char input[] = "r9";
+	CuAssertTrue(tc,!is_register(input));
+}
+
+void TestIsLiteral(CuTest *tc)
+{
+	char input[] = "#-1";
+	CuAssertTrue(tc, is_literal(input));
+}
+
+void TestIsLiteral2(CuTest *tc)
+{
+	char input[] = "1";
+	CuAssertTrue(tc, !is_literal(input));
+}
+
 CuSuite* FirstScanGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
 	SUITE_ADD_TEST(suite, TestGetFirstToken);
 	SUITE_ADD_TEST(suite, TestGetNextToken);
+	SUITE_ADD_TEST(suite, TestIsRegister);
+	SUITE_ADD_TEST(suite, TestIsRegister2);
+	SUITE_ADD_TEST(suite, TestIsLiteral);
+	SUITE_ADD_TEST(suite, TestIsLiteral2);
 	return suite;
 }
