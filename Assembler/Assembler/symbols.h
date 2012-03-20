@@ -9,8 +9,9 @@ typedef struct symbol
 
 
 void add_symbol(char *name, int address);
-void add_entry_symbol(char *name, int address);
+void add_entries_symbol(char *name, int address);
 void add_external_symbol(char *name, int address);
+
 void dispose();
 
 Symbol *get_symbols_list();

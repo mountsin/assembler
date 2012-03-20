@@ -30,14 +30,25 @@ void add_symbol(char *name, int address)
 	symbols_list = tmp;
 }
 
-void add_external_symbol(char *name)
+void add_external_symbol(char *name, int address)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
 	tmp->name = name;
+	tmp->address = address;
 	tmp->next = external_symbols_list;
 	external_symbols_list = tmp;
 }
 
+void add_entries_symbol(char *name, int address)
+{
+	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
+	tmp->name = name;
+	tmp->address = address;
+	tmp->next = entries_symbols_list;
+	entries_symbols_list = tmp;
+}
+
+//TODO:
 Symbol *get_symbol_by_name(char *name)
 {
 	//TODO: implement
