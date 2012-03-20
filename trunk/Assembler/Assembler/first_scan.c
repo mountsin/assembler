@@ -106,17 +106,15 @@ void first_scan(char *filename)
 enum addressing_method get_addressing_for(char *operand)
 {
 	if(is_literal(operand))
-	{
 		return IMMEDIATE;
-	}
 	if(is_register(operand))
-	{
-
-	}
-	//TODO: implement
-
+		return REGISTER;
+	if(is_index(operand))
+		return INDEX;
+	if(is_double_index(operand))
+		return DOUBLE_INDEX;
+	return DIRECT;
 }
-
 
 void parse_and_load_data(AssemblyStatement *stmt, int *dc)
 {
@@ -146,6 +144,20 @@ Boolean is_register(char *str)
 Boolean is_literal(char *str)
 {
 	if(str[0] == '#')
+		return TRUE;
+	return FALSE;
+}
+
+Boolean is_index(char *str)
+{
+	if(strchr(str,'['))
+		return TRUE;
+	return FALSE;
+}
+
+Boolean is_double_index(char *str)
+{
+	if(str[0] == '[')
 		return TRUE;
 	return FALSE;
 }
