@@ -27,23 +27,24 @@ enum addressing_method get_addressing_for(char *source_operand);
 /* Commands_list - table(array) contains each assembly command and its rules */
 CommandStruct commands_list[] = 
 {
-	MOV,		"mov", "0000", 3 , {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	CMP,		"cmp", "0001", 3 , {0,1,2,3,4}, {0,1,2,3,4},
-	ADD,		"add", "0010", 3 , {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	SUB,		"sub", "0011", 3 , {0,1,2,3,4}, {1,2,3,4,EMPTY},
-	NOT,		"not", "0100", 2 , EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	CLR,		"clr", "0101", 2 , EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	LEA,		"lea", "0110", 3 , {1,2,3,EMPTY,EMPTY},{1,2,3,4,EMPTY},
-	INC,		"inc", "0111", 2 , EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	DEC,		"dec", "1000", 2 , EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	JMP,		"jmp", "1001", 2 , EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	BNE,		"bne", "1010", 2 , EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	RED,		"red", "1011", 2 , EMPTY_ARRAY, {1,2,3,4,EMPTY},
-	PRN,		"prn", "1100", 2 , EMPTY_ARRAY, {0,1,2,3,4},
-	JSR,		"jsr", "1101", 2 , EMPTY_ARRAY, {1,EMPTY,EMPTY,EMPTY,EMPTY},
-	RTS,		"rts", "1110", 1 , EMPTY_ARRAY, EMPTY_ARRAY,
-	STOP,		"stop","1111", 1 , EMPTY_ARRAY, EMPTY_ARRAY,
-	UNKNOWN_CMD,""	  ,""	 , 0 , EMPTY_ARRAY, EMPTY_ARRAY
+/*	cmd_type	name	binary_code	number_of_words	source_addressing_options	dest_addressing_options */
+	MOV,		"mov", "0000",		3 ,				{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	CMP,		"cmp", "0001",		3 ,				{0,1,2,3,4},				 {0,1,2,3,4},
+	ADD,		"add", "0010",		3 ,				{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	SUB,		"sub", "0011",		3 ,				{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	NOT,		"not", "0100",		2 ,				EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	CLR,		"clr", "0101",		2 ,				EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	LEA,		"lea", "0110",		3 ,				{1,2,3,EMPTY				,EMPTY},{1,2,3,4,EMPTY},
+	INC,		"inc", "0111",		2 ,				EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	DEC,		"dec", "1000",		2 ,				EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	JMP,		"jmp", "1001",		2 ,				EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	BNE,		"bne", "1010",		2 ,				EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	RED,		"red", "1011",		2 ,				EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	PRN,		"prn", "1100",		2 ,				EMPTY_ARRAY,				 {0,1,2,3,4},
+	JSR,		"jsr", "1101",		2 ,				EMPTY_ARRAY,				 {1,EMPTY,EMPTY,EMPTY,EMPTY},
+	RTS,		"rts", "1110",		1 ,				EMPTY_ARRAY,				 EMPTY_ARRAY,
+	STOP,		"stop","1111",		1 ,				EMPTY_ARRAY,				 EMPTY_ARRAY,
+	UNKNOWN_CMD,""	  ,""	 ,		0 ,				EMPTY_ARRAY,				 EMPTY_ARRAY
 };
 
 int ic = 0;				/* Instructions counter */
@@ -54,10 +55,11 @@ void first_scan(char *filename)
 	FILE *fp;
 	char line[LINE_SIZE];
 	int dc = 0,				/* Data counter */
-		line_number = 0;	/* Input file's line counter for the errors report */
+		line_number = 0;	/* Line number in the assembly file for the errors report */
 	AssemblyStatement stmt; /* Each code line will be parsed and stored in this temporary struct */
-	CompilerNode compiler_node;
+	CompilerNode compiler_node; /* Each command will be saved to this struct and will be added to a list that will be the inpur for the second scan */
 	CommandStruct command_struct_from_validation_list;
+	int label_exist = 0;
 
 	fp = fopen(filename,"r");
 	if(fp)
@@ -66,13 +68,14 @@ void first_scan(char *filename)
 	{
 		line_number++;
 		read_line_and_build_statement_struct(line, &stmt);
+		label_exist = stmt.label != NULL; /* Check if label exists */
 		if(stmt.command == COMMENT)
 			continue;
 		if(stmt.command == UNKNOWN_CMD)
 			add_error(line_number, UNKNOWN_COMMAND);
 		if(stmt.command == DATA || stmt.command == STRING) /* Check if it's .data or .string instruction */
 		{
-			if(stmt.label)
+			if(label_exist) 
 				add_symbol(stmt.label, dc);
 			parse_and_load_data(&stmt, &dc);
 			continue;
@@ -84,7 +87,7 @@ void first_scan(char *filename)
 			continue;
 		}
 
-		if(stmt.label)
+		if(label_exist)
 			add_symbol(stmt.label,ic);
 
 		add_compiler_node(stmt.label,ic,stmt.command, get_addressing_for(stmt.source_operand), get_addressing_for(stmt.target_operand),stmt.source_operand,stmt.target_operand,line_number);
@@ -102,6 +105,14 @@ void first_scan(char *filename)
 
 enum addressing_method get_addressing_for(char *operand)
 {
+	if(is_literal(operand))
+	{
+		return IMMEDIATE;
+	}
+	if(is_register(operand))
+	{
+
+	}
 	//TODO: implement
 
 }
@@ -123,6 +134,20 @@ void parse_and_load_data(AssemblyStatement *stmt, int *dc)
 			*dc += strlen(stmt->target_operand)+1;
 			break;
 	}
+}
+
+Boolean is_register(char *str)
+{
+	if (str[0] == 'r' && (str[1] >= '0' && str[1] <= '7') && str[2] == '\0')
+		return TRUE;
+	return FALSE;
+}
+
+Boolean is_literal(char *str)
+{
+	if(str[0] == '#')
+		return TRUE;
+	return FALSE;
 }
 
 /* Accept assembly code line and populate an AssemblyStatement struct */

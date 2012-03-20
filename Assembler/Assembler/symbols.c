@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "symbols.h"
 
 Symbol *symbols_list = NULL;
@@ -7,22 +8,28 @@ Symbol *external_symbols_list = NULL;
 
 void add_symbol(char *name, int address)
 {
-	Symbol tmp;
-	tmp.name = name;
-	tmp.address = address;
-	tmp.next = symbols_list;
-	symbols_list = &tmp;
+	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
+	tmp->name = name;
+	tmp->address = address;
+	tmp->next = symbols_list;
+	symbols_list = tmp;
 }
 
 void add_external_symbol(char *name)
 {
-	Symbol tmp;
-	tmp.name = name;
-	tmp.next = external_symbols_list;
-	external_symbols_list = &tmp;
+	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
+	tmp->name = name;
+	tmp->next = external_symbols_list;
+	external_symbols_list = tmp;
 }
 
 Symbol *get_symbol_by_name(char *name)
 {
+	//TODO: implement
 	return NULL;
+}
+
+void dispose()
+{
+	//TODO: implement
 }
