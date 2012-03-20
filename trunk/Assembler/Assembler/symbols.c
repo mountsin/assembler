@@ -51,7 +51,7 @@ void add_entries_symbol(char *name, int address)
 //TODO:
 Symbol *get_symbol_by_name(char *name)
 {
-	//TODO: implement
+	//TODO: implement	
 	return NULL;
 }
 

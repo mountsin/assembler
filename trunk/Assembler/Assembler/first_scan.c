@@ -48,14 +48,14 @@ CommandStruct commands_list[] =
 };
 
 int ic = 0;				/* Instructions counter */
+int line_number = 0;	/* Line number in the assembly file for the errors report */
 
 /* Read the assembly file, line by line and process the statements */
 void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	int dc = 0,				/* Data counter */
-		line_number = 0;	/* Line number in the assembly file for the errors report */
+	int dc = 0;			/* Data counter */
 	AssemblyStatement stmt; /* Each code line will be parsed and stored in this temporary struct */
 	CompilerNode compiler_node; /* Each command will be saved to this struct and will be added to a list that will be the inpur for the second scan */
 	CommandStruct command_struct_from_validation_list;
@@ -68,11 +68,11 @@ void first_scan(char *filename)
 	{
 		line_number++;
 		read_line_and_build_statement_struct(line, &stmt);
-		label_exist = stmt.label != NULL; /* Check if label exists */
 		if(stmt.command == COMMENT)
 			continue;
 		if(stmt.command == UNKNOWN_CMD)
 			add_error(line_number, UNKNOWN_COMMAND);
+		label_exist = stmt.label != NULL; /* Check if label exists */
 		if(stmt.command == DATA || stmt.command == STRING) /* Check if it's .data or .string instruction */
 		{
 			if(label_exist) 
@@ -83,14 +83,15 @@ void first_scan(char *filename)
 
 		if(stmt.command == EXTERN) /* Check if it's .extern instruction */
 		{
-			add_external_symbol(stmt.target_operand,0); 
+			add_external_symbol(stmt.target_operand,ic); 
 			continue;
 		}
 
 		if(label_exist)
 			add_symbol(stmt.label,ic);
 
-		add_compiler_node(stmt.label,ic,stmt.command, get_addressing_for(stmt.source_operand), get_addressing_for(stmt.target_operand),stmt.source_operand,stmt.target_operand,line_number);
+		add_compiler_node(stmt.label,ic,stmt.command, get_addressing_for(stmt.source_operand), 
+							get_addressing_for(stmt.target_operand),stmt.source_operand,stmt.target_operand, line_number);
 
 		command_struct_from_validation_list = commands_list[stmt.command];
 		ic += command_struct_from_validation_list.number_of_words;
@@ -184,7 +185,7 @@ void read_line_and_build_statement_struct(char *line, AssemblyStatement *stmt)
 		stmt->command = parse_command(token);
 		if(stmt->command == UNKNOWN_CMD)
 		{
-			//TODO: Add error with line number
+			add_error(line_number,UNKNOWN_COMMAND);
 		}
 		stmt->source_operand = get_next_token();
 		stmt->target_operand = get_next_token();
@@ -205,6 +206,9 @@ void validate_label(char *token, AssemblyStatement *stmt)
 		strncpy(stmt->label, token, length_without_colon);			
 		token = get_next_token();
 	}
+	if(stmt->label[0] < 'a' || stmt->label[0] > 'Z')
+		add_error(line_number, INVALID_LABEL);
+	
 }
 
 enum cmd parse_command(char *command_name)
