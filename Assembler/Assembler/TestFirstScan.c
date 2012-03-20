@@ -44,6 +44,18 @@ void TestIsLiteral2(CuTest *tc)
 	CuAssertTrue(tc, !is_literal(input));
 }
 
+void TestIsIndex(CuTest *tc)
+{
+	char input[] = "y[%j]";
+	CuAssertTrue(tc,is_index(input));
+}
+
+void TestIsDoubleIndex(CuTest *tc)
+{
+	char input[] = "[j]y[r5]";
+	CuAssertTrue(tc,is_double_index(input));
+}
+
 CuSuite* FirstScanGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -53,5 +65,7 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite, TestIsRegister2);
 	SUITE_ADD_TEST(suite, TestIsLiteral);
 	SUITE_ADD_TEST(suite, TestIsLiteral2);
+	SUITE_ADD_TEST(suite, TestIsIndex);
+	SUITE_ADD_TEST(suite, TestIsDoubleIndex);
 	return suite;
 }
