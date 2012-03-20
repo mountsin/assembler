@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+
 #include "global_functions.h"
 
 void dec2bin(long decimal, char *binary,int binLength);

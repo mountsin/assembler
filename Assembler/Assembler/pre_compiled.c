@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "pre_compiled.h"
 
 /* Functions prototypes */
@@ -13,18 +14,18 @@ void add_compiler_node(char *label, int adress, enum cmd cmd_type,
 						char *target_operand,
 						int line_number)
 {
-	CompilerNode tmp;
-	tmp.label = label;
-	tmp.address = adress;
-	tmp.cmd_type = cmd_type;
-	tmp.sourceAddressing = source_addressing;
-	tmp.targetAddressing = target_addressing;
-	tmp.source_operand = source_operand;
-	tmp.target_operand = target_operand;
-	tmp.line_number = line_number;
-	set_binary_machine_code_to(&tmp);
-	tmp.next = compiler_nodes_list;
-	compiler_nodes_list = &tmp;
+	CompilerNode *tmp = (CompilerNode *)malloc(sizeof(CompilerNode));
+	tmp->label = label;
+	tmp->address = adress;
+	tmp->cmd_type = cmd_type;
+	tmp->sourceAddressing = source_addressing;
+	tmp->targetAddressing = target_addressing;
+	tmp->source_operand = source_operand;
+	tmp->target_operand = target_operand;
+	tmp->line_number = line_number;
+	set_binary_machine_code_to(tmp);
+	tmp->next = compiler_nodes_list;
+	compiler_nodes_list = tmp;
 
 }
 

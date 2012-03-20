@@ -5,13 +5,18 @@
 #include "compile_and_write_output.h"
 #include "symbols.h"
 #include "error.h"
-#include "pre_compiled.h"
+#include <stdlib.h>
+//#include "pre_compiled.h"
 
 
 #define ONEBYTE_BITSNUM		8
 #define TWOBYTES_BITSNUM	16
 #define BYTE_MAX_NUM		255
 #define HALFBYTE_MAX_NUM	15
+
+#define MAX_BINARY_STR 32
+#define MAX_LINKER_STR 32
+
 
 #define ABS_STRING		"a"
 #define REL_STRING		"r"
@@ -38,13 +43,17 @@
 #define CLOSE_FILE_ERR__MSG			"Error occurred while trying to finalize file"
 
 
-#define OBHEADER_ADDRESS		"Base 2 adress"
-#define OBHEADER_MACHINE_CODE	"Base 2 Machine code"
-#define OBHEADER_LINKER_FLAG	"linker flag (a/r/e)"
-#define OBJECT_ROW_FORMAT		"%24s%24s%20s\n"
+#define HEADER_ADDRESS		"Base 2 adress"
+#define HEADER_MACHINE_CODE	"Base 2 Machine code"
+#define HEADER_LINKER_FLAG	"linker flag (a/r/e)"
+#define HEADER_LABEL		"label"
+
+#define OBJECT_ROW_FORMAT		"%30s%30s%25s\n"
+#define EXT_ENT_ROW_FORMAT		"%32s \t %32s\n"
+
 
 void print_errors_report(Error *errors_collector);
-int create_file_ob(char *filename, CompilerNode *cn_list);
+//int create_file_ob(char *filename, CompilerNode *cn_list);
 int create_file_ent(char *filename, CompilerNode *cn_list);
 int create_file_ext(char *filename, CompilerNode *cn_list);
 void get_linker_flag_str(enum linker_enum linker, char *result_string);
@@ -103,38 +112,44 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 
 	char *code_length_in_binary;
 	char *data_length_in_binary;
-	char *address_binary_string;
-	char *linker_flag_string;
-	
+	char address_binary_string[MAX_BINARY_STR];
+	char linker_flag_string[MAX_LINKER_STR];
+
+	//	char *address_binary_string = (char *)calloc(MAX_BINARY_STR + 1, sizeof(char)); /*allocate memory for address_binary_string */
+	//char *linker_flag_string =		(char *)calloc(MAX_LINKER_STR + 1, sizeof(char)); /*allocate memory for address_binary_string */
 	FILE *fp;
 
 
-	char *filefullname = filename;
-	filefullname = strcat(filefullname, OBJECT_FILE_EXT);	
+	char *filefullname =  (char *)calloc(strlen(filename) + 1, sizeof(char)); /*allocate memory for filename */
+	strcpy(filefullname,filename);
+	
+	filefullname = strcat(filefullname, OBJECT_FILE_EXT);	 /*add extention to filename */
 	filefullname[strlen(filefullname)] = '\0';
-
-	fp = fopen(filename, "w");
+		
+	fp = fopen(filefullname, "w");
 	if(!fp)
 		return CREATE_FILE_ERR; /* error occured while trying to creat new file*/
 
 
 	/* write 1th row - columns headers*/
-	fprintf(fp, OBJECT_ROW_FORMAT, OBHEADER_ADDRESS, OBHEADER_MACHINE_CODE, OBHEADER_LINKER_FLAG);
+	fprintf(fp, OBJECT_ROW_FORMAT, HEADER_ADDRESS, HEADER_MACHINE_CODE, HEADER_LINKER_FLAG);
 	
 	IC = get_instruction_counter();
-	DC =  get_data_counter();
+	DC = get_data_counter();
 
 
 	how_many_bits_to_use = (IC <= BYTE_MAX_NUM) ? ONEBYTE_BITSNUM : TWOBYTES_BITSNUM;	/*how many chars will the string need*/
+	code_length_in_binary = (char *)calloc(how_many_bits_to_use + 1, sizeof(char));
 	dec2bin(IC, code_length_in_binary, how_many_bits_to_use);							/*translate decimal to binary string*/
 
 	how_many_bits_to_use = (DC <= HALFBYTE_MAX_NUM) ?  (ONEBYTE_BITSNUM/2) : ONEBYTE_BITSNUM;	/*how many chars will the string need*/
+	data_length_in_binary = (char *)calloc(how_many_bits_to_use + 1, sizeof(char));
 	dec2bin(DC, data_length_in_binary, how_many_bits_to_use);									/*translate decimal to binary string*/
 	
 	/* write 2th row - data and instructions size in binary */
-	fprintf(fp, "%24s%s %s\n", "", code_length_in_binary, data_length_in_binary);
+	fprintf(fp, "%45s%s %s\n", "", code_length_in_binary, data_length_in_binary);
 	
-	while(cn_list)
+	while(cn_list != NULL)
 	{
 		how_many_bits_to_use = (cn_list->address <= BYTE_MAX_NUM) ? ONEBYTE_BITSNUM : TWOBYTES_BITSNUM; /*set how many chars will the string need*/
 		dec2bin(cn_list->address, address_binary_string, how_many_bits_to_use);							/*translate decimal address to binary string*/
@@ -142,7 +157,9 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 		get_linker_flag_str(cn_list->linker_flag, linker_flag_string);	/* get */
 
 		fprintf(fp, OBJECT_ROW_FORMAT, address_binary_string, cn_list->binary_machine_code, linker_flag_string);
-		cn_list = cn_list->next;
+		cn_list = cn_list->next;  /* point to next node*/
+
+		//TODO: free cn_list current node;
 	}
 
 	if(fclose(fp) != OK)
@@ -156,9 +173,13 @@ int create_file_ent(char *filename, Symbol *entries_symbols_list)
 {
 	FILE *fp;
 
-	char *filefullname = filename;
-	filefullname = strcat(filefullname, ENTRIES_FILE_EXT);	
+	//TODO: dispose
+	char *filefullname =  (char *)calloc(strlen(filename) + 1, sizeof(char)); /*allocate memory for filefullname */
+	strcpy(filefullname,filename);
+	
+	filefullname = strcat(filefullname, ENTRIES_FILE_EXT);	 /*add extention to filename */
 	filefullname[strlen(filefullname)] = '\0';
+
 
 	fp = fopen(filefullname, "w");
 	if(!fp)
@@ -166,7 +187,11 @@ int create_file_ent(char *filename, Symbol *entries_symbols_list)
 	
 	while(entries_symbols_list)
 	{
-		entries_symbols_list = entries_symbols_list->next;
+		fprintf(fp, EXT_ENT_ROW_FORMAT, entries_symbols_list->name, entries_symbols_list->address);
+		
+		entries_symbols_list = entries_symbols_list->next; /* point to next node*/
+
+		//TODO: free entries_symbols_list current node;
 	}
 }
 
@@ -193,13 +218,29 @@ void get_linker_flag_str(enum linker_enum linker, char *result_string)
 	switch(linker)
 	{
 		case ABSOLUTE:
-				{result_string = ABS_STRING; break;}
+				{
+					strcpy(result_string,ABS_STRING);
+					result_string[strlen(ABS_STRING)] = '\0'; /*set string end to null*/
+					break;
+				}
 		case RELOCATABLE:
-				{result_string = REL_STRING; break;}
+				{
+					strcpy(result_string,REL_STRING);
+					result_string[strlen(REL_STRING)] = '\0'; /*set string end to null*/
+					break;
+				}
 		case EXTERNAL:
-				{result_string = EXT_STRING; break;}
-		case NONE:
-				{result_string = EMPTY_STRING; break;}
+				{
+					strcpy(result_string,EXT_STRING);
+					result_string[strlen(EXT_STRING)] = '\0'; /*set string end to null*/
+					break;
+				}
+		default:
+				{
+					strcpy(result_string,EMPTY_STRING);
+					result_string[strlen(EMPTY_STRING)] = '\0'; /*set string end to null*/
+					break;
+				}
 	}
 }
 
