@@ -3,7 +3,7 @@
 #include "data_structs.h"
 #include "global_functions.h"
 #include "compile_and_write_output.h"
-#include "symbols.h"
+//#include "symbols.h"
 #include "error.h"
 #include <stdlib.h>
 //#include "pre_compiled.h"
@@ -14,8 +14,8 @@
 #define BYTE_MAX_NUM		255
 #define HALFBYTE_MAX_NUM	15
 
-#define MAX_BINARY_STR 32
-#define MAX_LINKER_STR 32
+#define MAX_BINARY_STR 33
+#define MAX_LINKER_STR 33
 
 
 #define ABS_STRING		"a"
@@ -171,6 +171,9 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 
 int create_file_ent(char *filename, Symbol *entries_symbols_list)
 {
+	int how_many_bits_to_use;
+	char address_binary_string[MAX_BINARY_STR];
+
 	FILE *fp;
 
 	//TODO: dispose
@@ -183,34 +186,61 @@ int create_file_ent(char *filename, Symbol *entries_symbols_list)
 
 	fp = fopen(filefullname, "w");
 	if(!fp)
-		return -1; /* error occured while trying to creat new file*/
+		return CREATE_FILE_ERR; /* error occured while trying to creat new file*/
 	
-	while(entries_symbols_list)
-	{
-		fprintf(fp, EXT_ENT_ROW_FORMAT, entries_symbols_list->name, entries_symbols_list->address);
+	while(entries_symbols_list != NULL)
+	{	
+		how_many_bits_to_use = (entries_symbols_list->address <= BYTE_MAX_NUM) ? ONEBYTE_BITSNUM : TWOBYTES_BITSNUM; /*set how many chars will the string need*/
+		dec2bin(entries_symbols_list->address, address_binary_string, how_many_bits_to_use);							/*translate decimal address to binary string*/
+
+		fprintf(fp, EXT_ENT_ROW_FORMAT, entries_symbols_list->name, address_binary_string);
 		
 		entries_symbols_list = entries_symbols_list->next; /* point to next node*/
 
 		//TODO: free entries_symbols_list current node;
 	}
+
+	if(fclose(fp) != OK)
+			return	CLOSE_FILE_ERR; //Error occured while trying to close the file Stream
+	else
+			return OK; /* everthing is OK*/ 
 }
 
 int create_file_ext(char *filename, Symbol *external_symbols_list)
 {
+	int how_many_bits_to_use;
+	char address_binary_string[MAX_BINARY_STR];
+
 	FILE *fp;
 
-	char *filefullname = filename;
-	filefullname = strcat(filefullname, EXTERNAL_FILE_EXT);	
+	//TODO: dispose
+	char *filefullname =  (char *)calloc(strlen(filename) + 1, sizeof(char)); /*allocate memory for filefullname */
+	strcpy(filefullname,filename);
+	
+	filefullname = strcat(filefullname, EXTERNAL_FILE_EXT);	 /*add extention to filename */
 	filefullname[strlen(filefullname)] = '\0';
+
 
 	fp = fopen(filefullname, "w");
 	if(!fp)
-		return -1; /* error occured while trying to creat new file*/
+		return CREATE_FILE_ERR; /* error occured while trying to creat new file*/
 	
-	while(external_symbols_list)
-	{
-		external_symbols_list = external_symbols_list->next;
+	while(external_symbols_list != NULL)
+	{	
+		how_many_bits_to_use = (external_symbols_list->address <= BYTE_MAX_NUM) ? ONEBYTE_BITSNUM : TWOBYTES_BITSNUM; /*set how many chars will the string need*/
+		dec2bin(external_symbols_list->address, address_binary_string, how_many_bits_to_use);							/*translate decimal address to binary string*/
+
+		fprintf(fp, EXT_ENT_ROW_FORMAT, external_symbols_list->name, address_binary_string);
+		
+		external_symbols_list = external_symbols_list->next; /* point to next node*/
+
+		//TODO: free entries_symbols_list current node;
 	}
+
+	if(fclose(fp) != OK)
+			return	CLOSE_FILE_ERR; //Error occured while trying to close the file Stream
+	else
+			return OK; /* everthing is OK*/ 
 }
 
 void get_linker_flag_str(enum linker_enum linker, char *result_string)
