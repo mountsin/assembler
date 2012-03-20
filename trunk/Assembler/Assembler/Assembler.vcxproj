@@ -70,6 +70,7 @@
     <ClInclude Include="pre_compiled.h" />
     <ClInclude Include="second_scan.h" />
     <ClInclude Include="symbols.h" />
+    <ClInclude Include="Test_compile_and_output.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AllTests.c" />
@@ -84,6 +85,7 @@
     <ClCompile Include="symbols.c" />
     <ClCompile Include="TestFirstScan.c" />
     <ClCompile Include="TestSecondScan.c" />
+    <ClCompile Include="Test_compile_and_output.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="pa.as" />

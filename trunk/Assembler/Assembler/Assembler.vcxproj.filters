@@ -45,6 +45,9 @@
     <ClInclude Include="pre_compiled.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Test_compile_and_output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestSecondScan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Test_compile_and_output.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

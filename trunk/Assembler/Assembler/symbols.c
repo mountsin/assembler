@@ -6,6 +6,21 @@ Symbol *symbols_list = NULL;
 Symbol *entries_symbols_list = NULL;
 Symbol *external_symbols_list = NULL;
 
+Symbol *get_symbols_list()
+{
+	return symbols_list;
+}
+
+Symbol *get_entries_symbols_list()
+{
+	return entries_symbols_list;
+}
+
+Symbol *get_external_symbols_list()
+{
+	return external_symbols_list;
+}
+
 void add_symbol(char *name, int address)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
