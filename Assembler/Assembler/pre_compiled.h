@@ -23,12 +23,7 @@ CompilerNode;
 
 
 
-void add_compiler_node(char *label, int adress, enum cmd cmd_type, 
-						enum addressing_method source_addressing,
-						enum addressing_method target_addressing,
-						char *source_operand,
-						char *target_operand,
-						int line_number);
+void add_compiler_node(CompilerNode *stmt);
 
 int get_instruction_counter();
 int get_data_counter();

@@ -5,27 +5,28 @@
 void set_binary_machine_code_to(CompilerNode *compiler_node);
 
 /* Head of compiler nodes list */
-CompilerNode *compiler_nodes_list = NULL;
+CompilerNode *compiler_nodes_list_head = NULL;
+/* Head of compiler nodes list */
+CompilerNode *compiler_nodes_list_tail = NULL;
 
-void add_compiler_node(char *label, int adress, enum cmd cmd_type, 
-						enum addressing_method source_addressing,
-						enum addressing_method target_addressing,
-						char *source_operand,
-						char *target_operand,
-						int line_number)
+/* Add a new struct to the end of the list */
+void add_compiler_node(CompilerNode *stmt)
 {
 	CompilerNode *tmp = (CompilerNode *)malloc(sizeof(CompilerNode));
-	tmp->label = label;
-	tmp->address = adress;
-	tmp->cmd_type = cmd_type;
-	tmp->sourceAddressing = source_addressing;
-	tmp->targetAddressing = target_addressing;
-	tmp->source_operand = source_operand;
-	tmp->target_operand = target_operand;
-	tmp->line_number = line_number;
+	tmp->label = stmt->label;
+	tmp->address = stmt->address;
+	tmp->cmd_type = stmt->cmd_type;
+	tmp->sourceAddressing = stmt->sourceAddressing;
+	tmp->targetAddressing = stmt->targetAddressing;
+	tmp->source_operand = stmt->source_operand;
+	tmp->target_operand = stmt->target_operand;
+	tmp->line_number = stmt->line_number;
 	set_binary_machine_code_to(tmp);
-	tmp->next = compiler_nodes_list;
-	compiler_nodes_list = tmp;
+	if(compiler_nodes_list_tail)
+		compiler_nodes_list_tail->next = tmp;
+	compiler_nodes_list_tail = tmp;
+	if(!compiler_nodes_list_head)
+		compiler_nodes_list_head = compiler_nodes_list_tail;
 
 }
 
@@ -34,8 +35,8 @@ void set_binary_machine_code_to(CompilerNode *compiler_node)
 	//TODO: implement
 }
 
-CompilerNode *get_compiler_nodes_list()
+CompilerNode *get_compiler_nodes_list_head()
 {
-	return compiler_nodes_list;
+	return compiler_nodes_list_head;
 }
 
