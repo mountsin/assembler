@@ -38,14 +38,14 @@ enum cmd
 };
 
 /* addressing_method - addresing method (0-4) */
-enum addressing_method
+typedef enum addressing_method
 {	
 	IMMEDIATE,
 	DIRECT,
 	INDEX,
 	DOUBLE_INDEX,
 	REGISTER
-};
+} AddressingMethod;
 
 /* linker info enum */
 enum linker_enum
@@ -82,27 +82,11 @@ typedef struct
 	enum cmd cmd_type;
 	char *name;
 	char *binary_code;
-	char number_of_words;
 	int source_addressing_options[5]; /* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 	int dest_addressing_options[5];	  /* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 } CommandStruct;
 
-//=========== Complex Elements ==================================
-//AssemblyStatement - represent an assembly command
-typedef struct
-{
-	char label[20];					//string or null
-	enum cmd command;				//cmd enum
-	enum status (*covert2MachineCode)(char *, enum cmd ,CmdParam,CmdParam);	//HERE IS WHEN YOU PUT YOU FUNCTION
-	char *source_operand;			//first parameter (nullable)
-	char *target_operand;			//second parameter (nullable)
-} 
-AssemblyStatement;
-
 //===================  Tables & Collectors ==========================
-
-
-
 
 //Table (linked list of structs) of all assembly Labels
 typedef struct labelNode

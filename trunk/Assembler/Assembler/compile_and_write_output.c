@@ -60,7 +60,7 @@ void get_linker_flag_str(enum linker_enum linker, char *result_string);
 
 void compile_and_write_output(char *filename)
 {
-	CompilerNode *h = get_compiler_nodes_list();
+	CompilerNode *h = get_compiler_nodes_list_head();
 	Error *errors_collector = get_errors_list();
 	
 	//TODO: functions 2 get ext_symbols, ent_symbols

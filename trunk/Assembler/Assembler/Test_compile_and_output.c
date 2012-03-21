@@ -12,7 +12,7 @@ void Test_create_file_ob(CuTest *tc)
 	
 	/*set cn_list*/
 	add_compiler_node(label,500,MOV,IMMEDIATE,IMMEDIATE,NULL,NULL,4);
-	cn_list = get_compiler_nodes_list();
+	cn_list = get_compiler_nodes_list_head();
 	cn_list->linker_flag = ABSOLUTE;
 	cn_list->binary_machine_code = "1011111010111110";
 	
