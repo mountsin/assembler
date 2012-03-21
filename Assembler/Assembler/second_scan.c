@@ -18,17 +18,11 @@ void second_scan(CompilerNode *compiler_node_header)
 	int label_address, machine_code_integer;
 
 	CompilerNode *h = compiler_node_header;
-	//Error *error_collector = get_errors_list();
 
 	enum boolean is_external;
 	Symbol *current_symbol;
 
 
-	/*
-	Symbol *get_symbols_list();
-Symbol *get_entries_symbols_list();
-Symbol *get_external_symbols_list();
-*/
 
 	while(h != NULL) 
 	{
@@ -73,7 +67,7 @@ Symbol *get_external_symbols_list();
 			/* 3 - set linker flag */
 			if (h->linker_flag == NONE)  /*linker flag has not been set - can be external or relocatable*/
 			{
-				if (is_external == TRUE)//current_symbol->type == EXTERNAL)
+				if (is_external == TRUE)
 					h->linker_flag = EXTERNAL;
 				else
 					h->linker_flag = RELOCATABLE;
