@@ -39,11 +39,3 @@ CompilerNode *get_compiler_nodes_list()
 	return compiler_nodes_list;
 }
 
-int get_instruction_counter()
-{
-	return 8;
-}
-int get_data_counter()
-{
-	return 8;
-}

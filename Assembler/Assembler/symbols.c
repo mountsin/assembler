@@ -6,6 +6,9 @@ Symbol *symbols_list = NULL;
 Symbol *entries_symbols_list = NULL;
 Symbol *external_symbols_list = NULL;
 
+
+//TODO: reverse symbols lists (like in pre - compiled nodes)
+
 Symbol *get_symbols_list()
 {
 	return symbols_list;
@@ -49,7 +52,13 @@ void add_entries_symbol(char *name, int address)
 }
 
 //TODO:
-Symbol *get_symbol_by_name(char *name)
+Symbol *get_data_symbol_by_name(char *name)
+{
+	//TODO: implement	
+	return NULL;
+}
+
+Symbol *get_external_symbol_by_name(char *symbole_name)
 {
 	//TODO: implement	
 	return NULL;
