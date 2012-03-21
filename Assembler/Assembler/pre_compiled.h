@@ -12,6 +12,8 @@ typedef struct compiler_node
 	enum cmd cmd_type;							/* type of command */
 	enum addressing_method sourceAddressing;
 	enum addressing_method targetAddressing;
+	int source_register;
+	int target_register;
 	char *source_operand;						/* first parameter (nullable) */
 	char *target_operand;						/* second parameter (nullable) */
 	char *binary_machine_code;					/* "101010110" "STR" "&L STR" */

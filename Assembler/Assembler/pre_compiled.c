@@ -22,6 +22,7 @@ void add_compiler_node(CompilerNode *stmt)
 	tmp->target_operand = stmt->target_operand;
 	tmp->line_number = stmt->line_number;
 	set_binary_machine_code_to(tmp);
+	tmp->next = NULL;
 	if(compiler_nodes_list_tail)
 		compiler_nodes_list_tail->next = tmp;
 	compiler_nodes_list_tail = tmp;
