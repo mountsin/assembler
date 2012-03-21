@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "pre_compiled.h"
 
+#define MACHINE_CODE_WORD_BITLENGTH 16
+
 /* Functions prototypes */
 void set_binary_machine_code_to(CompilerNode *compiler_node);
 
@@ -21,7 +23,7 @@ void add_compiler_node(CompilerNode *stmt)
 	tmp->source_operand = stmt->source_operand;
 	tmp->target_operand = stmt->target_operand;
 	tmp->line_number = stmt->line_number;
-	set_binary_machine_code_to(tmp);
+	tmp->binary_machine_code = (char *)calloc(MACHINE_CODE_WORD_BITLENGTH + 1, sizeof(char));
 	tmp->next = NULL;
 	if(compiler_nodes_list_tail)
 		compiler_nodes_list_tail->next = tmp;
@@ -29,11 +31,6 @@ void add_compiler_node(CompilerNode *stmt)
 	if(!compiler_nodes_list_head)
 		compiler_nodes_list_head = compiler_nodes_list_tail;
 
-}
-
-void set_binary_machine_code_to(CompilerNode *compiler_node)
-{
-	//TODO: implement
 }
 
 CompilerNode *get_compiler_nodes_list_head()
