@@ -48,6 +48,7 @@ CommandStruct commands_list[] =
 };
 
 int ic = 0;				/* Instructions counter */
+int dc = 0;			/* Data counter */
 int line_number = 0;	/* Line number in the assembly file for the errors report */
 
 /* Read the assembly file, line by line and process the statements */
@@ -55,7 +56,6 @@ void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	int dc = 0;			/* Data counter */
 	AssemblyStatement stmt; /* Each code line will be parsed and stored in this temporary struct */
 	CompilerNode compiler_node; /* Each command will be saved to this struct and will be added to a list that will be the inpur for the second scan */
 	CommandStruct command_struct_from_validation_list;
@@ -241,7 +241,11 @@ void debug_output(char *what)
 	puts(what);
 }
 
-int get_end_of_code_address()
+int get_IC()
 {
 	return ic;
+}
+int get_DC()
+{
+	return dc;
 }

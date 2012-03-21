@@ -5,7 +5,9 @@
 void TestGetFirstToken(CuTest *tc)
 {
 	char input[] = "		.entry		STRADD";
-	char *actual = get_first_token(input);
+
+
+	char *actual = second_scan(CompilerNode *compiler_node_header, Symbol *symbols_list_header)
 	char *expected =  ".entry";
 	CuAssertStrEquals(tc, expected, actual);
 }

@@ -2,6 +2,8 @@
 #include <string.h>
 
 #include "global_functions.h"
+#include "first_scan.h"
+#include "data_structs.h"
 
 void dec2bin(long decimal, char *binary,int binLength);
 void convert_negative_binary_2complement(char *binary);
@@ -79,4 +81,27 @@ void convert_negative_binary_2complement(char *binary)
 	}
 	
 	binary[0] = '1'; /*mark number as negative*/
+}
+
+/* check if string is a binary string containing only 0 or 1*/
+enum boolean is_binary_Str(char *str)
+{
+	int i;
+	
+	for(i = 0; str[i]; i++)
+		if ( (str[i] != '0') && (str[i] != '1') ) /* not a binary string*/
+			return FALSE;
+
+	return TRUE;
+}
+
+
+int get_instruction_counter()
+{
+	return get_IC();
+}
+
+int get_data_counter()
+{
+	return get_DC();
 }
