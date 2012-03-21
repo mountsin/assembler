@@ -17,7 +17,7 @@ typedef struct compiler_node
 	char *source_operand;						/* first parameter (nullable) */
 	char *target_operand;						/* second parameter (nullable) */
 	char *binary_machine_code;					/* "101010110" "STR" "&L STR" */
-	int is_second_scan_needed;					/* is second scan processing needed */
+	enum boolean is_second_scan_needed;					/* is second scan processing needed */
 	enum linker_enum linker_flag;
 	int line_number;
 }	
@@ -29,6 +29,6 @@ void add_compiler_node(CompilerNode *stmt);
 
 int get_instruction_counter();
 int get_data_counter();
-CompilerNode *get_compiler_nodes_list();
+CompilerNode *get_compiler_nodes_list_head();
 
 

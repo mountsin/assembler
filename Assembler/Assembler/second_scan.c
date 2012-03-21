@@ -26,7 +26,7 @@ void second_scan(CompilerNode *compiler_node_header)
 
 	while(h != NULL) 
 	{
-		if(h->is_second_scan_needed) /* second scan required*/
+		if(h->is_second_scan_needed ==TRUE) /* second scan required*/
 		{
 			/* 1 - find the correct label if exist */
 			current_symbol = get_data_symbol_by_name(h->binary_machine_code); /* try to get data symbol by binary_machine_code temporary string*/

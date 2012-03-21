@@ -9,12 +9,31 @@ void Test_create_file_ob(CuTest *tc)
 	char *filename = "testerObj";
 	char *label = "MAIN";
 	CompilerNode *cn_list;
+	CompilerNode *stmt = (CompilerNode *)malloc(sizeof(CompilerNode));
 	
+	stmt->address = 122;
+	stmt->binary_machine_code = "1011111010111110";
+	stmt->cmd_type = MOV;
+	stmt->is_second_scan_needed = FALSE;
+	stmt->label = "LABEL1";
+	stmt->line_number = 111;
+	stmt->linker_flag = ABSOLUTE;
+	stmt->sourceAddressing = DIRECT;
+	stmt->source_operand = "#3";
+	stmt->targetAddressing = DIRECT;
+	stmt->target_operand = "var1"; 
+
+
+
 	/*set cn_list*/
-	add_compiler_node(label,500,MOV,IMMEDIATE,IMMEDIATE,NULL,NULL,4);
+	add_compiler_node(stmt);
 	cn_list = get_compiler_nodes_list_head();
+	
 	cn_list->linker_flag = ABSOLUTE;
-	cn_list->binary_machine_code = "1011111010111110";
+	cn_list->sourceAddressing = DIRECT;
+	cn_list->source_operand = "#3";
+	cn_list->targetAddressing = DIRECT;
+	cn_list->target_operand = "var1"; 
 	
 	create_file_ob(filename, cn_list);
 }
