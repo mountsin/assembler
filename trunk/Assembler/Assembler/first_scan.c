@@ -92,6 +92,15 @@ void first_scan(char *filename)
 
 		stmt.sourceAddressing = get_addressing_for(stmt.source_operand);
 		stmt.targetAddressing = get_addressing_for(stmt.target_operand);
+		stmt.source_register = stmt.sourceAddressing == REGISTER? atoi(&(stmt.source_operand[1])):0;
+		stmt.target_register = stmt.targetAddressing == REGISTER? atoi(&(stmt.target_operand[1])):0;
+		switch(stmt.sourceAddressing)
+		{
+			case IMMEDIATE:
+				//TODO: add literal value compiler node
+				break;
+		}
+		
 		stmt.line_number = line_number;
 
 		add_compiler_node(&stmt);
