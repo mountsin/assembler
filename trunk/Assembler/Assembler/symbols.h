@@ -8,11 +8,11 @@ typedef struct symbol
 } Symbol;
 
 
-void add_symbol(char *name, int address);
-void add_entries_symbol(char *name, int address);
-void add_external_symbol(char *name, int address);
+int add_data_symbol(char *name, int address);
+int add_entries_symbol(char *name, int address);
+int add_external_symbol(char *name, int address);
 
-void dispose();
+int dispose();
 
 Symbol *get_symbols_list();
 Symbol *get_entries_symbols_list();

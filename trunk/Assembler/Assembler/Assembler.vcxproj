@@ -66,6 +66,7 @@
     <ClInclude Include="data_structs.h" />
     <ClInclude Include="error.h" />
     <ClInclude Include="first_scan.h" />
+    <ClInclude Include="global_constants.h" />
     <ClInclude Include="global_functions.h" />
     <ClInclude Include="pre_compiled.h" />
     <ClInclude Include="second_scan.h" />

@@ -35,6 +35,7 @@
 #define TOO_MUCH_PARAMETERS			"Number of parameters exceeding assembly command rules"
 #define PARAMETERS_MISSING			"Number of parameters is not enough for assembly command rules"
 #define LABEL_UNDEFINED				"Trying to use a label which not defined in the file"
+#define ILLEGAL_DATA_ADDRESS		"Trying to read data from illegal location"
 #define UNKNOWN_ERROR_MESSAGE		"Unknown error occurred"
 
 /*file stream error messages*/
