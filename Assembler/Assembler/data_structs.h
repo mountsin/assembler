@@ -81,7 +81,6 @@ typedef struct
 {
 	enum cmd cmd_type;
 	char *name;
-	char *binary_code;
 	int source_addressing_options[5]; /* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 	int dest_addressing_options[5];	  /* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 } CommandStruct;
