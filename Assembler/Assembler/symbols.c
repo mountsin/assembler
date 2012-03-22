@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symbols.h"
+#include "global_constants.h"
 
 Symbol *symbols_list = NULL;
 Symbol *entries_symbols_list = NULL;
@@ -9,6 +10,7 @@ Symbol *external_symbols_list = NULL;
 
 
 //TODO: reverse symbols lists (like in pre - compiled nodes)
+//TODO: when adding a symbol, check that is not exist on the other list
 
 Symbol *get_symbols_list()
 {
@@ -25,31 +27,51 @@ Symbol *get_external_symbols_list()
 	return external_symbols_list;
 }
 
-void add_symbol(char *name, int address)
+int add_data_symbol(char *name, int address)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
 	tmp->name = name;
 	tmp->address = address;
 	tmp->next = symbols_list;
+	
+	if(get_data_symbol_by_name(name) != NULL) /*symbols already exist in the list*/
+		return ERROR;
+
+	if(get_external_symbol_by_name(name) != NULL) /*symbols already exist in a different list*/
+		return ERROR;
+
 	symbols_list = tmp;
+
+	return OK;
 }
 
-void add_external_symbol(char *name, int address)
+int add_external_symbol(char *name, int address)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
 	tmp->name = name;
 	tmp->address = address;
 	tmp->next = external_symbols_list;
+	
+	if(get_external_symbol_by_name(name) != NULL) /*symbols already exist in the list*/
+		return ERROR;
+
+	if(get_data_symbol_by_name(name) != NULL) /*symbols already exist in a different list*/
+		return ERROR;
+
 	external_symbols_list = tmp;
+
+	return OK;
 }
 
-void add_entries_symbol(char *name, int address)
+int add_entries_symbol(char *name, int address)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
 	tmp->name = name;
 	tmp->address = address;
 	tmp->next = entries_symbols_list;
 	entries_symbols_list = tmp;
+
+	return OK;
 }
 
 
@@ -81,7 +103,7 @@ Symbol *get_external_symbol_by_name(char *name_to_find)
 	return NULL;
 }
 
-void dispose()
+int dispose()
 {
-	//TODO: implement
+	//TODO: implement - return value by "global_constants.h"
 }

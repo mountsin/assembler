@@ -76,7 +76,7 @@ void first_scan(char *filename)
 		if(stmt.cmd_type == DATA || stmt.cmd_type == STRING) /* Check if it's .data or .string instruction */
 		{
 			if(label_exist) 
-				add_symbol(stmt.label, dc);
+				add_data_symbol(stmt.label, dc);
 			parse_and_load_data(&stmt, &dc);
 			continue;
 		}
@@ -88,7 +88,7 @@ void first_scan(char *filename)
 		}
 
 		if(label_exist)
-			add_symbol(stmt.label,ic);
+			add_data_symbol(stmt.label,ic);
 
 		stmt.sourceAddressing = get_addressing_for(stmt.source_operand);
 		stmt.targetAddressing = get_addressing_for(stmt.target_operand);

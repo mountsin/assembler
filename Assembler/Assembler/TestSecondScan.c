@@ -78,9 +78,9 @@ void Test_second_scan(CuTest *tc)
 
 	//=================================================
 			/*set data / string*/
-	add_symbol("MAIN",20);
-	add_symbol("LABEL1",21);
-	add_symbol("LABEL2",22);
+	add_data_symbol("MAIN",20);
+	add_data_symbol("LABEL1",21);
+	add_data_symbol("LABEL2",22);
 
 		/*set entries*/
 	add_entries_symbol("MAIN",20);
