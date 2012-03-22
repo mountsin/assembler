@@ -6,7 +6,7 @@
 #include "symbols.h"
 #include "error.h"
 #include "pre_compiled.h"
-
+#include "global_functions.h"
 
 #define LINE_SIZE 100
 
@@ -28,24 +28,24 @@ enum addressing_method get_addressing_for(char *source_operand);
 /* Commands_list - table(array) contains each assembly command and its rules */
 CommandStruct commands_list[] = 
 {
-/*	cmd_type	name	binary_code	source_addressing_options	dest_addressing_options */
-	MOV,		"mov", "0000",		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	CMP,		"cmp", "0001",		{0,1,2,3,4},				 {0,1,2,3,4},
-	ADD,		"add", "0010",		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	SUB,		"sub", "0011",		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	NOT,		"not", "0100",		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	CLR,		"clr", "0101",		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	LEA,		"lea", "0110",		{1,2,3,EMPTY				,EMPTY},{1,2,3,4,EMPTY},
-	INC,		"inc", "0111",		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	DEC,		"dec", "1000",		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	JMP,		"jmp", "1001",		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	BNE,		"bne", "1010",		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	RED,		"red", "1011",		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	PRN,		"prn", "1100",		EMPTY_ARRAY,				 {0,1,2,3,4},
-	JSR,		"jsr", "1101",		EMPTY_ARRAY,				 {1,EMPTY,EMPTY,EMPTY,EMPTY},
-	RTS,		"rts", "1110",		EMPTY_ARRAY,				 EMPTY_ARRAY,
-	STOP,		"stop","1111",		EMPTY_ARRAY,				 EMPTY_ARRAY,
-	UNKNOWN_CMD,""	  ,""	 ,		EMPTY_ARRAY,				 EMPTY_ARRAY
+/*	cmd_type	name	source_addressing_options	dest_addressing_options */
+	MOV,		"mov", 	{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	CMP,		"cmp", 	{0,1,2,3,4},				 {0,1,2,3,4},
+	ADD,		"add", 	{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	SUB,		"sub", 	{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	NOT,		"not", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	CLR,		"clr", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	LEA,		"lea", 	{1,2,3,EMPTY				,EMPTY},{1,2,3,4,EMPTY},
+	INC,		"inc", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	DEC,		"dec", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	JMP,		"jmp", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	BNE,		"bne", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	RED,		"red", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	PRN,		"prn", 	EMPTY_ARRAY,				 {0,1,2,3,4},
+	JSR,		"jsr", 	EMPTY_ARRAY,				 {1,EMPTY,EMPTY,EMPTY,EMPTY},
+	RTS,		"rts", 	EMPTY_ARRAY,				 EMPTY_ARRAY,
+	STOP,		"stop",	EMPTY_ARRAY,				 EMPTY_ARRAY,
+	UNKNOWN_CMD,""	  ,	EMPTY_ARRAY,				 EMPTY_ARRAY
 };
 
 int ic = 0;				/* Instructions counter */
@@ -58,6 +58,7 @@ void first_scan(char *filename)
 	FILE *fp;
 	char line[LINE_SIZE];
 	CompilerNode stmt;		/* Each code line will be parsed and stored in this temporary struct */
+	CompilerNode seoncd_word;
 	CommandStruct command_struct_from_validation_list;
 	int label_exist = 0;
 
@@ -96,9 +97,13 @@ void first_scan(char *filename)
 		stmt.target_register = stmt.targetAddressing == REGISTER? atoi(&(stmt.target_operand[1])):0;
 		switch(stmt.sourceAddressing)
 		{
-			case IMMEDIATE:
-				//TODO: add literal value compiler node
-				break;
+		case IMMEDIATE:
+			seoncd_word.address = ++ic;
+			dec2bin(atoi(&stmt.source_operand[1]),seoncd_word.binary_machine_code,8);
+			add_compiler_node(&seoncd_word);
+			break;
+		case DIRECT:
+			break;
 		}
 		
 		stmt.line_number = line_number;
