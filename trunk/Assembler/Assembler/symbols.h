@@ -18,5 +18,5 @@ Symbol *get_symbols_list();
 Symbol *get_entries_symbols_list();
 Symbol *get_external_symbols_list();
 /* Search for the symbole name in the data list and in the externals list and returns the symbol struct or NULL if not found */
-Symbol *get_data_symbol_by_name(char *symbole_name);
-Symbol *get_external_symbol_by_name(char *symbole_name);
+Symbol *get_data_symbol_by_name(char *name_to_find);
+Symbol *get_external_symbol_by_name(char *name_to_find);

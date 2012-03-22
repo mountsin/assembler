@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "symbols.h"
 
 Symbol *symbols_list = NULL;
@@ -51,16 +52,32 @@ void add_entries_symbol(char *name, int address)
 	entries_symbols_list = tmp;
 }
 
-//TODO:
-Symbol *get_data_symbol_by_name(char *name)
+
+Symbol *get_data_symbol_by_name(char *name_to_find)
 {
-	//TODO: implement	
+	Symbol *datasym_pointer = symbols_list;
+	while(datasym_pointer)
+	{
+		if (strcmp(datasym_pointer->name, name_to_find) == 0) /* name has found*/
+			return datasym_pointer;
+
+		datasym_pointer = datasym_pointer->next;
+	}
+
 	return NULL;
 }
 
-Symbol *get_external_symbol_by_name(char *symbole_name)
+Symbol *get_external_symbol_by_name(char *name_to_find)
 {
-	//TODO: implement	
+	Symbol *extsym_pointer = external_symbols_list;
+	while(extsym_pointer)
+	{
+		if (strcmp(extsym_pointer->name, name_to_find) == 0) /* name has found*/
+			return extsym_pointer;
+
+		extsym_pointer = extsym_pointer->next;
+	}
+
 	return NULL;
 }
 

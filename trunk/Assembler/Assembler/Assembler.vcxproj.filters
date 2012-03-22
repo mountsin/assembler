@@ -45,9 +45,6 @@
     <ClInclude Include="pre_compiled.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Test_compile_and_output.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">

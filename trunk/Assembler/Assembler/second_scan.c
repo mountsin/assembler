@@ -2,7 +2,7 @@
 #include <string.h>
 #include "data_structs.h"
 #include "global_functions.h"
-#include "first_scan.h"
+//TODO: REMOVE COMMENTS IN FILE #include "first_scan.h"
 #include "second_scan.h"
 #include "symbols.h"
 #include "error.h"
@@ -11,13 +11,13 @@
 #define MACHINE_CODE_WORD_BITLENGTH 16
 #define EMPTY_ADDRESS 0
 
-void second_scan(CompilerNode *compiler_node_header)
+void second_scan()
 {
 
 	/* set local variabels*/
 	int label_address, machine_code_integer;
 
-	CompilerNode *h = compiler_node_header;
+	CompilerNode *h = get_compiler_nodes_list_head();
 
 	enum boolean is_external;
 	Symbol *current_symbol;
@@ -26,7 +26,7 @@ void second_scan(CompilerNode *compiler_node_header)
 
 	while(h != NULL) 
 	{
-		if(h->is_second_scan_needed ==TRUE) /* second scan required*/
+		if(h->is_second_scan_needed == TRUE) /* second scan required*/
 		{
 			/* 1 - find the correct label if exist */
 			current_symbol = get_data_symbol_by_name(h->binary_machine_code); /* try to get data symbol by binary_machine_code temporary string*/
@@ -35,7 +35,7 @@ void second_scan(CompilerNode *compiler_node_header)
 				is_external = FALSE; /*mark symbol as NOT external*/
 			else
 			{
-				get_external_symbol_by_name(h->binary_machine_code); /* try to get external symbol by binary_machine_code temporary string*/
+				current_symbol = get_external_symbol_by_name(h->binary_machine_code); /* try to get external symbol by binary_machine_code temporary string*/
 				if(current_symbol != NULL) /*lable found -  as external symbol*/
 					is_external = TRUE; /*mark symbol as external*/
 			}
@@ -46,6 +46,7 @@ void second_scan(CompilerNode *compiler_node_header)
 				/*add_error*/
 				add_error(h->line_number, LABEL_NOT_DEFINED);
 				/*skip to next node*/
+				 h = h->next;
 				continue;
 			}
 				
@@ -73,15 +74,17 @@ void second_scan(CompilerNode *compiler_node_header)
 					h->linker_flag = RELOCATABLE;
 			}
 
-			/*final check - binary machine code is really a binary*/	
-			if(is_binary_Str(h->binary_machine_code) != TRUE) /*not a binary string*/
-				/*add_error*/
-				add_error(h->line_number, UNKNOWN_ERROR);
+
 		}
 
+		/*final check - binary machine code is really a binary*/	
+		if(is_binary_Str(h->binary_machine_code) != TRUE) /*not a binary string*/
+			/*add_error*/
+			add_error(h->line_number, UNKNOWN_ERROR);
 
+		/*go to next node*/
+		h = h->next;
 	}
-	
 }
 
 
