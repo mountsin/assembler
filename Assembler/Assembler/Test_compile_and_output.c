@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "CuTest.h"
 #include "compile_and_write_output.h"
 #include "data_structs.h"
@@ -8,11 +9,11 @@ void Test_create_file_ob(CuTest *tc)
 {
 	char *filename = "testerObj";
 	char *label = "MAIN";
+	char *machine_code = "1011111010111110";
 	CompilerNode *cn_list;
 	CompilerNode *stmt = (CompilerNode *)malloc(sizeof(CompilerNode));
 	
 	stmt->address = 122;
-	stmt->binary_machine_code = "1011111010111110";
 	stmt->cmd_type = MOV;
 	stmt->is_second_scan_needed = FALSE;
 	stmt->label = "LABEL1";
@@ -28,7 +29,7 @@ void Test_create_file_ob(CuTest *tc)
 	/*set cn_list*/
 	add_compiler_node(stmt);
 	cn_list = get_compiler_nodes_list_head();
-	
+	cn_list->binary_machine_code = machine_code;
 	cn_list->linker_flag = ABSOLUTE;
 	cn_list->sourceAddressing = DIRECT;
 	cn_list->source_operand = "#3";
@@ -67,27 +68,23 @@ void Test_create_file_ext(CuTest *tc)
 	
 	create_file_ext(filename, ext_sym_list);
 }
-/*
-void TestGetNextToken(CuTest *tc)
+
+void Test_runFileCreators_lite(CuTest *tc)
 {
-	char input[] = "		.entry		STRADD";
-	char *actual;
-	char *expected =  "STRADD";
-	get_first_token(input);
-	actual = get_next_token();
-	
-	CuAssertStrEquals(tc, expected, actual);
+	create_file_ob("tester", get_compiler_nodes_list_head());
+	create_file_ent("tester", get_entries_symbols_list());
+	create_file_ext("tester", get_external_symbols_list());
 }
-*/
 
 
 CuSuite* Compile_and_outputGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
-	SUITE_ADD_TEST(suite, Test_create_file_ob);
+	SUITE_ADD_TEST(suite, Test_runFileCreators_lite);
+	/*Test_runFileCreators_liteTest_create_file_ob);
 	SUITE_ADD_TEST(suite, Test_create_file_ent);
 	SUITE_ADD_TEST(suite, Test_create_file_ext);
-	
+	*/
 	return suite;
 }
 
