@@ -76,11 +76,18 @@ void Test_runFileCreators_lite(CuTest *tc)
 	create_file_ext("tester", get_external_symbols_list());
 }
 
+void Test_compile_and_write_output(CuTest *tc)
+{
+	compile_and_write_output("tester");
+}
 
 CuSuite* Compile_and_outputGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
-	SUITE_ADD_TEST(suite, Test_runFileCreators_lite);
+	//SUITE_ADD_TEST(suite, Test_runFileCreators_lite);
+
+	SUITE_ADD_TEST(suite, Test_compile_and_write_output);
+
 	/*Test_runFileCreators_liteTest_create_file_ob);
 	SUITE_ADD_TEST(suite, Test_create_file_ent);
 	SUITE_ADD_TEST(suite, Test_create_file_ext);
