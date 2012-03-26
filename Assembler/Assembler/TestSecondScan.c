@@ -17,7 +17,7 @@ void Test_second_scan(CuTest *tc)
 	
 	stmt->address = 100;
 	stmt->cmd_type = JSR;
-	stmt->label = "MAIN";
+	strcpy(stmt->label,"MAIN");
 	stmt->line_number = 111;
 	stmt->sourceAddressing = DIRECT;
 	stmt->source_operand = "#3";
@@ -38,7 +38,7 @@ void Test_second_scan(CuTest *tc)
 	//====== node 2 ======//
 	stmt->address = 101;
 	stmt->cmd_type = JSR;
-	stmt->label = "";
+	strcpy(stmt->label,"");
 	stmt->line_number = 111;
 	stmt->sourceAddressing = DIRECT;
 	stmt->source_operand = "#3";
@@ -58,7 +58,7 @@ void Test_second_scan(CuTest *tc)
 	//====== node 2 ======//
 	stmt->address = 102;
 	stmt->cmd_type = LEA;
-	stmt->label = "";
+	strcpy(stmt->label,"");
 	stmt->line_number = 111;
 	stmt->sourceAddressing = DIRECT;
 	stmt->source_operand = "#3";

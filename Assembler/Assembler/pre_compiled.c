@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "pre_compiled.h"
 
 #define MACHINE_CODE_WORD_BITLENGTH 16
@@ -15,7 +16,7 @@ CompilerNode *compiler_nodes_list_tail = NULL;
 void add_compiler_node(CompilerNode *stmt)
 {
 	CompilerNode *tmp = (CompilerNode *)malloc(sizeof(CompilerNode));
-	tmp->label = stmt->label;
+	strcpy(tmp->label,stmt->label);
 	tmp->address = stmt->address;
 	tmp->cmd_type = stmt->cmd_type;
 	tmp->sourceAddressing = stmt->sourceAddressing;

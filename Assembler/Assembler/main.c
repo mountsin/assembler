@@ -3,7 +3,7 @@
 #include "first_scan.h"
 #include "AllTests.h"
 
-#define TEST
+//#define TEST
 #define FILENAME_MAX 100
 
 
@@ -25,7 +25,7 @@ void main(int argc, char *argv[])
 		strcpy(filename, argv[i]);
 		strcat(filename, ".as");
 		first_scan(filename); 
-		//second_scan();//TODO: implement
+		//second_scan();
 		//compile_and_write_output(filename);//TODO: implement
 	}
 
