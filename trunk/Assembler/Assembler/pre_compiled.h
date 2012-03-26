@@ -7,7 +7,7 @@
 typedef struct compiler_node
 {
 	struct compiler_node *next;  
-	char *label;
+	char label[31];
 	int address;
 	enum cmd cmd_type;							/* type of command */
 	enum addressing_method sourceAddressing;

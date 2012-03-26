@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "CuTest.h"
 #include "compile_and_write_output.h"
 #include "data_structs.h"
@@ -16,7 +17,7 @@ void Test_create_file_ob(CuTest *tc)
 	stmt->address = 122;
 	stmt->cmd_type = MOV;
 	stmt->is_second_scan_needed = FALSE;
-	stmt->label = "LABEL1";
+	strcpy(stmt->label,"LABEL1");
 	stmt->line_number = 111;
 	stmt->linker_flag = ABSOLUTE;
 	stmt->sourceAddressing = DIRECT;

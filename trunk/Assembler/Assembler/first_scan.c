@@ -22,6 +22,8 @@ void process_statement(CompilerNode stmt);
 void debug_output(char *what);
 void parse_and_load_data(CompilerNode *stmt, int *dc);
 enum addressing_method get_addressing_for(char *source_operand);
+void set_symbol(char *str,char *result[]);
+void set_index(char *str,char *result[]);
 
 
 
@@ -58,7 +60,8 @@ void first_scan(char *filename)
 	FILE *fp;
 	char line[LINE_SIZE];
 	CompilerNode stmt;		/* Each code line will be parsed and stored in this temporary struct */
-	CompilerNode seoncd_word;
+	CompilerNode second_word;
+	CompilerNode third_word;
 	CommandStruct command_struct_from_validation_list;
 	int label_exist = 0;
 
@@ -95,15 +98,39 @@ void first_scan(char *filename)
 		stmt.targetAddressing = get_addressing_for(stmt.target_operand);
 		stmt.source_register = stmt.sourceAddressing == REGISTER? atoi(&(stmt.source_operand[1])):0;
 		stmt.target_register = stmt.targetAddressing == REGISTER? atoi(&(stmt.target_operand[1])):0;
+		second_word.address = ++ic;
 		switch(stmt.sourceAddressing)
 		{
-		case IMMEDIATE:
-			seoncd_word.address = ++ic;
-			dec2bin(atoi(&stmt.source_operand[1]),seoncd_word.binary_machine_code,8);
-			add_compiler_node(&seoncd_word);
-			break;
-		case DIRECT:
-			break;
+			case IMMEDIATE:
+				dec2bin(atoi(&stmt.source_operand[1]),second_word.binary_machine_code,8);
+				break;
+			case DIRECT:
+				second_word.binary_machine_code = stmt.source_operand;
+				break;
+			case INDEX:
+				set_symbol(stmt.source_operand,&second_word.binary_machine_code);
+				break;
+			case DOUBLE_INDEX:
+				break;
+		}
+		add_compiler_node(&second_word);
+
+		//TODO: cancel duplication
+		switch(stmt.targetAddressing)
+		{
+			case IMMEDIATE:
+				dec2bin(atoi(&stmt.target_operand[1]),third_word.binary_machine_code,8);
+				break;
+			case DIRECT:
+				third_word.binary_machine_code = stmt.target_operand;
+				break;
+			case INDEX:
+				third_word.address = ++ic;
+				set_index(stmt.source_operand,&third_word.binary_machine_code);
+				add_compiler_node(&third_word);
+				break;
+			case DOUBLE_INDEX:
+				break;
 		}
 		
 		stmt.line_number = line_number;
@@ -119,6 +146,17 @@ void first_scan(char *filename)
 	{
 		add_error(line_number,INPUT_FILE_FAILURE);
 	}
+}
+
+void set_symbol(char *str,char *result[])
+{
+	strncpy(*result,str,strchr(str,'[')-str+1);
+}
+void set_index(char *str,char *result[])
+{
+	char *start_of_index = strchr(str,'%');
+	char *end_of_index = strchr(str,']');
+	strncpy(*result,start_of_index,end_of_index - start_of_index);
 }
 
 enum addressing_method get_addressing_for(char *operand)
@@ -220,18 +258,20 @@ void validate_label(char *token, CompilerNode *stmt)
 	int length_without_colon = strlen(token)-1;
 	if(token[length_without_colon] == ':')
 	{
+		if(stmt->label[0] < 'a' || stmt->label[0] > 'Z')
+		{
+			add_error(line_number, INVALID_LABEL);
+			return;
+		}
 		strncpy(stmt->label, token, length_without_colon);			
 		token = get_next_token();
 	}
-	if(stmt->label[0] < 'a' || stmt->label[0] > 'Z')
-		add_error(line_number, INVALID_LABEL);
-	
 }
 
 enum cmd parse_command(char *command_name)
 {
 	CommandStruct *tmp;
-	for(tmp = commands_list; tmp->name && strcmp(command_name, tmp->name); tmp++);
+	for(tmp = commands_list; tmp->name && 0 != strcmp(command_name, tmp->name); tmp++);
 	return tmp->cmd_type;
 }
 

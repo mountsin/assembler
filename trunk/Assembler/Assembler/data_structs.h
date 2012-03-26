@@ -76,7 +76,7 @@ typedef struct
 }
 CmdParam;
 
-/* CommandRule - define an assembly command binary code and legitimate addressing methods (0-4) */
+/* Command - define an assembly command binary code and legitimate addressing methods (0-4) */
 typedef struct
 {
 	enum cmd cmd_type;
