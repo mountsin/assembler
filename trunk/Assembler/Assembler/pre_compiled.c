@@ -8,7 +8,7 @@ void set_binary_machine_code_to(CompilerNode *compiler_node);
 
 /* Head of compiler nodes list */
 CompilerNode *compiler_nodes_list_head = NULL;
-/* Head of compiler nodes list */
+/* Tail of compiler nodes list */
 CompilerNode *compiler_nodes_list_tail = NULL;
 
 /* Add a new struct to the end of the list */
@@ -25,19 +25,19 @@ void add_compiler_node(CompilerNode *stmt)
 	tmp->line_number = stmt->line_number;
 
 	/* memory allocations for futur data storage*/
-	/*TODO: remove if not needed
-	tmp->source_register = (int)malloc(sizeof(int));
-	tmp->target_register = (int)malloc(sizeof(int));
-	tmp->is_second_scan_needed = (enum Boolean)malloc(sizeof(enum boolean));
-	tmp->linker_flag = (enum linker_enum)malloc(sizeof(enum linker_enum));
-	*/
 	tmp->binary_machine_code = (char *)calloc(MACHINE_CODE_WORD_BITLENGTH + 1, sizeof(char));
 	tmp->next = NULL;
 
-	if(compiler_nodes_list_tail)
+	/*set linked list nodes*/
+	if(compiler_nodes_list_tail) /*compiler_nodes_list_tail already defined*/
+	{
 		compiler_nodes_list_tail->next = tmp;
-	compiler_nodes_list_tail = tmp;
-	if(!compiler_nodes_list_head)
+		compiler_nodes_list_tail = compiler_nodes_list_tail->next;
+	}
+	else
+		compiler_nodes_list_tail = tmp;
+	
+	if(!compiler_nodes_list_head)/*compiler_nodes_list_head not defined - first node*/
 		compiler_nodes_list_head = compiler_nodes_list_tail;
 
 }
