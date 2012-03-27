@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <string.h>
 #include "CuTest.h"
 #include "first_scan.h"
+#include "data_structs.h"
+#include "pre_compiled.h"
 
 void TestGetFirstToken(CuTest *tc)
 {
@@ -56,6 +59,14 @@ void TestIsDoubleIndex(CuTest *tc)
 	CuAssertTrue(tc,is_double_index(input));
 }
 
+void TestStrTok(CuTest *tc)
+{
+	char input[] = "		.entry		STRADD";
+	char *delimiters = " ,\t\n\r";
+	char *result = strtok(input,delimiters);
+	CuAssertStrEquals(tc,".entry",result);
+}
+
 CuSuite* FirstScanGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -67,5 +78,6 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite, TestIsLiteral2);
 	SUITE_ADD_TEST(suite, TestIsIndex);
 	SUITE_ADD_TEST(suite, TestIsDoubleIndex);
+	SUITE_ADD_TEST(suite, TestStrTok);
 	return suite;
 }

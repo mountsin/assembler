@@ -5,15 +5,13 @@
 #include "first_scan.h"
 #include "symbols.h"
 #include "error.h"
-#include "pre_compiled.h"
 #include "global_functions.h"
+#include "pre_compiled.h"
 
 #define LINE_SIZE 100
 
 
-
-void read_line_and_build_statement_struct(char *line);
-void validate_label(char *token, CompilerNode *stmt);
+Boolean validate_label(char *token, CompilerNode *stmt);
 enum cmd parse_command(char *command_name);
 char *get_first_token(char *text);
 char *get_next_token(void);
@@ -22,6 +20,7 @@ void process_statement(CompilerNode stmt);
 void debug_output(char *what);
 void parse_and_load_data(CompilerNode *stmt, int *dc);
 enum addressing_method get_addressing_for(char *source_operand);
+void read_line_and_build_statement_struct(char *, CompilerNode *);
 void set_symbol(char *str,char *result[]);
 void set_index(char *str,char *result[]);
 
@@ -30,36 +29,40 @@ void set_index(char *str,char *result[]);
 /* Commands_list - table(array) contains each assembly command and its rules */
 CommandStruct commands_list[] = 
 {
-/*	cmd_type	name	source_addressing_options	dest_addressing_options */
-	MOV,		"mov", 	{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	CMP,		"cmp", 	{0,1,2,3,4},				 {0,1,2,3,4},
-	ADD,		"add", 	{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	SUB,		"sub", 	{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	NOT,		"not", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	CLR,		"clr", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	LEA,		"lea", 	{1,2,3,EMPTY				,EMPTY},{1,2,3,4,EMPTY},
-	INC,		"inc", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	DEC,		"dec", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	JMP,		"jmp", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	BNE,		"bne", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	RED,		"red", 	EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	PRN,		"prn", 	EMPTY_ARRAY,				 {0,1,2,3,4},
-	JSR,		"jsr", 	EMPTY_ARRAY,				 {1,EMPTY,EMPTY,EMPTY,EMPTY},
-	RTS,		"rts", 	EMPTY_ARRAY,				 EMPTY_ARRAY,
-	STOP,		"stop",	EMPTY_ARRAY,				 EMPTY_ARRAY,
-	UNKNOWN_CMD,""	  ,	EMPTY_ARRAY,				 EMPTY_ARRAY
+/*	cmd_type	name		source_addressing_options	dest_addressing_options */
+	MOV,		"mov", 		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	CMP,		"cmp", 		{0,1,2,3,4},				 {0,1,2,3,4},
+	ADD,		"add", 		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	SUB,		"sub", 		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	NOT,		"not", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	CLR,		"clr", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	LEA,		"lea", 		{1,2,3,EMPTY				,EMPTY},{1,2,3,4,EMPTY},
+	INC,		"inc", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	DEC,		"dec", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	JMP,		"jmp", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	BNE,		"bne", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	RED,		"red", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	PRN,		"prn", 		EMPTY_ARRAY,				 {0,1,2,3,4},
+	JSR,		"jsr", 		EMPTY_ARRAY,				 {1,EMPTY,EMPTY,EMPTY,EMPTY},
+	RTS,		"rts", 		EMPTY_ARRAY,				 EMPTY_ARRAY,
+	STOP,		"stop",		EMPTY_ARRAY,				 EMPTY_ARRAY,
+	DATA,		".data",	EMPTY_ARRAY,				 EMPTY_ARRAY,
+	STRING,		".string",	EMPTY_ARRAY,				 EMPTY_ARRAY,
+	ENTRY,		".entry",	EMPTY_ARRAY,				 EMPTY_ARRAY,	
+	EXTERN,		".extern",	EMPTY_ARRAY,				 EMPTY_ARRAY,	
+	UNKNOWN_CMD,"\0"	  ,	EMPTY_ARRAY,				 EMPTY_ARRAY
 };
 
-int ic = 0;				/* Instructions counter */
-int dc = 0;			/* Data counter */
-int line_number = 0;	/* Line number in the assembly file for the errors report */
+int ic = 0;								/* Instructions counter */
+int dc = 0;								/* Data counter */
+int line_number = 0;					/* Line number in the assembly file for the errors report */
 
 /* Read the assembly file, line by line and process the statements */
 void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	CompilerNode stmt;		/* Each code line will be parsed and stored in this temporary struct */
+	CompilerNode stmt;													/* Each code line will be parsed and stored in this temporary struct */
 	CompilerNode second_word;
 	CompilerNode third_word;
 	CommandStruct command_struct_from_validation_list;
@@ -76,8 +79,8 @@ void first_scan(char *filename)
 			continue;
 		if(stmt.cmd_type == UNKNOWN_CMD)
 			add_error(line_number, UNKNOWN_COMMAND);
-		label_exist = stmt.label != NULL; /* Check if label exists */
-		if(stmt.cmd_type == DATA || stmt.cmd_type == STRING) /* Check if it's .data or .string instruction */
+		label_exist = stmt.label != NULL;								/* Check if label exists */
+		if(stmt.cmd_type == DATA || stmt.cmd_type == STRING)			/* Check if it's .data or .string instruction */
 		{
 			if(label_exist) 
 				add_data_symbol(stmt.label, dc);
@@ -85,7 +88,7 @@ void first_scan(char *filename)
 			continue;
 		}
 
-		if(stmt.cmd_type == EXTERN) /* Check if it's .extern instruction */
+		if(stmt.cmd_type == EXTERN)										/* Check if it's .extern instruction */
 		{
 			add_external_symbol(stmt.target_operand,ic); 
 			continue;
@@ -93,11 +96,16 @@ void first_scan(char *filename)
 
 		if(label_exist)
 			add_data_symbol(stmt.label,ic);
-
-		stmt.sourceAddressing = get_addressing_for(stmt.source_operand);
-		stmt.targetAddressing = get_addressing_for(stmt.target_operand);
-		stmt.source_register = stmt.sourceAddressing == REGISTER? atoi(&(stmt.source_operand[1])):0;
-		stmt.target_register = stmt.targetAddressing == REGISTER? atoi(&(stmt.target_operand[1])):0;
+		if(stmt.source_operand)
+		{
+			stmt.sourceAddressing = get_addressing_for(stmt.source_operand);
+			stmt.source_register = stmt.sourceAddressing == REGISTER? atoi(&(stmt.source_operand[1])):0;
+		}
+		if(stmt.target_operand)
+		{
+			stmt.targetAddressing = get_addressing_for(stmt.target_operand);
+			stmt.target_register = stmt.targetAddressing == REGISTER? atoi(&(stmt.target_operand[1])):0;
+		}
 		second_word.address = ++ic;
 		switch(stmt.sourceAddressing)
 		{
@@ -222,6 +230,7 @@ Boolean is_double_index(char *str)
 void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
 {
 	char *token;
+	Boolean result;
 	debug_output(line);	
 
 	if(line[0] == ';')
@@ -236,7 +245,9 @@ void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
 	{
 		//TODO: remove (testing)
 		debug_output(token);
-		validate_label(token, stmt);
+		result = validate_label(token, stmt);
+		if(result)
+			token = get_next_token();		
 		stmt->cmd_type = parse_command(token);
 		if(stmt->cmd_type == UNKNOWN_CMD)
 		{
@@ -253,25 +264,26 @@ void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
 }
 
 /* Accept a token and check if it is a valid label. If so, copy the token to the lable field of the struct and advance to the next token */
-void validate_label(char *token, CompilerNode *stmt)
+Boolean validate_label(char *token, CompilerNode *stmt)
 {
 	int length_without_colon = strlen(token)-1;
 	if(token[length_without_colon] == ':')
 	{
-		if(stmt->label[0] < 'a' || stmt->label[0] > 'Z')
+		if(token[0] < 'A' || token[0] > 'z')
 		{
 			add_error(line_number, INVALID_LABEL);
-			return;
+			return FALSE;
 		}
 		strncpy(stmt->label, token, length_without_colon);			
-		token = get_next_token();
+		return TRUE;
 	}
+	return FALSE;
 }
 
 enum cmd parse_command(char *command_name)
 {
 	CommandStruct *tmp;
-	for(tmp = commands_list; tmp->name && 0 != strcmp(command_name, tmp->name); tmp++);
+	for(tmp = commands_list; tmp->name && strcmp(command_name, tmp->name); tmp++);
 	return tmp->cmd_type;
 }
 
