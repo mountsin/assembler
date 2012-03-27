@@ -64,7 +64,6 @@ enum linker_enum
 };
 
 
-
 /* paramType = define assembly command param type */
 enum paramTypeEnum 
 {
@@ -87,7 +86,7 @@ CmdParam;
 typedef struct
 {
 	enum cmd cmd_type;
-	char *name;
+	char name[8];
 	int source_addressing_options[5]; /* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 	int dest_addressing_options[5];	  /* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 } CommandStruct;
