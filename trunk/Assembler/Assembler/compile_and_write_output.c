@@ -28,7 +28,7 @@
 #define EXTERNAL_FILE_EXT	".ext"
 
 /* error collector messages*/
-#define GENERAL_ERROR_MESSAGE		"Error occurred while trying to compile the assembly file:"
+#define GENERAL_ERROR_MESSAGE		"One or more errors occurred while trying to compile the assembly file:"
 #define INPUT_FILE_OPEN_FAIL		"One of the input file could not been opened"
 #define UNKNOWN_ASSEMBLY_COMMAND	"Assembly command is not recognized"
 #define LABEL_DOUBLE_DEFINITION		"Trying to set a value to the same label already defined"
@@ -41,7 +41,7 @@
 
 /*file stream error messages*/
 #define OK_MSG						"Compilation successful."
-#define CREATE_FILE_ERR__MSG		"Error occurred while trying to create file"
+#define CREATE_FILE_ERR__MSG		"One or more errors occurred while trying to create file"
 #define CLOSE_FILE_ERR__MSG			"Error occurred while trying to finalize file"
 
 
@@ -55,30 +55,25 @@
 
 
 void print_errors_report(Error *errors_collector);
-//int create_file_ob(char *filename, CompilerNode *cn_list);
-int create_file_ent(char *filename, CompilerNode *cn_list);
-int create_file_ext(char *filename, CompilerNode *cn_list);
-void get_linker_flag_str(enum linker_enum linker, char *result_string);
+
+int create_file_ob(char *filename, CompilerNode *cn_list);
+int create_file_ent(char *filename, Symbol *entries_list);
+int create_file_ext(char *filename, Symbol *entries_symbols_list);
+void get_linker_flag_str(enum linker_enum linker, char *external_symbols_list);
 
 void compile_and_write_output(char *filename)
 {
-	CompilerNode *h = get_compiler_nodes_list_head();
 	Error *errors_collector = get_errors_list();
-	
-	//TODO: functions 2 get ext_symbols, ent_symbols
-	//Symbol *entries_symbols_list = NULL;
-	//Symbol *external_symbols_list = NULL;
-
 
 	if(errors_collector != NULL)
 		print_errors_report(errors_collector);
 	else
 	{
-		create_file_ob(filename, h);
+		create_file_ob(filename, get_compiler_nodes_list_head());
 
-		create_file_ent(filename, h);
+		create_file_ent(filename, get_entries_symbols_list());
 		
-		create_file_ext(filename, h);
+		create_file_ext(filename, get_external_symbols_list());
 	}
 }
 
@@ -109,7 +104,9 @@ void print_errors_report(Error *errors_collector)
 		errors_collector = errors_collector->next;
 	}
 }
-
+/*
+*
+*/
 int create_file_ob(char *filename, CompilerNode *cn_list)
 {	
 	int IC,DC;
@@ -120,8 +117,6 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 	char address_binary_string[MAX_BINARY_STR];
 	char linker_flag_string[MAX_LINKER_STR];
 
-	//	char *address_binary_string = (char *)calloc(MAX_BINARY_STR + 1, sizeof(char)); /*allocate memory for address_binary_string */
-	//char *linker_flag_string =		(char *)calloc(MAX_LINKER_STR + 1, sizeof(char)); /*allocate memory for address_binary_string */
 	FILE *fp;
 
 

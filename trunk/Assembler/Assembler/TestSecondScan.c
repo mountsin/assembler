@@ -88,7 +88,7 @@ void Test_second_scan(CuTest *tc)
 	add_entries_symbol("ENTRY",102);
 
 		/*set externals*/
-	add_external_symbol("EXT1",23);
+	//add_external_symbol("EXT1",23);
 	add_external_symbol("EXT2",57);
 	add_external_symbol("EXT3",2261);
 

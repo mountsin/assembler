@@ -11,7 +11,7 @@ void RunAllTests(void)
 	CuString *output = CuStringNew();
 	CuSuite *suite = CuSuiteNew();
 
-	CuSuiteAddSuite(suite, FirstScanGetSuite());
+	//CuSuiteAddSuite(suite, FirstScanGetSuite());
 	CuSuiteAddSuite(suite, SecondScanGetSuite());
 	CuSuiteAddSuite(suite, Compile_and_outputGetSuite());
 
