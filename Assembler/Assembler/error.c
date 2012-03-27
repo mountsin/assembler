@@ -24,7 +24,7 @@ void add_error(int line_number, enum error_type error)
 		add_errorNode_by_line_number(tmp);
 
 	//TODO: REMOVE
-	printf("Error");
+	printf("Error - tester\n");
 }
 
 void add_errorNode_by_line_number(Error *new_node)

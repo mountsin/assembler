@@ -105,3 +105,10 @@ int get_data_counter()
 {
 	return get_DC();
 }
+
+/*
+void dispose(void *)
+{
+	
+}
+*/

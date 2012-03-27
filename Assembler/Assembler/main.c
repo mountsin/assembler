@@ -7,7 +7,7 @@
 #define FILENAME_MAX 100
 
 
-#ifdef TEST
+#ifndef TEST
 
 void main()
 {

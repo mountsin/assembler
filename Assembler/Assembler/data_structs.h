@@ -9,6 +9,13 @@ typedef enum boolean
 	TRUE
 } Boolean;
 
+typedef enum boolean_extented
+{	
+	NO,
+	YES,
+	NEITHER 
+} boolean_ex;
+
 
 /* cmd = define command / instruction type */
 enum cmd 
