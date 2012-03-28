@@ -30,7 +30,7 @@ void Test_create_file_ob(CuTest *tc)
 	/*set cn_list*/
 	add_compiler_node(stmt);
 	cn_list = get_compiler_nodes_list_head();
-	cn_list->binary_machine_code = machine_code;
+	strcpy(cn_list->binary_machine_code, machine_code);
 	cn_list->linker_flag = ABSOLUTE;
 	cn_list->sourceAddressing = DIRECT;
 	cn_list->source_operand = "#3";

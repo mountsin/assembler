@@ -14,7 +14,7 @@ K:		.data		0
 MAIN:		lea		STR[%LEN], STRADD
 		jsr		COUNT
 		jsr		PRTSTR
-		mov		STRADD, [K] LASTCHAR [R3]
+		mov		STRADD, [K]LASTCHAR[R3]
 		mov		STR[%K], r7
 		add		COUNT[%k],r3
 		dec		LASTCHAR[%k]
