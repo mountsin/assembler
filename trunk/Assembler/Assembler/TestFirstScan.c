@@ -67,6 +67,33 @@ void TestStrTok(CuTest *tc)
 	CuAssertStrEquals(tc,".entry",result);
 }
 
+void TestSetSymbol(CuTest *tc)
+{
+	char result[10] = "";
+	set_symbol("STR[%LEN]",result);
+	CuAssertStrEquals(tc,"STR",result);
+}
+void TestSetSymbol2(CuTest *tc)
+{
+	char result[10] = "";
+	set_symbol("[K]LASTCHAR[R3]",result);
+	CuAssertStrEquals(tc,"LASTCHAR",result);
+}
+
+void TestSetIndex(CuTest *tc)
+{
+	char result[10] = "";
+	set_index("STR[%LEN]",result);
+	CuAssertStrEquals(tc,"%LEN",result);
+}
+void TestSetIndex2(CuTest *tc)
+{
+	char result[10] = "";
+	set_index("[K]LASTCHAR[R3]",result);
+	CuAssertStrEquals(tc,"K",result);
+}
+
+
 CuSuite* FirstScanGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -79,5 +106,9 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite, TestIsIndex);
 	SUITE_ADD_TEST(suite, TestIsDoubleIndex);
 	SUITE_ADD_TEST(suite, TestStrTok);
+	SUITE_ADD_TEST(suite, TestSetSymbol);
+	SUITE_ADD_TEST(suite, TestSetSymbol2);
+	SUITE_ADD_TEST(suite, TestSetIndex);
+	SUITE_ADD_TEST(suite, TestSetIndex2);
 	return suite;
 }

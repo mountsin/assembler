@@ -24,8 +24,12 @@ void read_line_and_build_statement_struct(char *, CompilerNode *);
 void set_symbol(char *str,char *result[]);
 void set_index(char *str,char *result[]);
 void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
-void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, char *binary_machine_code, int ic);
-void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand);
+void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, int ic);
+void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand, int ic);
+Boolean is_register(char *str);
+Boolean is_literal(char *str);
+Boolean is_index(char *str);
+Boolean is_double_index(char *str);
 
 
 
@@ -101,8 +105,8 @@ void first_scan(char *filename)
 		//TODO: cancel duplication
 		set_addressing_and_register(stmt.source_operand,&stmt.sourceAddressing,&stmt.source_register);
 		set_addressing_and_register(stmt.target_operand,&stmt.targetAddressing,&stmt.target_register);
-		add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,stmt.binary_machine_code,++ic);
-		add_third_word(stmt.cmd_type,stmt.targetAddressing,stmt.target_operand);
+		add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,++ic);
+		add_third_word(stmt.cmd_type,stmt.targetAddressing,stmt.target_operand,++ic);
 
 		stmt.line_number = line_number;
 		add_compiler_node(&stmt);
@@ -118,11 +122,16 @@ void first_scan(char *filename)
 
 void set_symbol(char *str,char *result)
 {
-	strncpy(result,str,strchr(str,'[')-str+1);
+	char *start_of_symbol;
+	start_of_symbol = strchr(str,']')+1;
+	if(strlen(start_of_symbol) > 1)
+		strncpy(result,start_of_symbol,strchr(start_of_symbol,'[')-start_of_symbol);
+	else
+		strncpy(result,str,strchr(str,'[')-str);
 }
 void set_index(char *str,char *result)
 {
-	char *start_of_index = strchr(str,'%');
+	char *start_of_index = strchr(str,'[')+1;
 	char *end_of_index = strchr(str,']');
 	strncpy(result,start_of_index,end_of_index - start_of_index);
 }
@@ -293,7 +302,7 @@ void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int
 	}
 }
 
-void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, char *binary_machine_code, int ic)
+void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, int ic)
 {
 	CompilerNode second_word;
 	second_word.address = ic;
@@ -306,24 +315,29 @@ void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *sour
 			switch(source_addressing)
 			{
 				case IMMEDIATE:
-					dec2bin(atoi(&source_operand[1]),binary_machine_code,8);
+					dec2bin(atoi(&source_operand[1]),second_word.binary_machine_code,8);
 					break;
 				case DIRECT:
-					strcpy(binary_machine_code,source_operand);
+					strcpy(second_word.binary_machine_code,source_operand);
+					second_word.is_second_scan_needed = TRUE;
 					break;
 				case INDEX:
-					set_symbol(source_operand,binary_machine_code);
+					set_symbol(source_operand,second_word.binary_machine_code);
+					second_word.is_second_scan_needed = TRUE;
 					break;
 				case DOUBLE_INDEX:
+					set_symbol(source_operand,second_word.binary_machine_code);
+					second_word.is_second_scan_needed = TRUE;
 					break;
 			}
 			add_compiler_node(&second_word);
 		}
 }
 
-void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand)
+void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand,int ic)
 {
 	CompilerNode third_word;
+	third_word.address = ic;
 	if(cmd_type != RTS && cmd_type != STOP)
 		{
 			switch(targetAddressing)
@@ -333,13 +347,17 @@ void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_
 					break;
 				case DIRECT:
 					strcpy(third_word.binary_machine_code,target_operand);
+					third_word.is_second_scan_needed = TRUE;
 					break;
 				case INDEX:
 					third_word.address = ++ic;
 					set_index(target_operand,third_word.binary_machine_code);
 					add_compiler_node(&third_word);
+					third_word.is_second_scan_needed = TRUE;
 					break;
 				case DOUBLE_INDEX:
+					set_index(target_operand,third_word.binary_machine_code);
+					third_word.is_second_scan_needed = TRUE;
 					break;
 			}
 		}
