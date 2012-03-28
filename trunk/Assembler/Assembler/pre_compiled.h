@@ -16,7 +16,7 @@ typedef struct compiler_node
 	int target_register;
 	char *source_operand;						/* first parameter (nullable) */
 	char *target_operand;						/* second parameter (nullable) */
-	char *binary_machine_code;					/* "101010110" "STR" "&L STR" */
+	char binary_machine_code[17];					/* "101010110" "STR" "&L STR" */
 	enum boolean is_second_scan_needed;			/* is second scan processing needed */
 	enum linker_enum linker_flag;
 	int line_number;

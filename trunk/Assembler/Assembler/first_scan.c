@@ -107,45 +107,52 @@ void first_scan(char *filename)
 			stmt.target_register = stmt.targetAddressing == REGISTER? atoi(&(stmt.target_operand[1])):0;
 		}
 		second_word.address = ++ic;
-		switch(stmt.sourceAddressing)
+		if(stmt.cmd_type == MOV || 
+		   stmt.cmd_type == CMP || 
+		   stmt.cmd_type == ADD || 
+		   stmt.cmd_type == SUB ||
+		   stmt.cmd_type == LEA)
 		{
-			case IMMEDIATE:
-				dec2bin(atoi(&stmt.source_operand[1]),second_word.binary_machine_code,8);
-				break;
-			case DIRECT:
-				second_word.binary_machine_code = stmt.source_operand;
-				break;
-			case INDEX:
-				set_symbol(stmt.source_operand,&second_word.binary_machine_code);
-				break;
-			case DOUBLE_INDEX:
-				break;
+			switch(stmt.sourceAddressing)
+			{
+				case IMMEDIATE:
+					dec2bin(atoi(&stmt.source_operand[1]),second_word.binary_machine_code,8);
+					break;
+				case DIRECT:
+					strcpy(second_word.binary_machine_code, stmt.source_operand);
+					break;
+				case INDEX:
+					set_symbol(stmt.source_operand,second_word.binary_machine_code);
+					break;
+				case DOUBLE_INDEX:
+					break;
+			}
+			add_compiler_node(&second_word);
 		}
-		add_compiler_node(&second_word);
 
 		//TODO: cancel duplication
-		switch(stmt.targetAddressing)
+		if(stmt.cmd_type != RTS && stmt.cmd_type != STOP)
 		{
-			case IMMEDIATE:
-				dec2bin(atoi(&stmt.target_operand[1]),third_word.binary_machine_code,8);
-				break;
-			case DIRECT:
-				third_word.binary_machine_code = stmt.target_operand;
-				break;
-			case INDEX:
-				third_word.address = ++ic;
-				set_index(stmt.source_operand,&third_word.binary_machine_code);
-				add_compiler_node(&third_word);
-				break;
-			case DOUBLE_INDEX:
-				break;
+			switch(stmt.targetAddressing)
+			{
+				case IMMEDIATE:
+					dec2bin(atoi(&stmt.target_operand[1]),third_word.binary_machine_code,8);
+					break;
+				case DIRECT:
+					strcpy(third_word.binary_machine_code,stmt.target_operand);
+					break;
+				case INDEX:
+					third_word.address = ++ic;
+					set_index(stmt.target_operand,third_word.binary_machine_code);
+					add_compiler_node(&third_word);
+					break;
+				case DOUBLE_INDEX:
+					break;
+			}
 		}
-		
 		stmt.line_number = line_number;
-
 		add_compiler_node(&stmt);
 		ic++;
-
 		command_struct_from_validation_list = commands_list[stmt.cmd_type];
 	}
 	fclose(fp);
@@ -156,27 +163,27 @@ void first_scan(char *filename)
 	}
 }
 
-void set_symbol(char *str,char *result[])
+void set_symbol(char *str,char *result)
 {
-	strncpy(*result,str,strchr(str,'[')-str+1);
+	strncpy(result,str,strchr(str,'[')-str+1);
 }
-void set_index(char *str,char *result[])
+void set_index(char *str,char *result)
 {
 	char *start_of_index = strchr(str,'%');
 	char *end_of_index = strchr(str,']');
-	strncpy(*result,start_of_index,end_of_index - start_of_index);
+	strncpy(result,start_of_index,end_of_index - start_of_index);
 }
 
-enum addressing_method get_addressing_for(char *operand)
+AddressingMethod get_addressing_for(char *operand)
 {
 	if(is_literal(operand))
 		return IMMEDIATE;
 	if(is_register(operand))
 		return REGISTER;
-	if(is_index(operand))
-		return INDEX;
 	if(is_double_index(operand))
 		return DOUBLE_INDEX;
+	if(is_index(operand))
+		return INDEX;
 	return DIRECT;
 }
 
@@ -190,7 +197,10 @@ void parse_and_load_data(CompilerNode *stmt, int *dc)
 		case DATA:
 			tmp = get_first_token(stmt->target_operand);
 			while(tmp != NULL)
+			{
 				*dc++;
+				tmp = get_next_token();
+			}
 			break;
 		case STRING:
 			*dc += strlen(stmt->target_operand)+1;
@@ -243,8 +253,6 @@ void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
 	token =  get_first_token(line);
 	if(token)
 	{
-		//TODO: remove (testing)
-		debug_output(token);
 		result = validate_label(token, stmt);
 		if(result)
 			token = get_next_token();		
@@ -302,6 +310,9 @@ char *get_token(char *text)
 	char *delimiters = " ,\t\n\r";
 	char *temp;
 	temp = strtok(text, delimiters);
+	//TODO: remove
+	if(temp)
+		debug_output(temp);
 	return temp;
 }
 
