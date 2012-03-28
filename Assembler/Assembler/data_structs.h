@@ -18,7 +18,7 @@ typedef enum boolean_extented
 
 
 /* cmd = define command / instruction type */
-enum cmd 
+typedef enum cmd 
 {
 	MOV, 
 	CMP,
@@ -42,7 +42,7 @@ enum cmd
 	EXTERN,				/* .extern */
 	COMMENT,			/* comment line the assmbler will ignore */
 	UNKNOWN_CMD = 99	//TODO: duplicate with stasus enum values
-};
+} Cmd;
 
 /* addressing_method - addresing method (0-4) */
 typedef enum addressing_method

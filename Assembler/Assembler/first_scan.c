@@ -23,6 +23,9 @@ enum addressing_method get_addressing_for(char *source_operand);
 void read_line_and_build_statement_struct(char *, CompilerNode *);
 void set_symbol(char *str,char *result[]);
 void set_index(char *str,char *result[]);
+void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
+void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, char *binary_machine_code, int ic);
+void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand);
 
 
 
@@ -63,8 +66,6 @@ void first_scan(char *filename)
 	FILE *fp;
 	char line[LINE_SIZE];
 	CompilerNode stmt;													/* Each code line will be parsed and stored in this temporary struct */
-	CompilerNode second_word;
-	CompilerNode third_word;
 	CommandStruct command_struct_from_validation_list;
 	int label_exist = 0;
 
@@ -96,64 +97,16 @@ void first_scan(char *filename)
 
 		if(label_exist)
 			add_data_symbol(stmt.label,ic);
-		if(stmt.source_operand)
-		{
-			stmt.sourceAddressing = get_addressing_for(stmt.source_operand);
-			stmt.source_register = stmt.sourceAddressing == REGISTER? atoi(&(stmt.source_operand[1])):0;
-		}
-		if(stmt.target_operand)
-		{
-			stmt.targetAddressing = get_addressing_for(stmt.target_operand);
-			stmt.target_register = stmt.targetAddressing == REGISTER? atoi(&(stmt.target_operand[1])):0;
-		}
-		second_word.address = ++ic;
-		if(stmt.cmd_type == MOV || 
-		   stmt.cmd_type == CMP || 
-		   stmt.cmd_type == ADD || 
-		   stmt.cmd_type == SUB ||
-		   stmt.cmd_type == LEA)
-		{
-			switch(stmt.sourceAddressing)
-			{
-				case IMMEDIATE:
-					dec2bin(atoi(&stmt.source_operand[1]),second_word.binary_machine_code,8);
-					break;
-				case DIRECT:
-					strcpy(second_word.binary_machine_code, stmt.source_operand);
-					break;
-				case INDEX:
-					set_symbol(stmt.source_operand,second_word.binary_machine_code);
-					break;
-				case DOUBLE_INDEX:
-					break;
-			}
-			add_compiler_node(&second_word);
-		}
 
 		//TODO: cancel duplication
-		if(stmt.cmd_type != RTS && stmt.cmd_type != STOP)
-		{
-			switch(stmt.targetAddressing)
-			{
-				case IMMEDIATE:
-					dec2bin(atoi(&stmt.target_operand[1]),third_word.binary_machine_code,8);
-					break;
-				case DIRECT:
-					strcpy(third_word.binary_machine_code,stmt.target_operand);
-					break;
-				case INDEX:
-					third_word.address = ++ic;
-					set_index(stmt.target_operand,third_word.binary_machine_code);
-					add_compiler_node(&third_word);
-					break;
-				case DOUBLE_INDEX:
-					break;
-			}
-		}
+		set_addressing_and_register(stmt.source_operand,&stmt.sourceAddressing,&stmt.source_register);
+		set_addressing_and_register(stmt.target_operand,&stmt.targetAddressing,&stmt.target_register);
+		add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,stmt.binary_machine_code,++ic);
+		add_third_word(stmt.cmd_type,stmt.targetAddressing,stmt.target_operand);
+
 		stmt.line_number = line_number;
 		add_compiler_node(&stmt);
 		ic++;
-		command_struct_from_validation_list = commands_list[stmt.cmd_type];
 	}
 	fclose(fp);
 	}
@@ -328,4 +281,66 @@ int get_IC()
 int get_DC()
 {
 	return dc;
+}
+
+/* Set the addressing method and the register value according to the operand */
+void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg)
+{
+	if(operand)
+	{
+		*addressing = get_addressing_for(operand);
+		*reg = *addressing == REGISTER? atoi(&(operand[1])):0;
+	}
+}
+
+void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, char *binary_machine_code, int ic)
+{
+	CompilerNode second_word;
+	second_word.address = ic;
+	if(cmd_type == MOV || 
+	   cmd_type == CMP || 
+	   cmd_type == ADD || 
+	   cmd_type == SUB ||
+	   cmd_type == LEA)
+		{
+			switch(source_addressing)
+			{
+				case IMMEDIATE:
+					dec2bin(atoi(&source_operand[1]),binary_machine_code,8);
+					break;
+				case DIRECT:
+					strcpy(binary_machine_code,source_operand);
+					break;
+				case INDEX:
+					set_symbol(source_operand,binary_machine_code);
+					break;
+				case DOUBLE_INDEX:
+					break;
+			}
+			add_compiler_node(&second_word);
+		}
+}
+
+void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand)
+{
+	CompilerNode third_word;
+	if(cmd_type != RTS && cmd_type != STOP)
+		{
+			switch(targetAddressing)
+			{
+				case IMMEDIATE:
+					dec2bin(atoi(&target_operand[1]),third_word.binary_machine_code,8);
+					break;
+				case DIRECT:
+					strcpy(third_word.binary_machine_code,target_operand);
+					break;
+				case INDEX:
+					third_word.address = ++ic;
+					set_index(target_operand,third_word.binary_machine_code);
+					add_compiler_node(&third_word);
+					break;
+				case DOUBLE_INDEX:
+					break;
+			}
+		}
 }
