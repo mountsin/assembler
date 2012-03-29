@@ -1,5 +1,5 @@
 /* Status = define current command status (can be extended) */
-enum error_type 
+typedef enum error_type 
 {
 	INPUT_FILE_FAILURE,					/* One of the input file could not been opened */
 	UNKNOWN_COMMAND,					/* Assembly command is not recognized */
@@ -10,7 +10,7 @@ enum error_type
 	INVALID_LABEL,						/* The label name is not followning naming rules */
 	ILLEGAL_DATA_ADDRESS,				/* The label is pointing to Illegal address */
 	UNKNOWN_ERROR = 99					/* Other error */
-};
+} ErrorType;
 
 /**
 * ErrorCollector (linked list of structs) of all errors
@@ -18,10 +18,9 @@ enum error_type
 typedef struct error
 {
 	struct error *next;  
-	enum error_type type;			/* type of error */
+	ErrorType type;					/* type of error */
 	int line_number;				/* assembly (input) file line number */
-}	
-Error;
+} Error;
 
-void add_error(int line_number, enum error_type error);
+void add_error(int line_number,ErrorType error);
 Error *get_errors_list();

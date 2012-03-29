@@ -102,7 +102,6 @@ void first_scan(char *filename)
 		if(label_exist)
 			add_data_symbol(stmt.label,ic);
 
-		//TODO: cancel duplication
 		set_addressing_and_register(stmt.source_operand,&stmt.sourceAddressing,&stmt.source_register);
 		set_addressing_and_register(stmt.target_operand,&stmt.targetAddressing,&stmt.target_register);
 		add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,++ic);
@@ -120,6 +119,7 @@ void first_scan(char *filename)
 	}
 }
 
+/* This function extracts the symbl out of the operand in case of index or double index adressing method */
 void set_symbol(char *str,char *result)
 {
 	char *start_of_symbol;
@@ -129,6 +129,8 @@ void set_symbol(char *str,char *result)
 	else
 		strncpy(result,str,strchr(str,'[')-str);
 }
+
+/* This function extracts the index out of the operand in case of index or double index adressing method */
 void set_index(char *str,char *result)
 {
 	char *start_of_index = strchr(str,'[')+1;
@@ -136,6 +138,7 @@ void set_index(char *str,char *result)
 	strncpy(result,start_of_index,end_of_index - start_of_index);
 }
 
+/* This function get the correct adressing method of the operand */
 AddressingMethod get_addressing_for(char *operand)
 {
 	if(is_literal(operand))
@@ -149,6 +152,7 @@ AddressingMethod get_addressing_for(char *operand)
 	return DIRECT;
 }
 
+/* This funcitons handale data instructions such as .data and .string and increment the data counter (dc) */
 void parse_and_load_data(CompilerNode *stmt, int *dc)
 {
 	//TODO: Input validtaion and Error handling
@@ -170,6 +174,7 @@ void parse_and_load_data(CompilerNode *stmt, int *dc)
 	}
 }
 
+/* This function accepts an operand string and checks if it is a valid machine register (0 - 7) */
 Boolean is_register(char *str)
 {
 	if (str[0] == 'r' && (str[1] >= '0' && str[1] <= '7') && str[2] == '\0')
@@ -177,6 +182,7 @@ Boolean is_register(char *str)
 	return FALSE;
 }
 
+/* This function accepts an operand string and checks if it is a literal value (a number) */
 Boolean is_literal(char *str)
 {
 	if(str[0] == '#')
@@ -184,6 +190,7 @@ Boolean is_literal(char *str)
 	return FALSE;
 }
 
+/* This function accepts an operand string and checks if it is an index */
 Boolean is_index(char *str)
 {
 	if(strchr(str,'['))
@@ -191,6 +198,7 @@ Boolean is_index(char *str)
 	return FALSE;
 }
 
+/* This function accepts an operand string and checks if it is a double index */
 Boolean is_double_index(char *str)
 {
 	if(str[0] == '[')
@@ -198,7 +206,7 @@ Boolean is_double_index(char *str)
 	return FALSE;
 }
 
-/* Accept assembly code line and populate an CompilerNode struct */
+/* Accept assembly code line and populate the CompilerNode struct used by the second scan function */
 void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
 {
 	char *token;
@@ -233,7 +241,7 @@ void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
 	}
 }
 
-/* Accept a token and check if it is a valid label. If so, copy the token to the lable field of the struct and advance to the next token */
+/* Accepts a token and checks if it is a valid label. If so, copy the token to the lable field of the CompilerNode struct and advance to the next token */
 Boolean validate_label(char *token, CompilerNode *stmt)
 {
 	int length_without_colon = strlen(token)-1;
@@ -250,23 +258,28 @@ Boolean validate_label(char *token, CompilerNode *stmt)
 	return FALSE;
 }
 
-enum cmd parse_command(char *command_name)
+
+/* This functions accepts the command token from the assembly code line and return the correct Cmd enum value of it */
+Cmd parse_command(char *command_name)
 {
 	CommandStruct *tmp;
 	for(tmp = commands_list; tmp->name && strcmp(command_name, tmp->name); tmp++);
 	return tmp->cmd_type;
 }
 
+/* Utilities functions that encapsulates the strtok library function */
 char *get_first_token(char *text)
 {
 	return get_token(text);
 }
 
+/* Utilities functions that encapsulates the strtok library function */
 char *get_next_token(void)
 {
 	return get_token(NULL);
 }
 
+/* Utilities functions that encapsulates the strtok library function */
 char *get_token(char *text)
 {
 	char *delimiters = " ,\t\n\r";
@@ -278,15 +291,19 @@ char *get_token(char *text)
 	return temp;
 }
 
+//TODO: remove
 void debug_output(char *what)
 {
 	puts(what);
 }
 
+/* public function used be the second scan function to get the instrctions counter */
 int get_IC()
 {
 	return ic;
 }
+
+/* public function used be the second scan function to get the data counter */
 int get_DC()
 {
 	return dc;
@@ -302,6 +319,7 @@ void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int
 	}
 }
 
+/* This function is used for adding the second word of the assembly command if a second word is neccessery */
 void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, int ic)
 {
 	CompilerNode second_word;
@@ -334,6 +352,7 @@ void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *sour
 		}
 }
 
+/* This function is used for adding the third word of the assembly command if a third word is neccessery */
 void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand,int ic)
 {
 	CompilerNode third_word;
@@ -343,11 +362,11 @@ void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_
 			switch(targetAddressing)
 			{
 				case IMMEDIATE:
-					dec2bin(atoi(&target_operand[1]),third_word.binary_machine_code,8);
+					dec2bin(atoi(&target_operand[1]),third_word.binary_machine_code,8); /* The second operand is a number so I convert it's valu to binary code */
 					break;
 				case DIRECT:
-					strcpy(third_word.binary_machine_code,target_operand);
-					third_word.is_second_scan_needed = TRUE;
+					strcpy(third_word.binary_machine_code,target_operand);	/* The second operand is a symbol that should be translated to it's addresss value in the second scan phase */
+					third_word.is_second_scan_needed = TRUE;				/* I save the symble name as is in the binary machine code field and tell the second scan that it needs to translate it to the address value of the symbol */
 					break;
 				case INDEX:
 					third_word.address = ++ic;
