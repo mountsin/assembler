@@ -8,21 +8,23 @@
 #include <stdlib.h>
 //#include "pre_compiled.h"
 
-
+/*bit usage*/
 #define ONEBYTE_BITSNUM		8
 #define TWOBYTES_BITSNUM	16
 #define BYTE_MAX_NUM		255
 #define HALFBYTE_MAX_NUM	15
 
+/*binary string usage*/
 #define MAX_BINARY_STR 33
 #define MAX_LINKER_STR 33
 
-
+/*linker flag*/
 #define ABS_STRING		"a"
 #define REL_STRING		"r"
 #define EXT_STRING		"e"
 #define EMPTY_STRING	""
 
+/*files extentions*/
 #define OBJECT_FILE_EXT		".ob"
 #define ENTRIES_FILE_EXT	".ent"
 #define EXTERNAL_FILE_EXT	".ext"
@@ -44,16 +46,18 @@
 #define CREATE_FILE_ERR__MSG		"One or more errors occurred while trying to create file"
 #define CLOSE_FILE_ERR__MSG			"Error occurred while trying to finalize file"
 
-
+/*TODO: Remove
 #define HEADER_ADDRESS		"Base 2 adress"
 #define HEADER_MACHINE_CODE	"Base 2 Machine code"
-#define HEADER_LINKER_FLAG	"linker flag (a/r/e)"
-#define HEADER_LABEL		"label"
+#define HEADER_LINKER_FLAG	"linker flag (a/r/e)"*/
 
+/*printf formats*/
 #define OBJECT_ROW_FORMAT		"%30s%30s%25s\n"
 #define EXT_ENT_ROW_FORMAT		"%32s \t %32s\n"
 
+/**
 
+*/
 void print_errors_report(Error *errors_collector);
 
 int create_file_ob(char *filename, CompilerNode *cn_list);
@@ -131,8 +135,8 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 		return CREATE_FILE_ERR; /* error occured while trying to creat new file*/
 
 
-	/* write 1th row - columns headers*/
-	fprintf(fp, OBJECT_ROW_FORMAT, HEADER_ADDRESS, HEADER_MACHINE_CODE, HEADER_LINKER_FLAG);
+	/* write 1th row - columns headers*  - can be removed/
+	/*fprintf(fp, OBJECT_ROW_FORMAT, HEADER_ADDRESS, HEADER_MACHINE_CODE, HEADER_LINKER_FLAG);*/
 	
 	IC = get_instruction_counter();
 	DC = get_data_counter();
