@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "first_scan.h"
+#include "second_scan.h"
+#include "compile_and_write_output.h"
 #include "AllTests.h"
 
 //#define TEST
@@ -25,8 +27,8 @@ void main(int argc, char *argv[])
 		strcpy(filename, argv[i]);
 		strcat(filename, ".as");
 		first_scan(filename); 
-		//second_scan();
-		//compile_and_write_output(filename);//TODO: implement
+		second_scan();
+		compile_and_write_output(filename);
 	}
 
 	//TODO: remove (testing)

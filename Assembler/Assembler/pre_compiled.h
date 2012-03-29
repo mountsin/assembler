@@ -20,8 +20,7 @@ typedef struct compiler_node
 	enum boolean is_second_scan_needed;			/* is second scan processing needed */
 	enum linker_enum linker_flag;
 	int line_number;
-}	
-CompilerNode;
+} CompilerNode;
 
 
 
