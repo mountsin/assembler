@@ -85,7 +85,7 @@ CmdParam;
 /* Command - define an assembly command binary code and legitimate addressing methods (0-4) */
 typedef struct
 {
-	enum cmd cmd_type;
+	Cmd cmd_type;
 	char name[8];
 	int source_addressing_options[5]; /* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 	int dest_addressing_options[5];	  /* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */

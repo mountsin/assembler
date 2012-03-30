@@ -2,6 +2,7 @@
 #include <string.h>
 #include "CuTest.h"
 #include "first_scan.h"
+#include "global_functions.h"
 #include "data_structs.h"
 #include "pre_compiled.h"
 
@@ -70,26 +71,26 @@ void TestStrTok(CuTest *tc)
 void TestSetSymbol(CuTest *tc)
 {
 	char result[10] = "";
-	set_symbol("STR[%LEN]",result);
+	extract_symbol("STR[%LEN]",result);
 	CuAssertStrEquals(tc,"STR",result);
 }
 void TestSetSymbol2(CuTest *tc)
 {
 	char result[10] = "";
-	set_symbol("[K]LASTCHAR[R3]",result);
+	extract_symbol("[K]LASTCHAR[R3]",result);
 	CuAssertStrEquals(tc,"LASTCHAR",result);
 }
 
 void TestSetIndex(CuTest *tc)
 {
 	char result[10] = "";
-	set_index("STR[%LEN]",result);
+	extract_index("STR[%LEN]",result);
 	CuAssertStrEquals(tc,"%LEN",result);
 }
 void TestSetIndex2(CuTest *tc)
 {
 	char result[10] = "";
-	set_index("[K]LASTCHAR[R3]",result);
+	extract_index("[K]LASTCHAR[R3]",result);
 	CuAssertStrEquals(tc,"K",result);
 }
 
