@@ -94,18 +94,13 @@ void first_scan(char *filename)
 				continue;
 			}
 
-			if(stmt.cmd_type == ENTRY)
-			{
-				stmt.is_second_scan_needed = TRUE;
-				strcpy(stmt.binary_machine_code,stmt.target_operand);
-			}
-
 			if(stmt.label)
 				add_code_symbol(stmt.label,ic);
 
 			set_addressing_and_register(stmt.source_operand,&stmt.sourceAddressing,&stmt.source_register);
 			set_addressing_and_register(stmt.target_operand,&stmt.targetAddressing,&stmt.target_register);
-			add_compiler_node(&stmt);
+			if(stmt.cmd_type != ENTRY && stmt.cmd_type != EXTERN)
+				add_compiler_node(&stmt);
 			add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,++ic);
 			add_third_word(stmt.cmd_type,stmt.targetAddressing,stmt.target_operand,++ic);
 			ic++;
