@@ -51,7 +51,8 @@ typedef enum addressing_method
 	DIRECT,
 	INDEX,
 	DOUBLE_INDEX,
-	REGISTER
+	REGISTER,
+	UNKNOWN
 } AddressingMethod;
 
 /* linker info enum */

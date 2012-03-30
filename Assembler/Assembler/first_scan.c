@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "data_structs.h"
 #include "first_scan.h"
 #include "symbols.h"
 #include "error.h"
 #include "global_functions.h"
 #include "pre_compiled.h"
+#include "data_structs.h"
 
 #define LINE_SIZE 100
 
@@ -63,7 +63,7 @@ void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	CompilerNode stmt;														/* Each code line will be parsed and stored in this temporary struct */
+	CompilerNodePtr stmt;														/* Each code line will be parsed and stored in this temporary struct */
 	CommandStruct command_struct_from_validation_list;
 	Boolean label_exist = FALSE;
 
@@ -72,39 +72,40 @@ void first_scan(char *filename)
 	{
 		while(fgets(line,LINE_SIZE,fp))
 		{
-			stmt.line_number = ++line_number;
-			stmt.linker_flag = NONE;
-			read_line_and_build_statement_struct(line, &stmt);
-			if(stmt.cmd_type == COMMENT)
+			stmt = create_compiler_node();
+			stmt->line_number = ++line_number;
+			stmt->linker_flag = NONE;
+			read_line_and_build_statement_struct(line, stmt);
+			if(stmt->cmd_type == COMMENT)
 				continue;
-			if(stmt.cmd_type == UNKNOWN_CMD)
+			if(stmt->cmd_type == UNKNOWN_CMD)
 				add_error(line_number, UNKNOWN_COMMAND);
 
-			if(stmt.cmd_type == DATA || stmt.cmd_type == STRING)			/* Check if it's .data or .string instruction */
+			if(stmt->cmd_type == DATA || stmt->cmd_type == STRING)			/* Check if it's .data or .string instruction */
 			{
-				if(stmt.label) 
-					add_data_symbol(stmt.label, dc);
-				parse_and_load_data(&stmt, &dc);
+				if(stmt->label) 
+					add_data_symbol(stmt->label, dc);
+				parse_and_load_data(stmt, &dc);
 				continue;
 			}
 
-			if(stmt.cmd_type == EXTERN)										/* Check if it's .extern instruction */
+			if(stmt->cmd_type == EXTERN)										/* Check if it's .extern instruction */
 			{
-				add_external_symbol(stmt.target_operand,ic); 
+				add_external_symbol(stmt->target_operand,ic); 
 				continue;
 			}
 
-			if(stmt.label)
-				add_code_symbol(stmt.label,ic);
+			if(stmt->label)
+				add_code_symbol(stmt->label,ic);
 
-			set_addressing_and_register(stmt.source_operand, &stmt.sourceAddressing, &stmt.source_register);
-			set_addressing_and_register(stmt.target_operand, &stmt.targetAddressing, &stmt.target_register);
+			set_addressing_and_register(stmt->source_operand, &stmt->sourceAddressing, &stmt->source_register);
+			set_addressing_and_register(stmt->target_operand, &stmt->targetAddressing, &stmt->target_register);
 
-			if(stmt.cmd_type != ENTRY && stmt.cmd_type != EXTERN)
-				add_compiler_node(&stmt);
+			if(stmt->cmd_type != ENTRY && stmt->cmd_type != EXTERN)
+				add_compiler_node(stmt);
 
-			add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,++ic);
-			add_third_word(stmt.cmd_type,stmt.targetAddressing,stmt.target_operand,++ic);
+			add_second_word(stmt->cmd_type,stmt->sourceAddressing,stmt->source_operand,++ic);
+			add_third_word(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand,++ic);
 			ic++;
 		}
 		fclose(fp);
@@ -135,7 +136,7 @@ void extract_index(char *str,char *result)
 }
 
 /* This function get the correct adressing method of the operand */
-AddressingMethod get_addressing_for(char *operand)
+enum addressing_method get_addressing_for(char *operand)
 {
 	if(is_literal(operand))
 		return IMMEDIATE;
@@ -203,7 +204,7 @@ Boolean is_double_index(char *str)
 }
 
 /* Accept assembly code line and populate the CompilerNode struct used by the second scan function */
-void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
+void read_line_and_build_statement_struct(char *line, CompilerNodePtr stmt)
 {
 	char *token;
 	debug_output(line);	
@@ -269,8 +270,6 @@ Cmd parse_command(char *command_name)
 
 
 
-
-
 /* public function used be the second scan function to get the instrctions counter */
 int get_IC()
 {
@@ -284,7 +283,7 @@ int get_DC()
 }
 
 /* Set the addressing method and the register value according to the operand */
-void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg)
+void set_addressing_and_register(char *operand, enum addressing_method *addressing ,int *reg)
 {
 	if(operand)
 	{

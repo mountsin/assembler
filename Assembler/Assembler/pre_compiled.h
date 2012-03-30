@@ -1,4 +1,7 @@
-#include <stdio.h>
+typedef struct compiler_node* CompilerNodePtr;
+CompilerNodePtr create_compiler_node();
+void destroy_compiler_node(CompilerNodePtr node);
+
 
 /**
 * compiler_Node (linked list of structs) table of nodes
