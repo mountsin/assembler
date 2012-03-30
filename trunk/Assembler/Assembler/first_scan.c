@@ -10,19 +10,14 @@
 
 #define LINE_SIZE 100
 
-
-Boolean validate_label(char *token, CompilerNode *stmt);
-enum cmd parse_command(char *command_name);
-char *get_first_token(char *text);
-char *get_next_token(void);
-char *get_token(char *text);
+Boolean is_valid_label(char *token, CompilerNode *stmt);
+Cmd parse_command(char *command_name);
 void process_statement(CompilerNode stmt);
-void debug_output(char *what);
 void parse_and_load_data(CompilerNode *stmt, int *dc);
-enum addressing_method get_addressing_for(char *source_operand);
+AddressingMethod get_addressing_for(char *source_operand);
 void read_line_and_build_statement_struct(char *, CompilerNode *);
-void set_symbol(char *str,char *result[]);
-void set_index(char *str,char *result[]);
+void extract_symbol(char *str,char *result[]);
+void extract_index(char *str,char *result[]);
 void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
 void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, int ic);
 void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand, int ic);
@@ -30,8 +25,7 @@ Boolean is_register(char *str);
 Boolean is_literal(char *str);
 Boolean is_index(char *str);
 Boolean is_double_index(char *str);
-
-
+Boolean is_comment(char* line);
 
 /* Commands_list - table(array) contains each assembly command and its rules */
 CommandStruct commands_list[] = 
@@ -69,49 +63,49 @@ void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	CompilerNode stmt;													/* Each code line will be parsed and stored in this temporary struct */
+	CompilerNode stmt;														/* Each code line will be parsed and stored in this temporary struct */
 	CommandStruct command_struct_from_validation_list;
-	int label_exist = 0;
+	Boolean label_exist = FALSE;
 
 	fp = fopen(filename,"r");
 	if(fp)
 	{
-	while(fgets(line,LINE_SIZE,fp))
-	{
-		line_number++;
-		read_line_and_build_statement_struct(line, &stmt);
-		if(stmt.cmd_type == COMMENT)
-			continue;
-		if(stmt.cmd_type == UNKNOWN_CMD)
-			add_error(line_number, UNKNOWN_COMMAND);
-		label_exist = stmt.label != NULL;								/* Check if label exists */
-		if(stmt.cmd_type == DATA || stmt.cmd_type == STRING)			/* Check if it's .data or .string instruction */
+		while(fgets(line,LINE_SIZE,fp))
 		{
-			if(label_exist) 
-				add_data_symbol(stmt.label, dc);
-			parse_and_load_data(&stmt, &dc);
-			continue;
+			line_number++;
+			read_line_and_build_statement_struct(line, &stmt);
+			if(stmt.cmd_type == COMMENT)
+				continue;
+			if(stmt.cmd_type == UNKNOWN_CMD)
+				add_error(line_number, UNKNOWN_COMMAND);
+
+			if(stmt.cmd_type == DATA || stmt.cmd_type == STRING)			/* Check if it's .data or .string instruction */
+			{
+				if(stmt.label) 
+					add_data_symbol(stmt.label, dc);
+				parse_and_load_data(&stmt, &dc);
+				continue;
+			}
+
+			if(stmt.cmd_type == EXTERN)										/* Check if it's .extern instruction */
+			{
+				add_external_symbol(stmt.target_operand,ic); 
+				continue;
+			}
+
+			if(stmt.label)
+				add_code_symbol(stmt.label,ic);
+
+			set_addressing_and_register(stmt.source_operand,&stmt.sourceAddressing,&stmt.source_register);
+			set_addressing_and_register(stmt.target_operand,&stmt.targetAddressing,&stmt.target_register);
+			add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,++ic);
+			add_third_word(stmt.cmd_type,stmt.targetAddressing,stmt.target_operand,++ic);
+
+			stmt.line_number = line_number;
+			add_compiler_node(&stmt);
+			ic++;
 		}
-
-		if(stmt.cmd_type == EXTERN)										/* Check if it's .extern instruction */
-		{
-			add_external_symbol(stmt.target_operand,ic); 
-			continue;
-		}
-
-		if(label_exist)
-			add_data_symbol(stmt.label,ic);
-
-		set_addressing_and_register(stmt.source_operand,&stmt.sourceAddressing,&stmt.source_register);
-		set_addressing_and_register(stmt.target_operand,&stmt.targetAddressing,&stmt.target_register);
-		add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,++ic);
-		add_third_word(stmt.cmd_type,stmt.targetAddressing,stmt.target_operand,++ic);
-
-		stmt.line_number = line_number;
-		add_compiler_node(&stmt);
-		ic++;
-	}
-	fclose(fp);
+		fclose(fp);
 	}
 	else
 	{
@@ -120,7 +114,7 @@ void first_scan(char *filename)
 }
 
 /* This function extracts the symbl out of the operand in case of index or double index adressing method */
-void set_symbol(char *str,char *result)
+void extract_symbol(char *str,char *result)
 {
 	char *start_of_symbol;
 	start_of_symbol = strchr(str,']')+1;
@@ -131,7 +125,7 @@ void set_symbol(char *str,char *result)
 }
 
 /* This function extracts the index out of the operand in case of index or double index adressing method */
-void set_index(char *str,char *result)
+void extract_index(char *str,char *result)
 {
 	char *start_of_index = strchr(str,'[')+1;
 	char *end_of_index = strchr(str,']');
@@ -210,23 +204,23 @@ Boolean is_double_index(char *str)
 void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
 {
 	char *token;
-	Boolean result;
 	debug_output(line);	
 
-	if(line[0] == ';')
+	if(is_comment(line))
 	{
 		stmt->cmd_type = COMMENT;
-		debug_output("DEBUG: Comment line");
+		debug_output("DEBUG: Comment line ignored");
 		return;
 	}
 
 	token =  get_first_token(line);
 	if(token)
 	{
-		result = validate_label(token, stmt);
-		if(result)
+		if(is_valid_label(token, stmt))
 			token = get_next_token();		
+
 		stmt->cmd_type = parse_command(token);
+
 		if(stmt->cmd_type == UNKNOWN_CMD)
 		{
 			add_error(line_number,UNKNOWN_COMMAND);
@@ -239,12 +233,16 @@ void read_line_and_build_statement_struct(char *line, CompilerNode *stmt)
 			stmt->source_operand = NULL;
 		}
 	}
+	else
+		add_error(line_number,UNKNOWN_COMMAND);
 }
 
 /* Accepts a token and checks if it is a valid label. If so, copy the token to the lable field of the CompilerNode struct and advance to the next token */
-Boolean validate_label(char *token, CompilerNode *stmt)
+Boolean is_valid_label(char *token, CompilerNode *stmt)
 {
 	int length_without_colon = strlen(token)-1;
+	if(length_without_colon > 29)						/* label length is less or equal to 30 */
+		return FALSE;
 	if(token[length_without_colon] == ':')
 	{
 		if(token[0] < 'A' || token[0] > 'z')
@@ -259,7 +257,7 @@ Boolean validate_label(char *token, CompilerNode *stmt)
 }
 
 
-/* This functions accepts the command token from the assembly code line and return the correct Cmd enum value of it */
+/* This function accepts the command token from the assembly code line and return the correct Cmd enum value of it */
 Cmd parse_command(char *command_name)
 {
 	CommandStruct *tmp;
@@ -267,35 +265,9 @@ Cmd parse_command(char *command_name)
 	return tmp->cmd_type;
 }
 
-/* Utilities functions that encapsulates the strtok library function */
-char *get_first_token(char *text)
-{
-	return get_token(text);
-}
 
-/* Utilities functions that encapsulates the strtok library function */
-char *get_next_token(void)
-{
-	return get_token(NULL);
-}
 
-/* Utilities functions that encapsulates the strtok library function */
-char *get_token(char *text)
-{
-	char *delimiters = " ,\t\n\r";
-	char *temp;
-	temp = strtok(text, delimiters);
-	//TODO: remove
-	if(temp)
-		debug_output(temp);
-	return temp;
-}
 
-//TODO: remove
-void debug_output(char *what)
-{
-	puts(what);
-}
 
 /* public function used be the second scan function to get the instrctions counter */
 int get_IC()
@@ -340,11 +312,11 @@ void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *sour
 					second_word.is_second_scan_needed = TRUE;
 					break;
 				case INDEX:
-					set_symbol(source_operand,second_word.binary_machine_code);
+					extract_symbol(source_operand,second_word.binary_machine_code);
 					second_word.is_second_scan_needed = TRUE;
 					break;
 				case DOUBLE_INDEX:
-					set_symbol(source_operand,second_word.binary_machine_code);
+					extract_symbol(source_operand,second_word.binary_machine_code);
 					second_word.is_second_scan_needed = TRUE;
 					break;
 			}
@@ -370,14 +342,22 @@ void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_
 					break;
 				case INDEX:
 					third_word.address = ++ic;
-					set_index(target_operand,third_word.binary_machine_code);
+					extract_index(target_operand,third_word.binary_machine_code);
 					add_compiler_node(&third_word);
 					third_word.is_second_scan_needed = TRUE;
 					break;
 				case DOUBLE_INDEX:
-					set_index(target_operand,third_word.binary_machine_code);
+					extract_index(target_operand,third_word.binary_machine_code);
 					third_word.is_second_scan_needed = TRUE;
 					break;
 			}
 		}
+}
+
+/* This function check if the code line is a comment */
+Boolean is_comment(char* line)
+{
+	if(line[0] == ';')
+		return TRUE;
+	return FALSE;
 }

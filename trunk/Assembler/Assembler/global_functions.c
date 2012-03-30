@@ -5,9 +5,7 @@
 #include "first_scan.h"
 #include "data_structs.h"
 
-void dec2bin(long decimal, char *binary,int binLength);
-void convert_negative_binary_2complement(char *binary);
-
+char *get_token(char *text);
  
 /**
 *  accepts a decimal integer and set a binary coded string into char pointer "binary
@@ -112,3 +110,33 @@ void dispose(void *)
 	
 }
 */
+
+/* Utility function that encapsulates the strtok library function */
+char *get_first_token(char *text)
+{
+	return get_token(text);
+}
+
+/* Utility function that encapsulates the strtok library function */
+char *get_next_token(void)
+{
+	return get_token(NULL);
+}
+
+/* Utility function that encapsulates the strtok library function */
+char *get_token(char *text)
+{
+	char *delimiters = " ,\t\n\r";
+	char *temp;
+	temp = strtok(text, delimiters);
+	//TODO: remove
+	if(temp)
+		debug_output(temp);
+	return temp;
+}
+
+//TODO: remove
+void debug_output(char *what)
+{
+	puts(what);
+}
