@@ -72,8 +72,8 @@ void first_scan(char *filename)
 	{
 		while(fgets(line,LINE_SIZE,fp))
 		{
-			line_number++;
-			stmt.line_number = line_number;
+			stmt.line_number = ++line_number;
+			stmt.linker_flag = NONE;
 			read_line_and_build_statement_struct(line, &stmt);
 			if(stmt.cmd_type == COMMENT)
 				continue;
@@ -97,10 +97,12 @@ void first_scan(char *filename)
 			if(stmt.label)
 				add_code_symbol(stmt.label,ic);
 
-			set_addressing_and_register(stmt.source_operand,&stmt.sourceAddressing,&stmt.source_register);
-			set_addressing_and_register(stmt.target_operand,&stmt.targetAddressing,&stmt.target_register);
+			set_addressing_and_register(stmt.source_operand, &stmt.sourceAddressing, &stmt.source_register);
+			set_addressing_and_register(stmt.target_operand, &stmt.targetAddressing, &stmt.target_register);
+
 			if(stmt.cmd_type != ENTRY && stmt.cmd_type != EXTERN)
 				add_compiler_node(&stmt);
+
 			add_second_word(stmt.cmd_type,stmt.sourceAddressing,stmt.source_operand,++ic);
 			add_third_word(stmt.cmd_type,stmt.targetAddressing,stmt.target_operand,++ic);
 			ic++;
