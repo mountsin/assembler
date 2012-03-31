@@ -94,6 +94,12 @@ void TestSetIndex2(CuTest *tc)
 	CuAssertStrEquals(tc,"K",result);
 }
 
+void TestCreateCompilerNodePtr(CuTest *tc)
+{
+	CompilerNodePtr p = create_compiler_node();
+	CuAssertPtrNotNull(tc,p);
+}
+
 
 CuSuite* FirstScanGetSuite()
 {
@@ -111,5 +117,6 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite, TestSetSymbol2);
 	SUITE_ADD_TEST(suite, TestSetIndex);
 	SUITE_ADD_TEST(suite, TestSetIndex2);
+	SUITE_ADD_TEST(suite,TestCreateCompilerNodePtr);
 	return suite;
 }

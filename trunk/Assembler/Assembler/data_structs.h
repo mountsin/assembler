@@ -40,7 +40,7 @@ typedef enum cmd
 	STRING,				/* .string */
 	ENTRY,				/* .entry */
 	EXTERN,				/* .extern */
-	IGNORE,			/* comment line or white chars line -  the assmbler will ignore */
+	COMMENT,			/* comment line or white chars line -  the assmbler will ignore */
 	UNKNOWN_CMD = 99	//TODO: duplicate with stasus enum values
 } Cmd;
 
@@ -97,7 +97,7 @@ typedef struct
 {
 	Cmd cmd_type;
 	char name[8];
-	Cmd_parameters_type cmd_params_type; /*how many operands the assembly command require*/
+	//Cmd_parameters_type cmd_params_type; /*how many operands the assembly command require*/ //TODO: Yoval, we don't need it
 	int source_addressing_options[5]; /* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 	int dest_addressing_options[5];	  /* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 	
