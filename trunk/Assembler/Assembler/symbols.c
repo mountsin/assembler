@@ -3,6 +3,7 @@
 #include <string.h>
 #include "symbols.h"
 #include "global_constants.h"
+#include "error.h"
 
 /*symbol list head pointers*/
 Symbol *data_symbols_list = NULL;
@@ -86,18 +87,18 @@ int add_code_symbol(char *name, int address)
 	return OK;
 }
 
-int add_external_symbol(char *name, int address)
+void add_external_symbol(char *name, int address, int line_number)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
 	tmp->name = name;
 	tmp->address = address;
 	tmp->next = NULL;
 	
-	if(get_external_symbol_by_name(name) != NULL) /*symbols already exist in the list*/
-		return ERROR;
+	if(get_external_symbol_by_name(name) != NULL) /* symbols already exist in the list*/
+		add_error(line_number,SYMBOL_ALREADY_EXISTS);
 
-	if(get_data_symbol_by_name(name) != NULL) /*symbols already exist in a different list*/
-		return ERROR;
+	if(get_data_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
+		add_error(line_number,SYMBOL_ALREADY_EXISTS);
 
 	/*set linked list nodes*/
 	if(external_symbols_list_tail) /*tail already defined*/
@@ -107,8 +108,6 @@ int add_external_symbol(char *name, int address)
 	}
 	else
 		external_symbols_list = external_symbols_list_tail = tmp;		/*first node - set head and tail*/
-
-	return OK;
 }
 
 int add_entries_symbol(char *name, int address)
