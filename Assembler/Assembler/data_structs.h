@@ -97,9 +97,9 @@ typedef struct
 {
 	Cmd cmd_type;
 	char name[8];
-	//Cmd_parameters_type cmd_params_type; /*how many operands the assembly command require*/ //TODO: Yoval, we don't need it
-	int source_addressing_options[5]; /* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
-	int dest_addressing_options[5];	  /* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
+	//Cmd_parameters_type cmd_params_type;	/* how many operands the assembly command require */  //TODO: Yoval, this does not compile, as the comnabd_list array does not initialize the new filed. I think that we don't need this new field
+	int source_addressing_options[5];		/* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
+	int dest_addressing_options[5];			/* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
 	
 } CommandStruct;
 

@@ -10,7 +10,7 @@ typedef struct symbol
 int add_data_symbol(char *name, int address);
 int add_code_symbol(char *name, int address);
 int add_entries_symbol(char *name, int address);
-int add_external_symbol(char *name, int address);
+void add_external_symbol(char *name, int address);
 
 int dispose();
 
