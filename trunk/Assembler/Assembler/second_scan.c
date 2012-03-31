@@ -38,6 +38,7 @@ void second_scan()
 
 	while(h != NULL) 
 	{
+
 		if(h->is_second_scan_needed == TRUE) /* second scan required*/
 		{
 			if(is_binary_Str(h->binary_machine_code) != TRUE) /*not a binary string*/
@@ -81,6 +82,11 @@ void second_scan()
 
 
 		}
+		//TODO: else /*second scan not needed - just set entries and external symbols*/
+		//{
+					
+		//Symbol = get_external_symbol_by_name(symbol_name);
+		//if(h->)
 
 		/*final check - binary machine code is really a binary*/	
 		if(is_binary_Str(h->binary_machine_code) != TRUE) /*not a binary string*/
