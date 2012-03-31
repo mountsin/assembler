@@ -136,7 +136,7 @@ Symbol *get_data_symbol_by_name(char *name_to_find)
 	Symbol *datasym_pointer = data_symbols_list;
 	while(datasym_pointer)
 	{
-		if (strcmp(datasym_pointer->name, name_to_find) == 0) /* name has found*/
+		if (strncmp(datasym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
 			return datasym_pointer;
 
 		datasym_pointer = datasym_pointer->next;
@@ -150,7 +150,7 @@ Symbol* get_code_symbol_by_name(char *name_to_find)
 	Symbol *datasym_pointer = code_symbols_list;
 	while(datasym_pointer)
 	{
-		if (strcmp(datasym_pointer->name, name_to_find) == 0) /* name has found*/
+		if (strncmp(datasym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
 			return datasym_pointer;
 
 		datasym_pointer = datasym_pointer->next;
@@ -164,7 +164,7 @@ Symbol *get_external_symbol_by_name(char *name_to_find)
 	Symbol *extsym_pointer = external_symbols_list;
 	while(extsym_pointer)
 	{
-		if (strcmp(extsym_pointer->name, name_to_find) == 0) /* name has found*/
+		if (strncmp(extsym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
 			return extsym_pointer;
 
 		extsym_pointer = extsym_pointer->next;
