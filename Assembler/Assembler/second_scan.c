@@ -39,7 +39,7 @@ void second_scan()
 	while(h != NULL) 
 	{
 
-		if(h->is_second_scan_needed == TRUE) /* second scan required*/
+		if(h->second_scan_type != SKIP) /* second scan required*/ //TODO: please verify me
 		{
 			if(is_binary_Str(h->binary_machine_code) != TRUE) /*not a binary string*/
 			{
