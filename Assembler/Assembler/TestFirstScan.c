@@ -100,6 +100,65 @@ void TestCreateCompilerNodePtr(CuTest *tc)
 	CuAssertPtrNotNull(tc,p);
 }
 
+void TestReadLineCmdType(CuTest *tc)
+{
+	CompilerNodePtr p = create_compiler_node();
+	char line[] = "		.entry		STRADD";
+	read_line_and_set_compiler_node(line,p);
+	CuAssertIntEquals(tc,ENTRY,p->cmd_type);
+}
+
+void TestReadLineLabel(CuTest *tc)
+{
+	CompilerNodePtr p = create_compiler_node();
+	char line[] = "		.entry		STRADD";
+	read_line_and_set_compiler_node(line,p);
+	CuAssertStrEquals(tc,"",p->label);
+}
+
+void TestReadLineCmdTypeLea(CuTest *tc)
+{
+	CompilerNodePtr p = create_compiler_node();
+	char line[] = "MAIN:		lea		STR[%LEN], STRADD";
+	read_line_and_set_compiler_node(line,p);
+	CuAssertIntEquals(tc,LEA,p->cmd_type);
+}
+
+void TestReadLineLabelLea(CuTest *tc)
+{
+	CompilerNodePtr p = create_compiler_node();
+	char line[] = "MAIN:		lea		STR[%LEN], STRADD";
+	read_line_and_set_compiler_node(line,p);
+	CuAssertStrEquals(tc,"MAIN",p->label);
+}
+
+void TestReadLineIsSecondNeededLea(CuTest *tc)
+{
+	CompilerNodePtr p = create_compiler_node();
+	char line[] = "MAIN:		lea		STR[%LEN], STRADD";
+	read_line_and_set_compiler_node(line,p);
+	CuAssertTrue(tc,!p->is_second_scan_needed);
+}
+
+void TestReadLineBinaryLea(CuTest *tc)
+{
+	CompilerNodePtr p = create_compiler_node();
+	char line[] = "MAIN:		lea		STR[%LEN], STRADD";
+	read_line_and_set_compiler_node(line,p);
+	CuAssertStrEquals(tc,"0110010000001000",p->binary_machine_code);
+}
+
+void TestDec2Bin(CuTest *tc)
+{
+	char binary_machine_code[17];
+	char bin_code[5];
+	binary_machine_code[0] = NULL;
+	dec2bin(LEA,bin_code,4);
+	bin_code[4] = NULL;
+	strcat(binary_machine_code,bin_code);
+	CuAssertStrEquals(tc,"0110",binary_machine_code);
+}
+
 
 CuSuite* FirstScanGetSuite()
 {
@@ -118,5 +177,12 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite, TestSetIndex);
 	SUITE_ADD_TEST(suite, TestSetIndex2);
 	SUITE_ADD_TEST(suite,TestCreateCompilerNodePtr);
+	SUITE_ADD_TEST(suite,TestReadLineCmdType);
+	SUITE_ADD_TEST(suite,TestReadLineLabel);
+	SUITE_ADD_TEST(suite,TestReadLineCmdTypeLea);
+	SUITE_ADD_TEST(suite,TestReadLineLabelLea);
+	SUITE_ADD_TEST(suite,TestReadLineIsSecondNeededLea);
+	//SUITE_ADD_TEST(suite,TestReadLineBinaryLea);
+	SUITE_ADD_TEST(suite,TestDec2Bin);
 	return suite;
 }

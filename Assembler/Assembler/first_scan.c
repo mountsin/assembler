@@ -26,6 +26,7 @@ Boolean is_literal(char *str);
 Boolean is_index(char *str);
 Boolean is_double_index(char *str);
 Boolean is_comment(char* line);
+void set_binary_code(CompilerNodePtr stmt);
 
 /* Commands_list - table(array) contains each assembly command and its rules */
 CommandStruct commands_list[] = 
@@ -112,6 +113,27 @@ void first_scan(char *filename)
 	{
 		add_error(line_number,INPUT_FILE_FAILURE);
 	}
+}
+
+void set_binary_code(CompilerNodePtr stmt)
+{
+	char temp4[5];
+	char temp3[4];
+	dec2bin(stmt->cmd_type,temp4,4);
+	temp4[4] = NULL;
+	strcat(stmt->binary_machine_code,temp3);
+	dec2bin(stmt->sourceAddressing,temp3,3);
+	temp3[3] = NULL;
+	strcat(stmt->binary_machine_code,temp3);
+	dec2bin(stmt->source_register,temp3,3);
+	temp3[3] = NULL;
+	strcat(stmt->binary_machine_code,temp3);
+	dec2bin(stmt->targetAddressing ,temp3,3);
+	temp3[3] = NULL;
+	strcat(stmt->binary_machine_code,temp3);
+	dec2bin(stmt->target_register,temp3,3);
+	temp3[3] = NULL;
+	strcat(stmt->binary_machine_code,temp3);
 }
 
 /* This function extracts the symbl out of the operand in case of index or double index adressing method */
@@ -205,12 +227,16 @@ Boolean is_double_index(char *str)
 void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 {
 	char *token;
+#if DUBUG
 	debug_output(line);	
+#endif
 
 	if(is_comment(line))
 	{
 		stmt->cmd_type = COMMENT;
+#if DEBUG
 		debug_output("DEBUG: Comment line ignored");
+#endif
 		return;
 	}
 
@@ -236,6 +262,7 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 			stmt->source_operand = NULL;
 		}
 	}
+	set_binary_code(stmt); 
 }
 
 /* Accepts a token and checks if it is a valid label. If so, copy the token to the lable field of the CompilerNode struct and advance to the next token */

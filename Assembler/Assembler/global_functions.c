@@ -130,8 +130,10 @@ char *get_token(char *text)
 	char *temp;
 	temp = strtok(text, delimiters);
 	//TODO: remove
+#if DEBUG
 	if(temp)
 		debug_output(temp);
+#endif
 	return temp;
 }
 
