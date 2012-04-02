@@ -3,6 +3,14 @@ CompilerNodePtr create_compiler_node();
 void destroy_compiler_node(CompilerNodePtr node);
 
 
+
+typedef enum second_scan_type
+{
+	NONE,
+	LABEL,
+	LABEL_OFFSET
+} SecondScanType;
+
 /**
 * compiler_Node (linked list of structs) table of nodes
 * each represent a pre-compiled line
@@ -10,7 +18,7 @@ void destroy_compiler_node(CompilerNodePtr node);
 typedef struct compiler_node
 {
 	struct compiler_node *next;  
-	char label[31];
+	char label[31];								/* has two uses: 1. The first label of instruction line. 2. a temp label string that will be handled by the second scan */
 	int address;
 	enum cmd cmd_type;							/* type of command */
 	enum addressing_method sourceAddressing;
@@ -20,7 +28,7 @@ typedef struct compiler_node
 	char *source_operand;						/* first parameter (nullable) */
 	char *target_operand;						/* second parameter (nullable) */
 	char binary_machine_code[17];					/* "101010110" "STR" "&L STR" */
-	enum boolean is_second_scan_needed;			/* is second scan processing needed */
+	SecondScanType second_scan_type;			/* second scan processing type */
 	enum linker_enum linker_flag;
 	int line_number;
 } CompilerNode;
