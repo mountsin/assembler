@@ -7,8 +7,13 @@
 #include "global_functions.h"
 #include "pre_compiled.h"
 #include "data_structs.h"
+#include "global_constants.h"
 
 #define LINE_SIZE 100
+
+#define ASM_COMMAND_BITS	 4
+#define ASM_ADDRESSING_BITS	 3
+#define ASM_REGISTER_BITS	 3
 
 Boolean is_valid_label(char *token, CompilerNode *stmt);
 void parst_and_set_command_type(char* command_name, CompilerNodePtr node);
@@ -31,28 +36,28 @@ void set_binary_code(CompilerNodePtr stmt);
 /* Commands_list - table(array) contains each assembly command and its rules */
 CommandStruct commands_list[] = 
 {
-/*	cmd_type	name		source_addressing_options	dest_addressing_options */
-	MOV,		"mov", 		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	CMP,		"cmp", 		{0,1,2,3,4},				 {0,1,2,3,4},
-	ADD,		"add", 		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	SUB,		"sub", 		{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	NOT,		"not", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	CLR,		"clr", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	LEA,		"lea", 		{1,2,3,EMPTY				,EMPTY},{1,2,3,4,EMPTY},
-	INC,		"inc", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	DEC,		"dec", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	JMP,		"jmp", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	BNE,		"bne", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	RED,		"red", 		EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	PRN,		"prn", 		EMPTY_ARRAY,				 {0,1,2,3,4},
-	JSR,		"jsr", 		EMPTY_ARRAY,				 {1,EMPTY,EMPTY,EMPTY,EMPTY},
-	RTS,		"rts", 		EMPTY_ARRAY,				 EMPTY_ARRAY,
-	STOP,		"stop",		EMPTY_ARRAY,				 EMPTY_ARRAY,
-	DATA,		".data",	EMPTY_ARRAY,				 EMPTY_ARRAY,
-	STRING,		".string",	EMPTY_ARRAY,				 EMPTY_ARRAY,
-	ENTRY,		".entry",	EMPTY_ARRAY,				 EMPTY_ARRAY,	
-	EXTERN,		".extern",	EMPTY_ARRAY,				 EMPTY_ARRAY,	
-	UNKNOWN_CMD,"\0"	  ,	EMPTY_ARRAY,				 EMPTY_ARRAY
+/*	cmd_type	name		how many operands		source_addressing_options	dest_addressing_options */
+	MOV,		"mov", 		TWO_OPERANDS,			{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	CMP,		"cmp", 		TWO_OPERANDS,			{0,1,2,3,4},				 {0,1,2,3,4},
+	ADD,		"add", 		TWO_OPERANDS,			{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	SUB,		"sub", 		TWO_OPERANDS,			{0,1,2,3,4},				 {1,2,3,4,EMPTY},
+	NOT,		"not", 		NO_OPERANDS,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	CLR,		"clr", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	LEA,		"lea", 		TWO_OPERANDS,			{1,2,3,EMPTY,EMPTY},		 {1,2,3,4,EMPTY},
+	INC,		"inc", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	DEC,		"dec", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	JMP,		"jmp", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	BNE,		"bne", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	RED,		"red", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
+	PRN,		"prn", 		ONE_OPERAND,			EMPTY_ARRAY,				 {0,1,2,3,4},
+	JSR,		"jsr", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,EMPTY,EMPTY,EMPTY,EMPTY},
+	RTS,		"rts", 		NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
+	STOP,		"stop",		NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
+	DATA,		".data",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
+	STRING,		".string",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
+	ENTRY,		".entry",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,	
+	EXTERN,		".extern",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,	
+	UNKNOWN_CMD,"\0"	  ,	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY
 };
 
 int ic = 0;								/* Instructions counter */
@@ -73,6 +78,7 @@ void first_scan(char *filename)
 	{
 		while(fgets(line,LINE_SIZE,fp))
 		{
+			//TODO: REMOVE - no need to allocate memory more the once. instead - clear all fields
 			stmt = create_compiler_node();
 			stmt->line_number = ++line_number;
 			read_line_and_set_compiler_node(line, stmt);
@@ -90,7 +96,12 @@ void first_scan(char *filename)
 
 			if(stmt->cmd_type == EXTERN)										/* Check if it's .extern instruction */
 			{
-				add_external_symbol(stmt->target_operand,ic); 
+				add_external_symbol(stmt->label,UNDEFINED_ADDRESS); 
+				continue;
+			}
+			if(stmt->cmd_type == ENTRY)										/* Check if it's .entry instruction */
+			{
+				add_entries_symbol(stmt->label,UNDEFINED_ADDRESS); 
 				continue;
 			}
 
@@ -100,6 +111,9 @@ void first_scan(char *filename)
 			set_addressing_and_register(stmt->source_operand, &stmt->sourceAddressing, &stmt->source_register);
 			set_addressing_and_register(stmt->target_operand, &stmt->targetAddressing, &stmt->target_register);
 
+			/*TODO: validate command*/
+			/*TODO: check return type*/
+			build_binary_machine_code(stmt);
 			if(stmt->cmd_type != ENTRY && stmt->cmd_type != EXTERN)
 				add_compiler_node(stmt);
 
@@ -199,6 +213,40 @@ Boolean is_register(char *str)
 	return FALSE;
 }
 
+
+
+Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
+{
+	/*machin code word structure:*/
+	/* command(4) + source addressing(3) + source registry(3) + target addressing(3) + target registry(3) */
+
+	char *command =						(char *)malloc(sizeof(char)*(ASM_COMMAND_BITS+1));		/*command code - 4 bits*/
+	char *source_addressing_method =	(char *)malloc(sizeof(char)*(ASM_ADDRESSING_BITS+1));	/*source operand addressing method code  - 3 bits*/
+	char *source_register =				(char *)malloc(sizeof(char)*(ASM_REGISTER_BITS+1));		/*source operand register  - 3 bits*/
+	char *target_addressing_method =	(char *)malloc(sizeof(char)*(ASM_ADDRESSING_BITS+1));	/*target operand addressing method code  - 3 bits*/
+	char *target_register =				(char *)malloc(sizeof(char)*(ASM_REGISTER_BITS+1));		/*source operand register  - 3 bits*/
+	
+	/*TODO: check that cmd_type<=15 if not - add error and return FALSE*/
+	dec2bin(cn_ptr->cmd_type,			command,					ASM_COMMAND_BITS);
+	dec2bin(cn_ptr->sourceAddressing,	source_addressing_method,	ASM_ADDRESSING_BITS);
+	dec2bin(cn_ptr->source_register,	source_register,			ASM_REGISTER_BITS);
+	dec2bin(cn_ptr->targetAddressing,	target_addressing_method,	ASM_ADDRESSING_BITS);
+	dec2bin(cn_ptr->target_register,	target_register,			ASM_REGISTER_BITS);
+	
+	strcat(cn_ptr->binary_machine_code, command);					/* add comman bits*/
+	strcat(cn_ptr->binary_machine_code, source_addressing_method);	/* add source addressing method bits*/
+	strcat(cn_ptr->binary_machine_code, source_register);			/* add source register bits*/
+	strcat(cn_ptr->binary_machine_code, target_addressing_method);	/* add target addressing method bits*/
+	strcat(cn_ptr->binary_machine_code, target_register);			/* add target register register bits*/
+	
+	//TODO: use dipose instead
+	free(command);
+	free(source_addressing_method);
+	free(source_register);
+	free(target_addressing_method);
+	free(target_register);
+	return TRUE;
+}
 /* This function accepts an operand string and checks if it is a literal value (a number) */
 Boolean is_literal(char *str)
 {
