@@ -29,7 +29,7 @@ void Test_second_scan(CuTest *tc)
 	cn_list = get_compiler_nodes_list_head();
 	strcpy(cn_list->binary_machine_code,"1011111010111110");
 	cn_list->linker_flag = ABSOLUTE;
-	cn_list->is_second_scan_needed = FALSE;
+	cn_list->second_scan_type = SKIP; //TODO: Yuval please verify me
 	cn_list->sourceAddressing = DIRECT;
 	cn_list->source_operand = "#3";
 	cn_list->targetAddressing = DIRECT;
@@ -48,7 +48,7 @@ void Test_second_scan(CuTest *tc)
 	add_compiler_node(stmt);
 	cn_list = cn_list->next;
 	strcpy(cn_list->binary_machine_code,"LABEL1");
-	cn_list->is_second_scan_needed = TRUE;
+	cn_list->second_scan_type != SKIP; //TODO: Yuval please verify me
 	cn_list->linker_flag = NONE;
 	cn_list->sourceAddressing = DIRECT;
 	cn_list->source_operand = "#3";
@@ -68,7 +68,7 @@ void Test_second_scan(CuTest *tc)
 	add_compiler_node(stmt);
 	cn_list = cn_list->next;
 	strcpy(cn_list->binary_machine_code,"EXT1");
-	cn_list->is_second_scan_needed = TRUE;
+	cn_list->second_scan_type != SKIP; //TODO: Yuval please verify me
 	cn_list->linker_flag = NONE;
 	cn_list->sourceAddressing = DIRECT;
 	cn_list->source_operand = "#3";

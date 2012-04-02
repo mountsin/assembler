@@ -20,7 +20,7 @@ CompilerNodePtr create_compiler_node()
 		node->address = 0;
 		node->binary_machine_code[0] = NULL;
 		node->cmd_type = UNKNOWN_CMD;
-		node->is_second_scan_needed = FALSE;
+		node->second_scan_type = SKIP;
 		node->label[0] = NULL;
 		node->line_number = 0;
 		node->linker_flag = NONE;

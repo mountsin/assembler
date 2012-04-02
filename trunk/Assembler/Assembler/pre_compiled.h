@@ -6,7 +6,7 @@ void destroy_compiler_node(CompilerNodePtr node);
 
 typedef enum second_scan_type
 {
-	NONE,
+	SKIP,
 	LABEL,
 	LABEL_OFFSET
 } SecondScanType;

@@ -387,15 +387,15 @@ void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *sour
 				case DIRECT:
 					strcpy(second_word->binary_machine_code,source_operand);
 					second_word->binary_machine_code[strlen(source_operand)] = '\0';
-					second_word->is_second_scan_needed = TRUE;
+					second_word->second_scan_type = LABEL;
 					break;
 				case INDEX:
 					extract_symbol(source_operand,second_word->binary_machine_code);
-					second_word->is_second_scan_needed = TRUE;
+					second_word->second_scan_type = LABEL;
 					break;
 				case DOUBLE_INDEX:
 					extract_symbol(source_operand,second_word->binary_machine_code);
-					second_word->is_second_scan_needed = TRUE;
+					second_word->second_scan_type = LABEL;
 					break;
 			}
 			add_compiler_node(second_word);
@@ -418,17 +418,17 @@ void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_
 				case DIRECT:
 					strcpy(third_word->binary_machine_code,target_operand);	/* The second operand is a symbol that should be translated to it's addresss value in the second scan phase */
 					third_word->binary_machine_code[strlen(target_operand)] = '\0';
-					third_word->is_second_scan_needed = TRUE;				/* I save the symble name as is in the binary machine code field and tell the second scan that it needs to translate it to the address value of the symbol */
+					third_word->second_scan_type = LABEL;				    /* I save the symble name as is label field and tell the second scan that it needs to translate it to the address value of the symbol */
 					break;
 				case INDEX:
 					third_word->address = ++ic;
 					extract_index(target_operand,third_word->binary_machine_code);
 					add_compiler_node(third_word);
-					third_word->is_second_scan_needed = TRUE;
+					third_word->second_scan_type = LABEL_OFFSET;
 					break;
 				case DOUBLE_INDEX:
 					extract_index(target_operand,third_word->binary_machine_code);
-					third_word->is_second_scan_needed = TRUE;
+					third_word->second_scan_type = LABEL_OFFSET;
 					break;
 			}
 		}
