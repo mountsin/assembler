@@ -98,7 +98,7 @@ void first_scan(char *filename)
 			}
 			if(stmt->cmd_type == ENTRY)										/* Check if it's .entry instruction */
 			{
-				add_entries_symbol(stmt->target_operand,UNDEFINED_ADDRESS,line_number); 
+				add_entries_symbol(stmt->target_operand,UNDEFINED_ADDRESS); 
 				continue;
 			}
 
@@ -111,12 +111,11 @@ void first_scan(char *filename)
 			/*TODO: validate command*/
 			/*TODO: check return type*/
 			build_binary_machine_code(stmt);
-			if(stmt->cmd_type != ENTRY && stmt->cmd_type != EXTERN)
-				add_compiler_node(stmt);
+			ic++;
+			add_compiler_node(stmt);
 
 			add_operand_nodes(stmt->cmd_type,stmt->sourceAddressing,stmt->source_operand,++ic);
 			add_operand_nodes(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand,++ic);
-			ic++;
 		}
 		fclose(fp);
 	}
@@ -388,7 +387,7 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand, 
 			extract_symbol(operand,node1->label);
 			extract_index(operand,node2->label);
 			node1->second_scan_type = LABEL;
-			node2->second_scan_type = LABEL_OFFSET;
+			node2->second_scan_type = node2->label[0] == '%'? LABEL_OFFSET:LABEL;
 			node1->address = ++ic;
 			node2->address = ++ic;
 			add_compiler_node(node1);
