@@ -5,6 +5,7 @@
 #include "global_functions.h"
 #include "data_structs.h"
 #include "pre_compiled.h"
+#include "error.h"
 
 void TestGetFirstToken(CuTest *tc)
 {
@@ -167,6 +168,15 @@ void TestDec2Bin(CuTest *tc)
 	CuAssertStrEquals(tc,"0110",binary_machine_code);
 }
 
+void TestAddExtSymbol(CuTest *tc)
+{
+	char line[] = "		.extern		PRTSTR";
+	CompilerNodePtr p = create_compiler_node();
+	read_line_and_set_compiler_node(line,p);
+	CuAssertPtrEquals(tc,NULL,get_errors_list());
+
+}
+
 
 CuSuite* FirstScanGetSuite()
 {
@@ -193,5 +203,6 @@ CuSuite* FirstScanGetSuite()
 	//SUITE_ADD_TEST(suite,TestBuildBinaryCode);
 	//SUITE_ADD_TEST(suite,TestReadLineBinaryLea);
 	SUITE_ADD_TEST(suite,TestDec2Bin);
+	SUITE_ADD_TEST(suite,TestAddExtSymbol);
 	return suite;
 }
