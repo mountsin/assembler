@@ -36,7 +36,7 @@ Symbol *get_external_symbols_list()
 	return external_symbols_list;
 }
 
-int add_data_symbol(char *name, int address)
+void add_data_symbol(char *name, int address, int line_number)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
 	tmp->name = name;
@@ -44,11 +44,16 @@ int add_data_symbol(char *name, int address)
 	tmp->next = NULL;
 	
 	if(get_data_symbol_by_name(name) != NULL)		/* symbol already exist in the list */
-		return ERROR;
+	{
+		add_error(line_number,SYMBOL_ALREADY_EXISTS);
+		return;
+	}
 
 	if(get_external_symbol_by_name(name) != NULL)	/* symbol already exist in a different list */
-		return ERROR;
-
+	{
+		add_error(line_number,SYMBOL_ALREADY_EXISTS);
+		return;
+	}
 	
 	/*set linked list nodes*/
 	if(data_symbols_list_tail) /*tail already defined*/
@@ -58,11 +63,9 @@ int add_data_symbol(char *name, int address)
 	}
 	else
 		data_symbols_list = data_symbols_list_tail = tmp;		/*first node - set head and tail*/
-
-	return OK;
 }
 
-int add_code_symbol(char *name, int address)
+void add_code_symbol(char *name, int address, int line_number)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
 	tmp->name = name;
@@ -70,11 +73,16 @@ int add_code_symbol(char *name, int address)
 	tmp->next = NULL;
 	
 	if(get_code_symbol_by_name(name) != NULL)		/* symbol already exist in the list */
-		return ERROR;
+	{
+		add_error(line_number,SYMBOL_ALREADY_EXISTS);
+		return;
+	}
 
 	if(get_external_symbol_by_name(name) != NULL)	/* symbol already exist in a different list */
-		return ERROR;
-
+	{
+		add_error(line_number,SYMBOL_ALREADY_EXISTS);
+		return;
+	}
 	
 	/*set linked list nodes*/
 	if(code_symbols_list_tail) /*tail already defined*/
@@ -84,7 +92,6 @@ int add_code_symbol(char *name, int address)
 	}
 	else
 		code_symbols_list = data_symbols_list_tail = tmp;		/*first node - set head and tail*/
-	return OK;
 }
 
 void add_external_symbol(char *name, int address, int line_number)
@@ -110,7 +117,7 @@ void add_external_symbol(char *name, int address, int line_number)
 		external_symbols_list = external_symbols_list_tail = tmp;		/*first node - set head and tail*/
 }
 
-int add_entries_symbol(char *name, int address)
+void add_entries_symbol(char *name, int address)
 {
 	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
 	tmp->name = name;
@@ -125,10 +132,7 @@ int add_entries_symbol(char *name, int address)
 	}
 	else
 		entries_symbols_list = entries_symbols_list_tail = tmp;		/*first node - set head and tail*/
-
-	return OK;
 }
-
 
 Symbol *get_data_symbol_by_name(char *name_to_find)
 {

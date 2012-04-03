@@ -46,9 +46,9 @@ void Test_create_file_ent(CuTest *tc)
 	Symbol *ent_sym_list;
 	
 	/*set cn_list*/
-	add_entries_symbol("MAIN",101);
-	add_entries_symbol("ADD",150);
-	add_entries_symbol("ENTRY",2251);
+	add_entries_symbol("MAIN",101,0);
+	add_entries_symbol("ADD",150,0);
+	add_entries_symbol("ENTRY",2251,0);
 
 	ent_sym_list = get_entries_symbols_list();
 	
@@ -61,9 +61,9 @@ void Test_create_file_ext(CuTest *tc)
 	Symbol *ext_sym_list;
 	
 	/*set cn_list*/
-	add_external_symbol("EXT1",23);
-	add_external_symbol("EXT2",57);
-	add_external_symbol("EXT3",2261);
+	add_external_symbol("EXT1",23,0);
+	add_external_symbol("EXT2",57,0);
+	add_external_symbol("EXT3",2261,0);
 
 	ext_sym_list = get_external_symbols_list();
 	
