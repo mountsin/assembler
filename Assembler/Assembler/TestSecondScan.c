@@ -78,19 +78,19 @@ void Test_second_scan(CuTest *tc)
 
 	//=================================================
 			/*set data / string*/
-	add_data_symbol("MAIN",20);
-	add_data_symbol("LABEL1",21);
-	add_data_symbol("LABEL2",22);
+	add_data_symbol("MAIN",20,0);
+	add_data_symbol("LABEL1",21,0);
+	add_data_symbol("LABEL2",22,0);
 
 		/*set entries*/
-	add_entries_symbol("MAIN",20);
-	add_entries_symbol("ADD",101);
-	add_entries_symbol("ENTRY",102);
+	add_entries_symbol("MAIN",20,0);
+	add_entries_symbol("ADD",101,0);
+	add_entries_symbol("ENTRY",102,0);
 
 		/*set externals*/
 	//add_external_symbol("EXT1",23);
-	add_external_symbol("EXT2",57);
-	add_external_symbol("EXT3",2261);
+	add_external_symbol("EXT2",57,0);
+	add_external_symbol("EXT3",2261,0);
 
 	second_scan();
 	//CuAssertStrEquals(tc, expected, actual);

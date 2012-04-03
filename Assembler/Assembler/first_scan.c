@@ -77,7 +77,6 @@ void first_scan(char *filename)
 	{
 		while(fgets(line,LINE_SIZE,fp))
 		{
-			//TODO: REMOVE - no need to allocate memory more the once. instead - clear all fields
 			stmt = create_compiler_node();
 			stmt->line_number = ++line_number;
 			read_line_and_set_compiler_node(line, stmt);
@@ -87,24 +86,24 @@ void first_scan(char *filename)
 			if(stmt->cmd_type == DATA || stmt->cmd_type == STRING)			/* Check if it's .data or .string instruction */
 			{
 				if(stmt->label) 
-					add_data_symbol(stmt->label, dc);
+					add_data_symbol(stmt->label, dc,line_number);
 				parse_and_load_data(stmt, &dc);
 				continue;
 			}
 
 			if(stmt->cmd_type == EXTERN)									/* Check if it's .extern instruction */
 			{
-				add_external_symbol(stmt->label,UNDEFINED_ADDRESS); 
+				add_external_symbol(stmt->target_operand,UNDEFINED_ADDRESS,line_number); 
 				continue;
 			}
 			if(stmt->cmd_type == ENTRY)										/* Check if it's .entry instruction */
 			{
-				add_entries_symbol(stmt->label,UNDEFINED_ADDRESS); 
+				add_entries_symbol(stmt->target_operand,UNDEFINED_ADDRESS,line_number); 
 				continue;
 			}
 
 			if(strlen(stmt->label) > 0)
-				add_code_symbol(stmt->label,ic);
+				add_code_symbol(stmt->label,ic,line_number);
 
 			set_addressing_and_register(stmt->source_operand, &stmt->sourceAddressing, &stmt->source_register);
 			set_addressing_and_register(stmt->target_operand, &stmt->targetAddressing, &stmt->target_register);
