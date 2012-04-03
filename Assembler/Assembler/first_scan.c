@@ -24,8 +24,7 @@ void read_line_and_set_compiler_node(char *, CompilerNode *);
 void extract_symbol(char *str,char *result[]);
 void extract_index(char *str,char *result[]);
 void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
-void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, int ic);
-void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand, int ic);
+void add_operand_nodes(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, int ic);
 Boolean is_register(char *str);
 Boolean is_literal(char *str);
 Boolean is_index(char *str);
@@ -84,7 +83,6 @@ void first_scan(char *filename)
 			read_line_and_set_compiler_node(line, stmt);
 			if(stmt->cmd_type == COMMENT || stmt->cmd_type == UNKNOWN_CMD)
 				continue;
-			
 
 			if(stmt->cmd_type == DATA || stmt->cmd_type == STRING)			/* Check if it's .data or .string instruction */
 			{
@@ -94,7 +92,7 @@ void first_scan(char *filename)
 				continue;
 			}
 
-			if(stmt->cmd_type == EXTERN)										/* Check if it's .extern instruction */
+			if(stmt->cmd_type == EXTERN)									/* Check if it's .extern instruction */
 			{
 				add_external_symbol(stmt->label,UNDEFINED_ADDRESS); 
 				continue;
@@ -117,8 +115,8 @@ void first_scan(char *filename)
 			if(stmt->cmd_type != ENTRY && stmt->cmd_type != EXTERN)
 				add_compiler_node(stmt);
 
-			add_second_word(stmt->cmd_type,stmt->sourceAddressing,stmt->source_operand,++ic);
-			add_third_word(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand,++ic);
+			add_operand_nodes(stmt->cmd_type,stmt->sourceAddressing,stmt->source_operand,++ic);
+			add_operand_nodes(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand,++ic);
 			ic++;
 		}
 		fclose(fp);
@@ -212,8 +210,6 @@ Boolean is_register(char *str)
 	return FALSE;
 }
 
-
-
 Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
 {
 	/*machin code word structure:*/
@@ -274,16 +270,18 @@ Boolean is_double_index(char *str)
 void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 {
 	char *token;
+
 #if DUBUG
 	debug_output(line);	
 #endif
 
 	if(is_comment(line))
 	{
-		stmt->cmd_type = COMMENT;
 #if DEBUG
 		debug_output("DEBUG: Comment line ignored");
 #endif
+
+		stmt->cmd_type = COMMENT;
 		return;
 	}
 
@@ -367,71 +365,37 @@ void set_addressing_and_register(char *operand, enum addressing_method *addressi
 	}
 }
 
-/* This function is used for adding the second word of the assembly command if a second word is neccessery */
-void add_second_word(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, int ic)
+/* This function is used for adding nodes of the operand if neccessery */
+void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand, int ic)
 {
-	CompilerNodePtr second_word = create_compiler_node();
-	second_word->line_number = line_number;
-	second_word->address = ic;
-	if(cmd_type == MOV || 
-	   cmd_type == CMP || 
-	   cmd_type == ADD || 
-	   cmd_type == SUB ||
-	   cmd_type == LEA)
-		{
-			switch(source_addressing)
-			{
-				case IMMEDIATE:
-					dec2bin(atoi(&source_operand[1]),second_word->binary_machine_code,8);
-					break;
-				case DIRECT:
-					strcpy(second_word->binary_machine_code,source_operand);
-					second_word->binary_machine_code[strlen(source_operand)] = '\0';
-					second_word->second_scan_type = LABEL;
-					break;
-				case INDEX:
-					extract_symbol(source_operand,second_word->binary_machine_code);
-					second_word->second_scan_type = LABEL;
-					break;
-				case DOUBLE_INDEX:
-					extract_symbol(source_operand,second_word->binary_machine_code);
-					second_word->second_scan_type = LABEL;
-					break;
-			}
-			add_compiler_node(second_word);
-		}
-}
+	CompilerNodePtr node1 = create_compiler_node();
+	CompilerNodePtr node2 = create_compiler_node();
 
-/* This function is used for adding the third word of the assembly command if a third word is neccessery */
-void add_third_word(Cmd cmd_type,AddressingMethod targetAddressing,char *target_operand,int ic)
-{
-	CompilerNodePtr third_word = create_compiler_node();
-	third_word->line_number = line_number;
-	third_word->address = ic;
-	if(cmd_type != RTS && cmd_type != STOP)
-		{
-			switch(targetAddressing)
-			{
-				case IMMEDIATE:
-					dec2bin(atoi(&target_operand[1]),third_word->binary_machine_code,8); /* The second operand is a number so I convert it's valu to binary code */
-					break;
-				case DIRECT:
-					strcpy(third_word->binary_machine_code,target_operand);	/* The second operand is a symbol that should be translated to it's addresss value in the second scan phase */
-					third_word->binary_machine_code[strlen(target_operand)] = '\0';
-					third_word->second_scan_type = LABEL;				    /* I save the symble name as is label field and tell the second scan that it needs to translate it to the address value of the symbol */
-					break;
-				case INDEX:
-					third_word->address = ++ic;
-					extract_index(target_operand,third_word->binary_machine_code);
-					add_compiler_node(third_word);
-					third_word->second_scan_type = LABEL_OFFSET;
-					break;
-				case DOUBLE_INDEX:
-					extract_index(target_operand,third_word->binary_machine_code);
-					third_word->second_scan_type = LABEL_OFFSET;
-					break;
-			}
-		}
+	node1->line_number = line_number;
+	node2->line_number = line_number;
+
+	switch(addressing)
+	{
+		case IMMEDIATE:
+			dec2bin(atoi(&operand[1]),node1->binary_machine_code,8);	/* The second operand is a number so I convert it's valu to binary code */
+			break;
+		case DIRECT:
+			strcpy(node1->binary_machine_code,operand);					/* The operand is a symbol that should be translated to it's addresss value in the second scan phase */
+			node1->second_scan_type = LABEL;							/* I save the symble name as is in the label field and tell the second scan that it needs to translate it to the address value of the symbol */
+			node1->address = ++ic;
+			add_compiler_node(node1);
+			break;
+		default:
+			extract_symbol(operand,node1->label);
+			extract_index(operand,node2->label);
+			node1->second_scan_type = LABEL;
+			node2->second_scan_type = LABEL_OFFSET;
+			node1->address = ++ic;
+			node2->address = ++ic;
+			add_compiler_node(node1);
+			add_compiler_node(node2);
+			break;
+	}
 }
 
 /* This function check if the code line is a comment */
