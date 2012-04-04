@@ -87,6 +87,7 @@
     <ClCompile Include="symbols.c" />
     <ClCompile Include="TestFirstScan.c" />
     <ClCompile Include="TestSecondScan.c" />
+    <ClCompile Include="TestSymbols.c" />
     <ClCompile Include="Test_compile_and_output.c" />
   </ItemGroup>
   <ItemGroup>

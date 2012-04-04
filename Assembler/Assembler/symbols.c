@@ -24,7 +24,7 @@ SymbolPtr create_symbol()
 	if(symbol)
 	{
 		symbol->address = UNDEFINED_ADDRESS;
-		symbol->name = NULL;
+		symbol->name[0] = NULL;
 		symbol->next = NULL;
 	}
 	return symbol;
@@ -48,7 +48,7 @@ SymbolPtr get_external_symbols_list()
 void add_data_symbol(char *name, int address, int line_number)
 {
 	SymbolPtr tmp = create_symbol();
-	tmp->name = name;
+	strcpy(tmp->name, name);
 	tmp->address = address;
 	
 	if(get_data_symbol_by_name(name) != NULL)		/* symbol already exist in the list */
@@ -76,7 +76,7 @@ void add_data_symbol(char *name, int address, int line_number)
 void add_code_symbol(char *name, int address, int line_number)
 {
 	SymbolPtr tmp = create_symbol();
-	tmp->name = name;
+	strcpy(tmp->name, name);
 	tmp->address = address;
 	
 	if(get_code_symbol_by_name(name) != NULL)		/* symbol already exist in the list */
@@ -104,7 +104,7 @@ void add_code_symbol(char *name, int address, int line_number)
 void add_external_symbol(char *name, int address, int line_number)
 {
 	SymbolPtr tmp = create_symbol();
-	tmp->name = name;
+	strcpy(tmp->name, name);
 	tmp->address = address;
 	
 	if(get_data_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
@@ -123,7 +123,7 @@ void add_external_symbol(char *name, int address, int line_number)
 void add_entries_symbol(char *name, int address)
 {
 	SymbolPtr tmp = create_symbol();
-	tmp->name = name;
+	strcpy(tmp->name, name);
 	tmp->address = address;
 	
 	/*set linked list nodes*/

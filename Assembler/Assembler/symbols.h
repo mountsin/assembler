@@ -16,7 +16,7 @@ SymbolPtr get_external_symbol_by_name(char *name_to_find);
 
 typedef struct symbol
 {
-	char *name;
+	char name[31];
 	int address;
 	struct symbol *next;
 } Symbol;
