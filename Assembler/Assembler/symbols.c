@@ -18,8 +18,17 @@ SymbolPtr entries_symbols_list_tail = NULL;
 SymbolPtr external_symbols_list_tail = NULL;
 
 
-//TODO: reverse symbols lists (like in pre - compiled nodes)
-//TODO: when adding a symbol, check that is not exist on the other list
+SymbolPtr create_symbol()
+{
+	SymbolPtr symbol = (SymbolPtr)malloc(sizeof * symbol);
+	if(symbol)
+	{
+		symbol->address = UNDEFINED_ADDRESS;
+		symbol->name = NULL;
+		symbol->next = NULL;
+	}
+	return symbol;
+}
 
 SymbolPtr get_data_symbols_list()
 {
@@ -38,10 +47,9 @@ SymbolPtr get_external_symbols_list()
 
 void add_data_symbol(char *name, int address, int line_number)
 {
-	SymbolPtr tmp = (SymbolPtr)malloc(sizeof * tmp);
+	SymbolPtr tmp = create_symbol();
 	tmp->name = name;
 	tmp->address = address;
-	tmp->next = NULL;
 	
 	if(get_data_symbol_by_name(name) != NULL)		/* symbol already exist in the list */
 	{
@@ -67,10 +75,9 @@ void add_data_symbol(char *name, int address, int line_number)
 
 void add_code_symbol(char *name, int address, int line_number)
 {
-	SymbolPtr tmp = (SymbolPtr)malloc(sizeof * tmp);
+	SymbolPtr tmp = create_symbol();
 	tmp->name = name;
 	tmp->address = address;
-	tmp->next = NULL;
 	
 	if(get_code_symbol_by_name(name) != NULL)		/* symbol already exist in the list */
 	{
@@ -96,10 +103,9 @@ void add_code_symbol(char *name, int address, int line_number)
 
 void add_external_symbol(char *name, int address, int line_number)
 {
-	SymbolPtr tmp = (SymbolPtr)malloc(sizeof * tmp);
+	SymbolPtr tmp = create_symbol();
 	tmp->name = name;
 	tmp->address = address;
-	tmp->next = NULL;
 	
 	if(get_data_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
 		add_error(line_number,SYMBOL_ALREADY_EXISTS);
@@ -116,10 +122,9 @@ void add_external_symbol(char *name, int address, int line_number)
 
 void add_entries_symbol(char *name, int address)
 {
-	SymbolPtr tmp = (SymbolPtr)malloc(sizeof * tmp);
+	SymbolPtr tmp = create_symbol();
 	tmp->name = name;
 	tmp->address = address;
-	tmp->next = NULL;
 	
 	/*set linked list nodes*/
 	if(entries_symbols_list_tail) /*tail already defined*/
