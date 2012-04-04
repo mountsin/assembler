@@ -95,6 +95,9 @@
     <ClCompile Include="linked_list.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestSymbols.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="pa.as" />

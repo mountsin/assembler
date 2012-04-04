@@ -93,17 +93,17 @@ void first_scan(char *filename)
 
 			if(stmt->cmd_type == EXTERN)									/* Check if it's .extern instruction */
 			{
-				add_external_symbol(stmt->target_operand,UNDEFINED_ADDRESS,line_number); 
+				add_external_symbol(stmt->target_operand, UNDEFINED_ADDRESS, line_number); 
 				continue;
 			}
 			if(stmt->cmd_type == ENTRY)										/* Check if it's .entry instruction */
 			{
-				add_entries_symbol(stmt->target_operand,UNDEFINED_ADDRESS); 
+				add_entries_symbol(stmt->target_operand, UNDEFINED_ADDRESS); 
 				continue;
 			}
 
 			if(strlen(stmt->label) > 0)
-				add_code_symbol(stmt->label,ic,line_number);
+				add_code_symbol(stmt->label, ic, line_number);
 
 			set_addressing_and_register(stmt->source_operand, &stmt->sourceAddressing, &stmt->source_register);
 			set_addressing_and_register(stmt->target_operand, &stmt->targetAddressing, &stmt->target_register);
@@ -372,6 +372,9 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand, 
 
 	switch(addressing)
 	{
+		case UNKNOWN:
+		case REGISTER:
+			break;
 		case IMMEDIATE:
 			dec2bin(atoi(&operand[1]),node1->binary_machine_code,8);	/* The second operand is a number so I convert it's valu to binary code */
 			break;
