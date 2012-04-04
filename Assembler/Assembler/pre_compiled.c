@@ -4,12 +4,12 @@
 #include "data_structs.h"
 
 /* Functions prototypes */
-void set_binary_machine_code_to(CompilerNode *compiler_node);
+void set_binary_machine_code_to(CompilerNodePtr compiler_node);
 
 /* Head of compiler nodes list */
-CompilerNode *compiler_nodes_list_head = NULL;
+CompilerNodePtr compiler_nodes_list_head = NULL;
 /* Tail of compiler nodes list */
-CompilerNode *compiler_nodes_list_tail = NULL;
+CompilerNodePtr compiler_nodes_list_tail = NULL;
 
 CompilerNodePtr create_compiler_node()
 {
@@ -41,7 +41,7 @@ void destroy_compiler_node(CompilerNodePtr node)
 }
 
 /* Add a new struct to the end of the list */
-void add_compiler_node(CompilerNode *stmt)
+void add_compiler_node(CompilerNodePtr stmt)
 {
 	/*set linked list nodes*/
 	if(compiler_nodes_list_tail) /*compiler_nodes_list_tail already defined*/
@@ -56,7 +56,7 @@ void add_compiler_node(CompilerNode *stmt)
 		compiler_nodes_list_head = compiler_nodes_list_tail;
 }
 
-CompilerNode *get_compiler_nodes_list_head()
+CompilerNodePtr get_compiler_nodes_list_head()
 {
 	return compiler_nodes_list_head;
 }

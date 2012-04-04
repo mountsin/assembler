@@ -6,39 +6,39 @@
 #include "error.h"
 
 /*symbol list head pointers*/
-Symbol *data_symbols_list = NULL;
-Symbol *code_symbols_list = NULL;
-Symbol *entries_symbols_list = NULL;
-Symbol *external_symbols_list = NULL;
+SymbolPtr data_symbols_list = NULL;
+SymbolPtr code_symbols_list = NULL;
+SymbolPtr entries_symbols_list = NULL;
+SymbolPtr external_symbols_list = NULL;
 
 /*symbol list tail pointers*/
-Symbol *data_symbols_list_tail = NULL;
-Symbol *code_symbols_list_tail = NULL;
-Symbol *entries_symbols_list_tail = NULL;
-Symbol *external_symbols_list_tail = NULL;
+SymbolPtr data_symbols_list_tail = NULL;
+SymbolPtr code_symbols_list_tail = NULL;
+SymbolPtr entries_symbols_list_tail = NULL;
+SymbolPtr external_symbols_list_tail = NULL;
 
 
 //TODO: reverse symbols lists (like in pre - compiled nodes)
 //TODO: when adding a symbol, check that is not exist on the other list
 
-Symbol *get_data_symbols_list()
+SymbolPtr get_data_symbols_list()
 {
 	return data_symbols_list;
 }
 
-Symbol *get_entries_symbols_list()
+SymbolPtr get_entries_symbols_list()
 {
 	return entries_symbols_list;
 }
 
-Symbol *get_external_symbols_list()
+SymbolPtr get_external_symbols_list()
 {
 	return external_symbols_list;
 }
 
 void add_data_symbol(char *name, int address, int line_number)
 {
-	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
+	SymbolPtr tmp = (SymbolPtr)malloc(sizeof * tmp);
 	tmp->name = name;
 	tmp->address = address;
 	tmp->next = NULL;
@@ -67,7 +67,7 @@ void add_data_symbol(char *name, int address, int line_number)
 
 void add_code_symbol(char *name, int address, int line_number)
 {
-	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
+	SymbolPtr tmp = (SymbolPtr)malloc(sizeof * tmp);
 	tmp->name = name;
 	tmp->address = address;
 	tmp->next = NULL;
@@ -96,14 +96,11 @@ void add_code_symbol(char *name, int address, int line_number)
 
 void add_external_symbol(char *name, int address, int line_number)
 {
-	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
+	SymbolPtr tmp = (SymbolPtr)malloc(sizeof * tmp);
 	tmp->name = name;
 	tmp->address = address;
 	tmp->next = NULL;
 	
-	if(get_external_symbol_by_name(name) != NULL) /* symbols already exist in the list*/
-		add_error(line_number,SYMBOL_ALREADY_EXISTS);
-
 	if(get_data_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
 		add_error(line_number,SYMBOL_ALREADY_EXISTS);
 
@@ -119,7 +116,7 @@ void add_external_symbol(char *name, int address, int line_number)
 
 void add_entries_symbol(char *name, int address)
 {
-	Symbol *tmp = (Symbol *)malloc(sizeof(Symbol));
+	SymbolPtr tmp = (SymbolPtr)malloc(sizeof * tmp);
 	tmp->name = name;
 	tmp->address = address;
 	tmp->next = NULL;
@@ -134,49 +131,43 @@ void add_entries_symbol(char *name, int address)
 		entries_symbols_list = entries_symbols_list_tail = tmp;		/*first node - set head and tail*/
 }
 
-Symbol *get_data_symbol_by_name(char *name_to_find)
+SymbolPtr get_data_symbol_by_name(char *name_to_find)
 {
-	Symbol *datasym_pointer = data_symbols_list;
+	SymbolPtr datasym_pointer = data_symbols_list;
 	while(datasym_pointer)
 	{
 		if (strncmp(datasym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
 			return datasym_pointer;
-
 		datasym_pointer = datasym_pointer->next;
 	}
-
 	return NULL; /* symbol not found*/
 }
 
-Symbol* get_code_symbol_by_name(char *name_to_find)
+SymbolPtr get_code_symbol_by_name(char *name_to_find)
 {
-	Symbol *datasym_pointer = code_symbols_list;
+	SymbolPtr datasym_pointer = code_symbols_list;
 	while(datasym_pointer)
 	{
 		if (strncmp(datasym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
 			return datasym_pointer;
-
 		datasym_pointer = datasym_pointer->next;
 	}
-
 	return NULL; /* symbol not found*/
 }
 
-Symbol *get_external_symbol_by_name(char *name_to_find)
+SymbolPtr get_external_symbol_by_name(char *name_to_find)
 {
-	Symbol *extsym_pointer = external_symbols_list;
+	SymbolPtr extsym_pointer = external_symbols_list;
 	while(extsym_pointer)
 	{
 		if (strncmp(extsym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
 			return extsym_pointer;
-
 		extsym_pointer = extsym_pointer->next;
 	}
-
 	return NULL;
 }
 
-int dispose()
+void destroy_symbol(SymbolPtr symbol)
 {
-	//TODO: implement - return value by "global_constants.h"
+	free(symbol);
 }
