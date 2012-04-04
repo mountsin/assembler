@@ -108,8 +108,6 @@ void first_scan(char *filename)
 			set_addressing_and_register(stmt->source_operand, &stmt->sourceAddressing, &stmt->source_register);
 			set_addressing_and_register(stmt->target_operand, &stmt->targetAddressing, &stmt->target_register);
 
-			/*TODO: validate command*/
-			/*TODO: check return type*/
 			build_binary_machine_code(stmt);
 			ic++;
 			add_compiler_node(stmt);

@@ -1,8 +1,11 @@
 typedef struct compiler_node* CompilerNodePtr;
+
 CompilerNodePtr create_compiler_node();
 void destroy_compiler_node(CompilerNodePtr node);
-
-
+void add_compiler_node(CompilerNodePtr stmt);
+CompilerNodePtr get_compiler_nodes_list_head();
+int get_instruction_counter();
+int get_data_counter();
 
 typedef enum second_scan_type
 {
@@ -32,13 +35,3 @@ typedef struct compiler_node
 	enum linker_enum linker_flag;
 	int line_number;
 } CompilerNode;
-
-
-
-void add_compiler_node(CompilerNode *stmt);
-
-int get_instruction_counter();
-int get_data_counter();
-CompilerNode *get_compiler_nodes_list_head();
-
-
