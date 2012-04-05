@@ -212,6 +212,26 @@ void TestAtoi(CuTest *tc)
 	CuAssertTrue(tc,-5 == i);
 }
 
+void TestIsNumber(CuTest *tc)
+{
+	CuAssertTrue(tc,is_number("+5"));
+}
+
+void TestIsNumber2(CuTest *tc)
+{
+	CuAssertTrue(tc,!is_number("+"));
+}
+
+void TestString(CuTest *tc)
+{
+	CuAssertIntEquals(tc,TRUE,is_valid_string("\"abcde\""));
+}
+
+void TestString2(CuTest *tc)
+{
+	CuAssertIntEquals(tc,FALSE,is_valid_string("abcde"));
+}
+
 CuSuite* FirstScanGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -242,6 +262,11 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite,TestIsValidLabel2);
 	SUITE_ADD_TEST(suite,TestIsValidLabel3);
 	SUITE_ADD_TEST(suite,TestAtoi);
+	SUITE_ADD_TEST(suite,TestIsNumber);
+	SUITE_ADD_TEST(suite,TestIsNumber2);
+	SUITE_ADD_TEST(suite,TestString);
+	SUITE_ADD_TEST(suite,TestString2);
 	return suite;
 }
+
 
