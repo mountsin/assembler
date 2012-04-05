@@ -29,6 +29,7 @@ void second_scan()
 {
 
 	/* set local variabels*/
+	int tempAddress;
 	CompilerNode *h = get_compiler_nodes_list_head();
 
 	boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
@@ -40,6 +41,7 @@ void second_scan()
 		
 		if(h->second_scan_type == SKIP) /*this is a command node - set entry if needed*/
 		{
+
 			h->linker_flag = ABSOLUTE;
 
 			if(h->label[0] == NULL)
@@ -52,7 +54,7 @@ void second_scan()
 			/*1- add to symbol_outpuFile_list*/
 			if ( get_external_symbol_by_name(h->label)  != NULL)
 			{
-				/*add error - label should be entry only TODO: verify by asm definitions*/
+				/*add error - label should be entry only TODO: add error*/
 				
 				/*skip to next node*/
 				h = h->next;
@@ -61,7 +63,7 @@ void second_scan()
 
 			if ( (current_symbol = get_entry_symbol_by_name(h->label) ) == NULL)
 			{
-				/*add error  - label should defined as entry(should be entry) TODO: verify by asm definitions*/
+				/*add error  - label should defined as entry(should be entry) TODO: add error*/
 				
 				/*skip to next node*/
 				h = h->next;
@@ -69,7 +71,18 @@ void second_scan()
 			}
 
 			/*label is entry type and valid - add to entry output file*/
-			add_entriesFile_row(h->label, h->address, h->line_number);
+			if(get_code_symbol_by_name(h->label)  != NULL)
+				add_entriesFile_row(h->label, h->address, h->line_number); /*add with code address*/
+			else if( (current_symbol = get_data_symbol_by_name(h->label) ) == NULL)
+			{
+				tempAddress = MINIMAL_DATA_ADDRESS +  current_symbol->address + get_instruction_counter();
+				add_entriesFile_row(h->label, h->address, tempAddress ); /*add with data address*/
+			}
+			else
+			{
+				/*add error  - entry does not found in data & code symbol lists TODO: add error*/
+				add_error(h->line_number, LABEL_NOT_DEFINED); //TODO: CORRECT ERROR
+			}
 		}
 		else /* second scan required*/ 
 		{
@@ -117,6 +130,9 @@ void second_scan()
 				add_externalFile_row(h->label, h->address, h->line_number);
 
 		}
+
+		/*5 - add entries of data type*/
+		//add_data_entries_to_output_list(); TODO: 1-CREATE FUNc, 2- use Same entrylist 3- check addresses(take from data list if needed)
 		//TODO: else /*second scan not needed - just set entries and external symbols*/
 		//{
 					

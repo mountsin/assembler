@@ -77,9 +77,9 @@ void compile_and_write_output(char *filename)
 	{
 		create_file_ob(filename, get_compiler_nodes_list_head());
 
-		create_file_ent(filename, get_entries_symbols_list());
+		create_file_ent(filename, get_entriesFile_head());
 		
-		create_file_ext(filename, get_external_symbols_list());
+		create_file_ext(filename, get_externalFile_head());
 	}
 }
 
