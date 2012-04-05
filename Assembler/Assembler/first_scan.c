@@ -492,6 +492,7 @@ Boolean is_number(char *token)
 Boolean is_valid_string(char *str)
 {
 	int length = strlen(str);
+
 	if(str[0] != '\"' || str[length-1] != '\"')
 		return FALSE;
 	return TRUE;
