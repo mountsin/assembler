@@ -97,9 +97,24 @@ void Test_second_scan(CuTest *tc)
 }
 //void second_scan(CompilerNode *compiler_node_header)
 
+void Test_get_sym_by_name_and_set_external(CuTest *tc)
+{
+	CompilerNode *h;
+	boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
+	Symbol *current_symbol = (Symbol *)malloc(sizeof(Symbol));
+
+
+	h = get_compiler_nodes_list_head();
+
+
+	//CuAssertStrEquals(tc,"STR",h2->name);
+}
+
+
 CuSuite* SecondScanGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
 	SUITE_ADD_TEST(suite, Test_second_scan);
+	SUITE_ADD_TEST(suite, Test_get_sym_by_name_and_set_external);
 	return suite;
 }

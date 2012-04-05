@@ -4,6 +4,7 @@
 #include "global_functions.h"
 #include "first_scan.h"
 #include "data_structs.h"
+#include "symbols.h"
 
 char *get_token(char *text);
  
@@ -139,6 +140,21 @@ char *get_token(char *text)
 #endif
 	return temp;
 }
+
+/*check the length of two string and retun the bigger value*/
+int get_Longest_length(char *str1 , char *str2)
+{
+	int length1, length2;
+		
+	length1 = strlen(str1);
+	length2 = strlen(str2);
+
+	if (length1>length2) 
+		return length1;
+	else
+		return length2;
+}
+
 
 //TODO: remove
 void debug_output(char *what)

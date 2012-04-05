@@ -16,8 +16,8 @@ MAIN:		lea		STR[%LEN], STRADD
 		jsr		PRTSTR
 		mov		STRADD, [K]LASTCHAR[R3]
 		mov		STR[%K], r7
-		add		COUNT[%k],r3
-		dec		LASTCHAR[%k]
+		add		COUNT[%K],r3
+		dec		LASTCHAR[%K]
 		inc		K
 		jsr		REVERSE
 		jsr		PRTSTR

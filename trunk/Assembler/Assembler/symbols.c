@@ -3,6 +3,7 @@
 #include <string.h>
 #include "symbols.h"
 #include "global_constants.h"
+#include "global_functions.h"
 #include "error.h"
 
 /*symbol list head pointers*/
@@ -120,8 +121,17 @@ void add_external_symbol(char *name, int address, int line_number)
 	strcpy(tmp->name, name);
 	tmp->address = address;
 	
-	if(get_external_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
+	if(get_external_symbol_by_name(name) != NULL)	/* symbol already exist in list */
+	{
 		add_error(line_number,SYMBOL_ALREADY_EXISTS);
+		return;
+	}
+	if(get_data_symbol_by_name(name) != NULL)	/* symbol already exist in a different list */
+	{
+		add_error(line_number,SYMBOL_ALREADY_EXISTS);
+		return;
+	}
+
 
 	/*set linked list nodes*/
 	if(external_symbols_list_tail) /*tail already defined*/
@@ -154,10 +164,15 @@ void add_entries_symbol(char *name, int address, int line_number)
 
 SymbolPtr get_data_symbol_by_name(char *name_to_find)
 {
+	int chars2compare;
+
 	SymbolPtr datasym_pointer = data_symbols_list;
+
 	while(datasym_pointer)
 	{
-		if (strncmp(datasym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
+		chars2compare = get_Longest_length(datasym_pointer->name , name_to_find);
+
+		if (strncmp(datasym_pointer->name, name_to_find, chars2compare) == 0) /* name has found*/
 			return datasym_pointer;
 		datasym_pointer = datasym_pointer->next;
 	}
@@ -247,6 +262,13 @@ void add_externalFile_row(char *name, int address, int line_number)
 		externalFile_rows = tmp;		/*first node - set head and tail*/
 }
 
+/*copy fields of source symbol to taget symbol*/
+void copy_symbol_contant(SymbolPtr source, SymbolPtr target)
+{
+	target->address = source->address;
+	target->next = source->next;
+	strcpy(target->name, source->name);	
+}
 
 void destroy_symbol(SymbolPtr symbol)
 {
