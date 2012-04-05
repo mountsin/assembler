@@ -147,19 +147,36 @@ void set_binary_code(CompilerNodePtr stmt)
 void extract_symbol(char *str,char *result)
 {
 	char *start_of_symbol;
+	int length;
 	start_of_symbol = strchr(str,']')+1;
+	
 	if(strlen(start_of_symbol) > 1)
-		strncpy(result,start_of_symbol,strchr(start_of_symbol,'[')-start_of_symbol);
+	{
+		length = strchr(start_of_symbol,'[')-start_of_symbol;
+		strncpy(result,start_of_symbol,length);
+	}
 	else
-		strncpy(result,str,strchr(str,'[')-str);
+	{
+		length = strchr(str,'[')-str;
+		strncpy(result,str,length);
+	}
+	result[length] = NULL;
 }
 
 /* This function extracts the index out of the operand in case of index or double index adressing method */
-void extract_index(char *str,char *result)
+void extract_index(char *str,char *result, SecondScanType *scan_type)
 {
 	char *start_of_index = strchr(str,'[')+1;
 	char *end_of_index = strchr(str,']');
-	strncpy(result,start_of_index,end_of_index - start_of_index);
+	int length = end_of_index - start_of_index;
+	if('%' == start_of_index[0])
+	{
+		start_of_index++;
+		length--;
+		*scan_type = LABEL_OFFSET;
+	}
+	strncpy(result,start_of_index,length);
+	result[length] = NULL;
 }
 
 /* This function get the correct adressing method of the operand */
@@ -320,7 +337,7 @@ Boolean is_valid_label(char *token, CompilerNode *stmt)
 			return FALSE;
 		}
 		strncpy(stmt->label, token, length_without_colon);			
-		stmt->label[length_without_colon] = '\0';
+		stmt->label[length_without_colon] = NULL;
 		return TRUE;
 	}
 	return FALSE;
@@ -386,7 +403,7 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand, 
 			break;
 		default:
 			extract_symbol(operand,node1->label);
-			extract_index(operand,node2->label);
+			extract_index(operand,node2->label,&node2->second_scan_type);
 			node1->second_scan_type = LABEL;
 			node2->second_scan_type = node2->label[0] == '%'? LABEL_OFFSET:LABEL;
 			node1->address = ++ic;
