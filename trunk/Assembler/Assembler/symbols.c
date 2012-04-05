@@ -19,7 +19,8 @@ SymbolPtr data_symbols_list_tail = NULL;
 SymbolPtr code_symbols_list_tail = NULL;
 SymbolPtr entries_symbols_list_tail = NULL;
 SymbolPtr external_symbols_list_tail = NULL;
-
+SymbolPtr entriesFile_rows_tail = NULL;
+SymbolPtr externalFile_rows_tail = NULL;
 
 
 SymbolPtr create_symbol()
@@ -150,7 +151,10 @@ void add_entries_symbol(char *name, int address, int line_number)
 	tmp->address = address;
 	
 	if(get_entry_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
+	{
 		add_error(line_number,SYMBOL_ALREADY_EXISTS);
+		return;
+	}
 
 	/*set linked list nodes*/
 	if(entries_symbols_list_tail) /*tail already defined*/
@@ -236,15 +240,19 @@ void add_entriesFile_row(char *name, int address, int line_number)
 	tmp->address = address;
 
 	if(get_entryFile_row_by_name(name) != NULL) /* entry row should have a uniqe label and cannot be used more then once*/
+	{
 		add_error(line_number,MULTIPLE_ENTRYLABEL_USE);
+		return;
+	}
 
 	/*set linked list nodes*/
-	if(entriesFile_rows) /*at least one node (row) in list*/
+	if(entriesFile_rows_tail) /*at least one node (row) in list*/
 	{
-		entriesFile_rows->next = tmp;						/*add new node as next node (row)*/
+		entriesFile_rows_tail->next = tmp;						/*add new node as next node (row)*/
+		entriesFile_rows_tail = entriesFile_rows_tail->next;	/*advacne tail*/
 	}
 	else
-		entriesFile_rows = tmp;		/*first node - set head and tail*/
+		entriesFile_rows_tail = entriesFile_rows = tmp;		/*first node - set head and tail*/
 }
 
 void add_externalFile_row(char *name, int address, int line_number)
@@ -254,12 +262,13 @@ void add_externalFile_row(char *name, int address, int line_number)
 	tmp->address = address;
 
 	/*set linked list nodes*/
-	if(externalFile_rows) /*at least one node (row) in list*/
+	if(externalFile_rows_tail)
 	{
-		externalFile_rows->next = tmp;						/*add new node as next node (row)*/
+		externalFile_rows_tail->next = tmp;						/*add new node as next node (row)*/
+		externalFile_rows_tail = externalFile_rows_tail->next;	/*advacne tail*/
 	}
 	else
-		externalFile_rows = tmp;		/*first node - set head and tail*/
+		externalFile_rows_tail = externalFile_rows = tmp;		/*first node - set head and tail*/
 }
 
 /*copy fields of source symbol to taget symbol*/
