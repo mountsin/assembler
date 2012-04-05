@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "first_scan.h"
 #include "symbols.h"
 #include "error.h"
@@ -30,6 +31,7 @@ Boolean is_literal(char *str);
 Boolean is_index(char *str);
 Boolean is_double_index(char *str);
 Boolean is_comment(char* line);
+Boolean is_number(char *token);
 void set_binary_code(CompilerNodePtr stmt);
 
 /* Commands_list - table(array) contains each assembly command and its rules */
@@ -435,6 +437,7 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 			break;
 		case IMMEDIATE:
 			dec2bin(atoi(&operand[1]),node1->binary_machine_code,8);	/* The second operand is a number so I convert it's valu to binary code */
+			node1->second_scan_type = LABEL;
 			break;
 		case DIRECT:
 			strcpy(node1->label,operand);								/* The operand is a symbol that should be translated to it's addresss value in the second scan phase */
@@ -445,6 +448,7 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 		default:
 			extract_symbol(operand,node1->label);
 			extract_index(operand,node2->label,&node2->second_scan_type);
+			node1->second_scan_type = LABEL;
 			node1->address = ++ic;
 			node2->address = ++ic;
 			add_compiler_node(node1);
@@ -459,4 +463,18 @@ Boolean is_comment(char* line)
 	if(line[0] == ';')
 		return TRUE;
 	return FALSE;
+}
+
+Boolean is_number(char *token)
+{
+	int i = 0;
+	if(token[0] == '+' || token[0] == '-')
+		i++;
+	do
+	{
+		if(!isdigit(token[i]))
+			return FALSE;
+		i++;
+	} while(token[i]);
+	return TRUE;
 }

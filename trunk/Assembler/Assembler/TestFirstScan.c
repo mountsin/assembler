@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include "CuTest.h"
 #include "first_scan.h"
 #include "global_functions.h"
@@ -203,6 +205,13 @@ void TestIsValidLabel3(CuTest *tc)
 	CuAssertTrue(tc,!is_valid_label(token,p,line));
 }
 
+void TestAtoi(CuTest *tc)
+{
+	char *str = "-5";
+	int i = atoi(str);
+	CuAssertTrue(tc,-5 == i);
+}
+
 CuSuite* FirstScanGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -232,6 +241,7 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite,TestIsValidLabel);
 	SUITE_ADD_TEST(suite,TestIsValidLabel2);
 	SUITE_ADD_TEST(suite,TestIsValidLabel3);
+	SUITE_ADD_TEST(suite,TestAtoi);
 	return suite;
 }
 
