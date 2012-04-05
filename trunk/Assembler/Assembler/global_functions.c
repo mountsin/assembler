@@ -85,7 +85,10 @@ void convert_negative_binary_2complement(char *binary)
 enum boolean is_binary_Str(char *str)
 {
 	int i;
-	
+
+	if( (!str) || (strlen(str) == 0) || (str[0] == NULL) ) /*null / empty string*/
+		return FALSE;
+
 	for(i = 0; str[i]; i++)
 		if ( (str[i] != '0') && (str[i] != '1') ) /* not a binary string*/
 			return FALSE;
