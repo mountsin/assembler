@@ -12,13 +12,13 @@
 
 #define MACHINE_CODE_WORD_BITLENGTH 16
 #define EMPTY_ADDRESS 0
-#define FIRST_DATA_OFFSET 1
+#define MINIMAL_DATA_ADDRESS 1
 
 #define OK 0
 #define ERROR -1
 
-int set_binary_machine_code(enum boolean is_external, Symbol *current_symbol, CompilerNode *cn);
-enum boolean_ex get_sym_by_name_and_set_external(Symbol *current_symbol, char *symbol_name);
+int set_binary_machine_code(enum boolean is_external, SymbolPtr current_symbol, CompilerNode *cn);
+enum boolean_ex get_sym_by_name_and_set_external(SymbolPtr current_symbol, char *symbol_name);
 
 /**
 * perform second scan on compile node list
@@ -32,25 +32,37 @@ void second_scan()
 	CompilerNode *h = get_compiler_nodes_list_head();
 
 	boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
-	Symbol *current_symbol = (Symbol *)malloc(sizeof(Symbol));
+	SymbolPtr current_symbol = NULL;
 
 
 	while(h != NULL) 
 	{
 		
-		if(h->second_scan_type == SKIP) /*this is a command node*/
+		if(h->second_scan_type == SKIP) /*this is a command node - set entry if needed*/
 		{
-			/*1- add to symbol_outpuFile_list*/
+			if(h->label[0] == NULL)
+			{
+				/*skip to next node*/
+				h = h->next;
+				continue;
+			}
 
+			/*1- add to symbol_outpuFile_list*/
 			if ( get_external_symbol_by_name(h->label)  != NULL)
 			{
 				/*add error - label should be entry only TODO: verify by asm definitions*/
+				
+				/*skip to next node*/
+				h = h->next;
 				continue;
 			}
 
 			if ( (current_symbol = get_entry_symbol_by_name(h->label) ) == NULL)
 			{
 				/*add error  - label should defined as entry(should be entry) TODO: verify by asm definitions*/
+				
+				/*skip to next node*/
+				h = h->next;
 				continue;
 			}
 
@@ -63,7 +75,7 @@ void second_scan()
 			if(is_binary_Str(h->binary_machine_code) != TRUE) /*not a binary string*/
 			{
 				/* 1 - find the correct label if exist */
-				is_external = get_sym_by_name_and_set_external(current_symbol, h->binary_machine_code);
+				is_external = get_sym_by_name_and_set_external(current_symbol, h->label);
 
 			
 
@@ -128,15 +140,15 @@ void second_scan()
 * return(int) - OK if successful, ERROR if not (OK, ERROR defined in global_constants.h);
 */
 
-int set_binary_machine_code(enum boolean_ex is_external, Symbol *current_symbol, CompilerNode *cn)
+int set_binary_machine_code(enum boolean_ex is_external, SymbolPtr current_symbol, CompilerNode *cn)
 {
 	/* set local variabels*/
 	int label_address, machine_code_integer;
 
 	/* set local variabels - data address boundries*/
 	int low, high;
-	low = FIRST_DATA_OFFSET;
-	high = get_data_counter();
+	low = MINIMAL_DATA_ADDRESS;
+	high = MINIMAL_DATA_ADDRESS + get_data_counter();
 
 	if (is_external == YES)
 		label_address = EMPTY_ADDRESS;
@@ -145,11 +157,11 @@ int set_binary_machine_code(enum boolean_ex is_external, Symbol *current_symbol,
 			
 	if (cn->second_scan_type == LABEL_OFFSET) /* label offset is required.label is: %LABEL"*/
 	{
-		machine_code_integer = label_address - get_instruction_counter(); /*binary machine code will get the offset value*/
+		machine_code_integer = MINIMAL_DATA_ADDRESS + label_address; /*binary machine code will get the offset value*/
 	}
 	else /*actual label required*/
 	{
-		machine_code_integer = label_address; /*binary machine code will get the address value*/
+		machine_code_integer = MINIMAL_DATA_ADDRESS + label_address + get_instruction_counter(); /*binary machine code will get the address value*/
 
 		/* set data boundries*/
 		low += get_instruction_counter();
@@ -173,20 +185,27 @@ int set_binary_machine_code(enum boolean_ex is_external, Symbol *current_symbol,
 *			NO if symbol found  - external
 *			in case symbol did not found  - current_symbol get a Null value,return NEITHER.
 */
-enum boolean_ex get_sym_by_name_and_set_external(Symbol *current_symbol, char *symbol_name)
+enum boolean_ex get_sym_by_name_and_set_external(SymbolPtr current_symbol, char *symbol_name)
 {
 	
-	current_symbol = get_data_symbol_by_name(symbol_name); /* try to get data symbol by binary_machine_code temporary string*/
-			
-	if(current_symbol != NULL) /* label is a data symbol*/
-		return NO; /*mark symbol as NOT external*/
+	boolean_ex returnVal = NEITHER;
+	SymbolPtr found_symbols = get_data_symbol_by_name(symbol_name); /* try to get data symbol by binary_machine_code temporary string*/
+
+	if(found_symbols != NULL) /* label is a data symbol*/
+		returnVal = NO; /*mark symbol as NOT external*/
 	else
 	{
-		current_symbol = get_external_symbol_by_name(symbol_name); /* try to get external symbol by binary_machine_code temporary string*/
-		if(current_symbol != NULL) /*lable found -  as external symbol*/
-			return  YES; /*mark symbol as external*/
-		else return NEITHER; /*no symbol - return NULL_VALUE*/
+		found_symbols = get_external_symbol_by_name(symbol_name); /* try to get external symbol by binary_machine_code temporary string*/
+		if(found_symbols != NULL) /*lable found -  as external symbol*/
+			returnVal =  YES; /*mark symbol as external*/
+		else 
+			returnVal = NEITHER; /*no symbol - return NULL_VALUE*/
 	}
+
+	if(found_symbols != NULL)
+		copy_symbol_contant(found_symbols, current_symbol);
+
+	return returnVal;
 }
 
 /**

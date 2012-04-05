@@ -23,6 +23,9 @@ void add_externalFile_row(char *name, int address, int line_number);
 SymbolPtr get_entriesFile_head();
 SymbolPtr get_externalFile_head();
 
+/*copy fields of source symbol to taget symbol*/
+void copy_symbol_contant(SymbolPtr source, SymbolPtr target);
+
 typedef struct symbol
 {
 	char name[31];
