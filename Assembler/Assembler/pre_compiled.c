@@ -27,10 +27,10 @@ CompilerNodePtr create_compiler_node()
 		node->next = NULL;
 		node->sourceAddressing = UNKNOWN;
 		node->source_operand = NULL;
-		node->source_register = 0;
+		node->source_register = -1;
 		node->targetAddressing = UNKNOWN;
 		node->target_operand = NULL;
-		node->target_register = 0;
+		node->target_register = -1;
 	}
 	return node;
 }

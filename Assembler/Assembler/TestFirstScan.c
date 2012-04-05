@@ -85,13 +85,15 @@ void TestSetSymbol2(CuTest *tc)
 void TestSetIndex(CuTest *tc)
 {
 	char result[10] = "";
-	extract_index("STR[%LEN]",result);
-	CuAssertStrEquals(tc,"%LEN",result);
+	SecondScanType type;
+	extract_index("STR[%LEN]",result,&type);
+	CuAssertStrEquals(tc,"LEN",result);
 }
 void TestSetIndex2(CuTest *tc)
 {
 	char result[10] = "";
-	extract_index("[K]LASTCHAR[R3]",result);
+	SecondScanType type;
+	extract_index("[K]LASTCHAR[R3]",result, &type);
 	CuAssertStrEquals(tc,"K",result);
 }
 
@@ -177,6 +179,29 @@ void TestAddExtSymbol(CuTest *tc)
 
 }
 
+void TestIsValidLabel(CuTest *tc)
+{
+	char *token = "MAIN:";
+	char *line = " MAIN:";
+	CompilerNodePtr p = create_compiler_node();
+	CuAssertTrue(tc,!is_valid_label(token,p,line));
+}
+
+void TestIsValidLabel2(CuTest *tc)
+{
+	char *token = "MAIN:";
+	char *line = "MAIN:";
+	CompilerNodePtr p = create_compiler_node();
+	CuAssertTrue(tc,is_valid_label(token,p,line));
+}
+
+void TestIsValidLabel3(CuTest *tc)
+{
+	char *token = "MAIN:";
+	char *line = "\tMAIN:";
+	CompilerNodePtr p = create_compiler_node();
+	CuAssertTrue(tc,!is_valid_label(token,p,line));
+}
 
 CuSuite* FirstScanGetSuite()
 {
@@ -202,7 +227,11 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite,TestReadLineIsSecondNeededLea);
 	//SUITE_ADD_TEST(suite,TestBuildBinaryCode);
 	//SUITE_ADD_TEST(suite,TestReadLineBinaryLea);
-	SUITE_ADD_TEST(suite,TestDec2Bin);
+	//SUITE_ADD_TEST(suite,TestDec2Bin);
 	SUITE_ADD_TEST(suite,TestAddExtSymbol);
+	SUITE_ADD_TEST(suite,TestIsValidLabel);
+	SUITE_ADD_TEST(suite,TestIsValidLabel2);
+	SUITE_ADD_TEST(suite,TestIsValidLabel3);
 	return suite;
 }
+
