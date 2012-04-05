@@ -15,16 +15,16 @@
 #define ASM_ADDRESSING_BITS	 3
 #define ASM_REGISTER_BITS	 3
 
-Boolean is_valid_label(char *token, CompilerNodePtr stmt, char *line);
-void parst_and_set_command_type(char* command_name, CompilerNodePtr node);
-void process_statement(CompilerNode stmt);
-void parse_and_load_data(CompilerNodePtr stmt, int *dc);
-AddressingMethod get_addressing_for(char *source_operand);
 void read_line_and_set_compiler_node(char *line, CompilerNodePtr node);
+void parst_and_set_command_type(char* command_name, Cmd *command);
+void parse_and_load_data(CompilerNodePtr stmt, int *dc);
+Cmd get_command(char *token);
+AddressingMethod get_addressing_for(char *source_operand);
 void extract_symbol(char *str,char *result[]);
 void extract_index(char *str,char *result[]);
 void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
 void add_operand_nodes(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand);
+Boolean is_valid_label(char *token, CompilerNodePtr stmt, char *line);
 Boolean is_register(char *str);
 Boolean is_literal(char *str);
 Boolean is_index(char *str);
@@ -56,7 +56,7 @@ CommandStruct commands_list[] =
 	STRING,		".string",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
 	ENTRY,		".entry",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,	
 	EXTERN,		".extern",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,	
-	UNKNOWN_CMD,"\0"	  ,	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY
+	UNKNOWN_CMD,""		  ,	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY
 };
 
 int ic = 0;								/* Instructions counter */
@@ -199,7 +199,7 @@ enum addressing_method get_addressing_for(char *operand)
 }
 
 /* This funcitons handles data instructions such as .data and .string and increment the data counter (dc) */
-void parse_and_load_data(CompilerNode *stmt, int *dc)
+void parse_and_load_data(CompilerNodePtr stmt, int *dc)
 {
 	//TODO: Input validtaion and Error handling
 	char *tmp;
@@ -309,7 +309,7 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 		if(is_valid_label(token, stmt,line))
 			token = get_next_token();		
 
-		parst_and_set_command_type(token,stmt);
+		parst_and_set_command_type(token,&(stmt->cmd_type));
 
 		if(stmt->cmd_type == UNKNOWN_CMD)
 		{
@@ -334,22 +334,43 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 */
 Boolean is_valid_label(char *token, CompilerNodePtr stmt, char  *line)
 {
+	char label[31];
+	Cmd command;
 	int length_without_colon = strlen(token)-1;
-	if(length_without_colon > 29)						/* label length is less or equal to 30 */
+	if(length_without_colon > 29)						/* label length should be less or equal to 30 */
+	{
+		add_error(line_number, INVALID_LABEL);
 		return FALSE;
+	}
 	if(token[length_without_colon] == ':')
 	{
-		if(line[0] == ' ' || line[0] == '\t')
+		strncpy(label,token,length_without_colon);
+		label[length_without_colon] = NULL;
+
+		if(line[0] == ' ' || line[0] == '\t')			/* label should start on the first column of the lien */
 		{
 			add_error(line_number, INVALID_LABEL);
 			return FALSE;
 		}
-		if(token[0] < 'A' || token[0] > 'z')
+
+		if(is_register(label))							/* label should not be named as register */
 		{
 			add_error(line_number, INVALID_LABEL);
 			return FALSE;
 		}
-		strncpy(stmt->label, token, length_without_colon);			
+
+		if(get_command(label) != UNKNOWN_CMD)			/* label should not be named as an assembly command */
+		{
+			add_error(line_number, INVALID_LABEL);
+			return FALSE;
+		}
+
+		if(label[0] < 'A' || label[0] > 'z')			/* label should start with a letter */
+		{
+			add_error(line_number, INVALID_LABEL);
+			return FALSE;
+		}
+		strcpy(stmt->label, label);			
 		stmt->label[length_without_colon] = NULL;
 		return TRUE;
 	}
@@ -358,13 +379,19 @@ Boolean is_valid_label(char *token, CompilerNodePtr stmt, char  *line)
 
 
 /* This function accepts the command token from the assembly code line and return the correct Cmd enum value of it */
-void parst_and_set_command_type(char* command_name, CompilerNodePtr node)
+void parst_and_set_command_type(char* command_name, Cmd *command)
+{
+	Cmd result = get_command(command_name);
+	if(result == UNKNOWN_CMD)
+		add_error(line_number, UNKNOWN_COMMAND);
+	*command = result;
+}
+
+Cmd get_command(char *token)
 {
 	CommandStruct* tmp;
-	for(tmp = commands_list; tmp->name && strcmp(command_name, tmp->name); tmp++);
-	if(tmp->cmd_type == UNKNOWN_CMD)
-		add_error(line_number, UNKNOWN_COMMAND);
-	node->cmd_type = tmp->cmd_type;
+	for(tmp = commands_list; strlen(tmp->name) > 0 && strcmp(token, tmp->name); tmp++);
+	return tmp->cmd_type;
 }
 
 
