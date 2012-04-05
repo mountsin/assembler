@@ -90,7 +90,7 @@ void first_scan(char *filename)
 			{
 				if(stmt->label) 
 					add_data_symbol(stmt->label, dc,line_number);
-				parse_and_load_data(stmt, &dc);
+				parse_and_load_data(stmt);
 				continue;
 			}
 
