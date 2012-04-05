@@ -40,6 +40,8 @@ void second_scan()
 		
 		if(h->second_scan_type == SKIP) /*this is a command node - set entry if needed*/
 		{
+			h->linker_flag = ABSOLUTE;
+
 			if(h->label[0] == NULL)
 			{
 				/*skip to next node*/
@@ -68,7 +70,6 @@ void second_scan()
 
 			/*label is entry type and valid - add to entry output file*/
 			add_entriesFile_row(h->label, h->address, h->line_number);
-
 		}
 		else /* second scan required*/ 
 		{
