@@ -31,7 +31,7 @@ void second_scan()
 	/* set local variabels*/
 	CompilerNode *h = get_compiler_nodes_list_head();
 
-	enum boolean_ex is_external = FALSE; //TODO: Yuval - it was not initialized, please verify me
+	enum boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
 	Symbol *current_symbol = (Symbol *)malloc(sizeof(Symbol));
 
 
