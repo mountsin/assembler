@@ -24,7 +24,7 @@ void read_line_and_set_compiler_node(char *, CompilerNode *);
 void extract_symbol(char *str,char *result[]);
 void extract_index(char *str,char *result[]);
 void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
-void add_operand_nodes(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand, int ic);
+void add_operand_nodes(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand);
 Boolean is_register(char *str);
 Boolean is_literal(char *str);
 Boolean is_index(char *str);
@@ -112,8 +112,8 @@ void first_scan(char *filename)
 			ic++;
 			add_compiler_node(stmt);
 
-			add_operand_nodes(stmt->cmd_type,stmt->sourceAddressing,stmt->source_operand,++ic);
-			add_operand_nodes(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand,++ic);
+			add_operand_nodes(stmt->cmd_type,stmt->sourceAddressing,stmt->source_operand);
+			add_operand_nodes(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand);
 		}
 		fclose(fp);
 	}
@@ -174,6 +174,10 @@ void extract_index(char *str,char *result, SecondScanType *scan_type)
 		start_of_index++;
 		length--;
 		*scan_type = LABEL_OFFSET;
+	}
+	else
+	{
+		*scan_type = LABEL;
 	}
 	strncpy(result,start_of_index,length);
 	result[length] = NULL;
@@ -379,7 +383,7 @@ void set_addressing_and_register(char *operand, enum addressing_method *addressi
 }
 
 /* This function is used for adding nodes of the operand if neccessery */
-void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand, int ic)
+void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 {
 	CompilerNodePtr node1 = create_compiler_node();
 	CompilerNodePtr node2 = create_compiler_node();
@@ -404,8 +408,6 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand, 
 		default:
 			extract_symbol(operand,node1->label);
 			extract_index(operand,node2->label,&node2->second_scan_type);
-			node1->second_scan_type = LABEL;
-			node2->second_scan_type = node2->label[0] == '%'? LABEL_OFFSET:LABEL;
 			node1->address = ++ic;
 			node2->address = ++ic;
 			add_compiler_node(node1);
