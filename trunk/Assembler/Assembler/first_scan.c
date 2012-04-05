@@ -20,7 +20,7 @@ void parst_and_set_command_type(char* command_name, CompilerNodePtr node);
 void process_statement(CompilerNode stmt);
 void parse_and_load_data(CompilerNode *stmt, int *dc);
 AddressingMethod get_addressing_for(char *source_operand);
-void read_line_and_set_compiler_node(char *, CompilerNode *);
+void read_line_and_set_compiler_node(char *line, CompilerNodePtr node);
 void extract_symbol(char *str,char *result[]);
 void extract_index(char *str,char *result[]);
 void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
@@ -109,11 +109,12 @@ void first_scan(char *filename)
 			set_addressing_and_register(stmt->target_operand, &stmt->targetAddressing, &stmt->target_register);
 
 			build_binary_machine_code(stmt);
-			ic++;
+			stmt->address = ic;
 			add_compiler_node(stmt);
 
 			add_operand_nodes(stmt->cmd_type,stmt->sourceAddressing,stmt->source_operand);
 			add_operand_nodes(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand);
+			ic++;
 		}
 		fclose(fp);
 	}
@@ -400,7 +401,7 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 			dec2bin(atoi(&operand[1]),node1->binary_machine_code,8);	/* The second operand is a number so I convert it's valu to binary code */
 			break;
 		case DIRECT:
-			strcpy(node1->binary_machine_code,operand);					/* The operand is a symbol that should be translated to it's addresss value in the second scan phase */
+			strcpy(node1->label,operand);								/* The operand is a symbol that should be translated to it's addresss value in the second scan phase */
 			node1->second_scan_type = LABEL;							/* I save the symble name as is in the label field and tell the second scan that it needs to translate it to the address value of the symbol */
 			node1->address = ++ic;
 			add_compiler_node(node1);
