@@ -10,12 +10,15 @@ SymbolPtr data_symbols_list = NULL;
 SymbolPtr code_symbols_list = NULL;
 SymbolPtr entries_symbols_list = NULL;
 SymbolPtr external_symbols_list = NULL;
+SymbolPtr entriesFile_rows = NULL;
+SymbolPtr externalFile_rows = NULL;
 
 /*symbol list tail pointers*/
 SymbolPtr data_symbols_list_tail = NULL;
 SymbolPtr code_symbols_list_tail = NULL;
 SymbolPtr entries_symbols_list_tail = NULL;
 SymbolPtr external_symbols_list_tail = NULL;
+
 
 
 SymbolPtr create_symbol()
@@ -43,6 +46,16 @@ SymbolPtr get_entries_symbols_list()
 SymbolPtr get_external_symbols_list()
 {
 	return external_symbols_list;
+}
+
+SymbolPtr get_entriesFile_head()
+{
+	return entriesFile_rows;
+}
+
+SymbolPtr get_externalFile_head()
+{
+	return externalFile_rows;
 }
 
 void add_data_symbol(char *name, int address, int line_number)
@@ -107,7 +120,7 @@ void add_external_symbol(char *name, int address, int line_number)
 	strcpy(tmp->name, name);
 	tmp->address = address;
 	
-	if(get_data_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
+	if(get_external_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
 		add_error(line_number,SYMBOL_ALREADY_EXISTS);
 
 	/*set linked list nodes*/
@@ -120,12 +133,15 @@ void add_external_symbol(char *name, int address, int line_number)
 		external_symbols_list = external_symbols_list_tail = tmp;		/*first node - set head and tail*/
 }
 
-void add_entries_symbol(char *name, int address)
+void add_entries_symbol(char *name, int address, int line_number)
 {
 	SymbolPtr tmp = create_symbol();
 	strcpy(tmp->name, name);
 	tmp->address = address;
 	
+	if(get_entry_symbol_by_name(name) != NULL) /* symbols already exist in a different list*/
+		add_error(line_number,SYMBOL_ALREADY_EXISTS);
+
 	/*set linked list nodes*/
 	if(entries_symbols_list_tail) /*tail already defined*/
 	{
@@ -171,6 +187,66 @@ SymbolPtr get_external_symbol_by_name(char *name_to_find)
 	}
 	return NULL;
 }
+
+SymbolPtr get_entry_symbol_by_name(char *name_to_find)
+{
+	SymbolPtr entsym_pointer = entries_symbols_list;
+	while(entsym_pointer)
+	{
+		if (strncmp(entsym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
+			return entsym_pointer;
+		entsym_pointer = entsym_pointer->next;
+	}
+	return NULL;
+}
+
+/*private function for making sure entries are uniqe*/
+SymbolPtr get_entryFile_row_by_name(char *name_to_find)
+{
+	SymbolPtr entrow_pointer = entriesFile_rows;
+	while(entrow_pointer)
+	{
+		if (strncmp(entrow_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
+			return entrow_pointer;
+		entrow_pointer = entrow_pointer->next;
+	}
+	return NULL;
+}
+
+
+void add_entriesFile_row(char *name, int address, int line_number)
+{
+	SymbolPtr tmp = create_symbol();
+	strcpy(tmp->name, name);
+	tmp->address = address;
+
+	if(get_entryFile_row_by_name(name) != NULL) /* entry row should have a uniqe label and cannot be used more then once*/
+		add_error(line_number,MULTIPLE_ENTRYLABEL_USE);
+
+	/*set linked list nodes*/
+	if(entriesFile_rows) /*at least one node (row) in list*/
+	{
+		entriesFile_rows->next = tmp;						/*add new node as next node (row)*/
+	}
+	else
+		entriesFile_rows = tmp;		/*first node - set head and tail*/
+}
+
+void add_externalFile_row(char *name, int address, int line_number)
+{
+	SymbolPtr tmp = create_symbol();
+	strcpy(tmp->name, name);
+	tmp->address = address;
+
+	/*set linked list nodes*/
+	if(externalFile_rows) /*at least one node (row) in list*/
+	{
+		externalFile_rows->next = tmp;						/*add new node as next node (row)*/
+	}
+	else
+		externalFile_rows = tmp;		/*first node - set head and tail*/
+}
+
 
 void destroy_symbol(SymbolPtr symbol)
 {

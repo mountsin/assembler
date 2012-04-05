@@ -31,15 +31,34 @@ void second_scan()
 	/* set local variabels*/
 	CompilerNode *h = get_compiler_nodes_list_head();
 
-	enum boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
+	boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
 	Symbol *current_symbol = (Symbol *)malloc(sizeof(Symbol));
-
 
 
 	while(h != NULL) 
 	{
+		
+		if(h->second_scan_type == SKIP) /*this is a command node*/
+		{
+			/*1- add to symbol_outpuFile_list*/
 
-		if(h->second_scan_type != SKIP) /* second scan required*/ //TODO: please verify me
+			if ( get_external_symbol_by_name(h->label)  != NULL)
+			{
+				/*add error - label should be entry only TODO: verify by asm definitions*/
+				continue;
+			}
+
+			if ( (current_symbol = get_entry_symbol_by_name(h->label) ) == NULL)
+			{
+				/*add error  - label should defined as entry(should be entry) TODO: verify by asm definitions*/
+				continue;
+			}
+
+			/*label is entry type and valid - add to entry output file*/
+			add_entriesFile_row(h->label, h->address, h->line_number);
+
+		}
+		else /* second scan required*/ 
 		{
 			if(is_binary_Str(h->binary_machine_code) != TRUE) /*not a binary string*/
 			{
@@ -80,6 +99,9 @@ void second_scan()
 					h->linker_flag = RELOCATABLE;
 			}
 
+			/*4 - if external - add to externals file*/
+			if (is_external == YES)
+				add_externalFile_row(h->label, h->address, h->line_number);
 
 		}
 		//TODO: else /*second scan not needed - just set entries and external symbols*/
@@ -121,11 +143,11 @@ int set_binary_machine_code(enum boolean_ex is_external, Symbol *current_symbol,
 	else
 		label_address = current_symbol->address;					/* get the label address from sybol*/
 			
-	if (cn->linker_flag == ABSOLUTE) /* linker flag is absolute*/
+	if (cn->second_scan_type == LABEL_OFFSET) /* label offset is required.label is: %LABEL"*/
 	{
 		machine_code_integer = label_address - get_instruction_counter(); /*binary machine code will get the offset value*/
 	}
-	else
+	else /*actual label required*/
 	{
 		machine_code_integer = label_address; /*binary machine code will get the address value*/
 

@@ -39,6 +39,8 @@
 #define LABEL_UNDEFINED				"Trying to use a label which not defined in the file"
 #define INVALID_LABEL_USED			"The label name is not followning naming rules"
 #define ILLEGAL_ADDRESS				"The label is pointing to Illegal address"
+#define	MULTIPLE_ENTRYLABEL_USE_MSG	"entry row should have a uniqe label and cannot be used more then once"
+#define SYMBOL_ALREADY_EXISTS_MSG	"The symbol is definded more than once"
 #define UNKNOWN_ERROR_MESSAGE		"Unknown error occurred"
 
 /*file stream error messages*/
@@ -91,16 +93,18 @@ void print_errors_report(Error *errors_collector)
 	{
 		switch(errors_collector->type)
 		{
-			case INPUT_FILE_FAILURE: 	current_err_msg = INPUT_FILE_OPEN_FAIL;break;		/* One of the input file could not been opened */
-			case UNKNOWN_COMMAND:		current_err_msg = UNKNOWN_ASSEMBLY_COMMAND;break;	/* Assembly command is not recognized */
-			case LABEL_ALREADY_USED:	current_err_msg = LABEL_DOUBLE_DEFINITION;break;	/* Trying to set a value to the same label already defined */
-			case TOO_MUCH_PARAMS:		current_err_msg = TOO_MUCH_PARAMETERS;break;		/* Number of parameters exceeding assembly command rules */
-			case MISSING_PARAMS:		current_err_msg = PARAMETERS_MISSING;break;			/* Number of parameters is not enough for assembly command rules */
-			case LABEL_NOT_DEFINED:		current_err_msg = LABEL_UNDEFINED;break;			/* Trying to use a label which not defined in the file */
-			case INVALID_LABEL:			current_err_msg = INVALID_LABEL_USED;break;			/* The label name is not followning naming rules */
-			case ILLEGAL_DATA_ADDRESS:	current_err_msg = ILLEGAL_ADDRESS;break;			/* The label is pointing to Illegal address */
-			case UNKNOWN_ERROR:			current_err_msg = UNKNOWN_ERROR_MESSAGE;break;		/*Unknown error occurred */
-			default:					current_err_msg = "Unknown error occurred - error could not be recognized";
+			case INPUT_FILE_FAILURE: 		current_err_msg = INPUT_FILE_OPEN_FAIL;break;		 /* One of the input file could not been opened */
+			case UNKNOWN_COMMAND:			current_err_msg = UNKNOWN_ASSEMBLY_COMMAND;break;	 /* Assembly command is not recognized */
+			case LABEL_ALREADY_USED:		current_err_msg = LABEL_DOUBLE_DEFINITION;break;	 /* Trying to set a value to the same label already defined */
+			case TOO_MUCH_PARAMS:			current_err_msg = TOO_MUCH_PARAMETERS;break;		 /* Number of parameters exceeding assembly command rules */
+			case MISSING_PARAMS:			current_err_msg = PARAMETERS_MISSING;break;			 /* Number of parameters is not enough for assembly command rules */
+			case LABEL_NOT_DEFINED:			current_err_msg = LABEL_UNDEFINED;break;			 /* Trying to use a label which not defined in the file */
+			case INVALID_LABEL:				current_err_msg = INVALID_LABEL_USED;break;			 /* The label name is not followning naming rules */
+			case ILLEGAL_DATA_ADDRESS:		current_err_msg = ILLEGAL_ADDRESS;break;			 /* The label is pointing to Illegal address */
+			case SYMBOL_ALREADY_EXISTS:		current_err_msg = SYMBOL_ALREADY_EXISTS_MSG;break;	 /* The symbol is definded more than once */
+			case MULTIPLE_ENTRYLABEL_USE:	current_err_msg = MULTIPLE_ENTRYLABEL_USE_MSG;break; /* entry row should have a uniqe label and cannot be used more then once*/
+			case UNKNOWN_ERROR:				current_err_msg = UNKNOWN_ERROR_MESSAGE;break;		 /*Unknown error occurred */
+			default:						current_err_msg = "Unknown error occurred - error could not be recognized";
 		}
 
 		printf("line %d : %s\n", errors_collector->line_number, current_err_msg);

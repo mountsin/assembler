@@ -9,7 +9,8 @@ typedef enum error_type
 	LABEL_NOT_DEFINED,					/* Trying to use a label which not defined in the file */
 	INVALID_LABEL,						/* The label name is not followning naming rules */
 	ILLEGAL_DATA_ADDRESS,				/* The label is pointing to Illegal address */
-	SYMBOL_ALREADY_EXISTS,				/* The symbole is definded more than once */
+	SYMBOL_ALREADY_EXISTS,				/* The symbol is definded more than once */
+	MULTIPLE_ENTRYLABEL_USE,			/* entry row should have a uniqe label and cannot be used more then once*/
 	UNKNOWN_ERROR = 99					/* Other error */
 } ErrorType;
 

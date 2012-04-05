@@ -9,7 +9,7 @@ typedef enum boolean
 	TRUE
 } Boolean;
 
-typedef enum boolean_extented
+typedef enum boolean_ex
 {	
 	NO,
 	YES,
