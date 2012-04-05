@@ -15,10 +15,10 @@
 #define ASM_ADDRESSING_BITS	 3
 #define ASM_REGISTER_BITS	 3
 
-Boolean is_valid_label(char *token, CompilerNode *stmt);
+Boolean is_valid_label(char *token, CompilerNodePtr stmt, char *line);
 void parst_and_set_command_type(char* command_name, CompilerNodePtr node);
 void process_statement(CompilerNode stmt);
-void parse_and_load_data(CompilerNode *stmt, int *dc);
+void parse_and_load_data(CompilerNodePtr stmt, int *dc);
 AddressingMethod get_addressing_for(char *source_operand);
 void read_line_and_set_compiler_node(char *line, CompilerNodePtr node);
 void extract_symbol(char *str,char *result[]);
@@ -184,7 +184,7 @@ void extract_index(char *str,char *result, SecondScanType *scan_type)
 	result[length] = NULL;
 }
 
-/* This function get the correct adressing method of the operand */
+/* This function gets the correct adressing method of the operand */
 enum addressing_method get_addressing_for(char *operand)
 {
 	if(is_literal(operand))
@@ -198,7 +198,7 @@ enum addressing_method get_addressing_for(char *operand)
 	return DIRECT;
 }
 
-/* This funcitons handale data instructions such as .data and .string and increment the data counter (dc) */
+/* This funcitons handles data instructions such as .data and .string and increment the data counter (dc) */
 void parse_and_load_data(CompilerNode *stmt, int *dc)
 {
 	//TODO: Input validtaion and Error handling
@@ -306,7 +306,7 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 	token =  get_first_token(line);
 	if(token)
 	{
-		if(is_valid_label(token, stmt))
+		if(is_valid_label(token, stmt,line))
 			token = get_next_token();		
 
 		parst_and_set_command_type(token,stmt);
@@ -328,14 +328,22 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 	//set_binary_code(stmt); 
 }
 
-/* Accepts a token and checks if it is a valid label. If so, copy the token to the lable field of the CompilerNode struct and advance to the next token */
-Boolean is_valid_label(char *token, CompilerNode *stmt)
+/*
+* Accepts a token and checks if it is a valid label.
+* If so, copy the token to the lable field of the CompilerNode struct and advance to the next token 
+*/
+Boolean is_valid_label(char *token, CompilerNodePtr stmt, char  *line)
 {
 	int length_without_colon = strlen(token)-1;
 	if(length_without_colon > 29)						/* label length is less or equal to 30 */
 		return FALSE;
 	if(token[length_without_colon] == ':')
 	{
+		if(line[0] == ' ' || line[0] == '\t')
+		{
+			add_error(line_number, INVALID_LABEL);
+			return FALSE;
+		}
 		if(token[0] < 'A' || token[0] > 'z')
 		{
 			add_error(line_number, INVALID_LABEL);
@@ -379,7 +387,8 @@ void set_addressing_and_register(char *operand, enum addressing_method *addressi
 	if(operand)
 	{
 		*addressing = get_addressing_for(operand);
-		*reg = *addressing == REGISTER? atoi(&(operand[1])):0;
+		if(*addressing == REGISTER)
+			*reg = atoi(++operand);
 	}
 }
 
