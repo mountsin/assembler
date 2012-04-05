@@ -18,7 +18,7 @@
 
 void read_line_and_set_compiler_node(char *line, CompilerNodePtr node);
 void parst_and_set_command_type(char* command_name, Cmd *command);
-void parse_and_load_data(CompilerNodePtr stmt, int *dc);
+void parse_and_load_data(CompilerNodePtr stmt);
 Cmd get_command(char *token);
 AddressingMethod get_addressing_for(char *source_operand);
 void extract_symbol(char *str,char *result[]);
@@ -32,6 +32,7 @@ Boolean is_index(char *str);
 Boolean is_double_index(char *str);
 Boolean is_comment(char* line);
 Boolean is_number(char *token);
+Boolean is_valid_string(char *str);
 void set_binary_code(CompilerNodePtr stmt);
 
 /* Commands_list - table(array) contains each assembly command and its rules */
@@ -201,9 +202,8 @@ enum addressing_method get_addressing_for(char *operand)
 }
 
 /* This funcitons handles data instructions such as .data and .string and increment the data counter (dc) */
-void parse_and_load_data(CompilerNodePtr stmt, int *dc)
+void parse_and_load_data(CompilerNodePtr stmt)
 {
-	//TODO: Input validtaion and Error handling
 	char *tmp;
 
 	switch(stmt->cmd_type)
@@ -212,12 +212,22 @@ void parse_and_load_data(CompilerNodePtr stmt, int *dc)
 			tmp = get_first_token(stmt->target_operand);
 			while(tmp != NULL)
 			{
-				*dc++;
-				tmp = get_next_token();
+				if(is_number(tmp))
+				{
+					dc++;
+					tmp = get_next_token();
+				}
+				else
+				{
+					add_error(line_number,INVALID_DATA);
+				}
 			}
 			break;
 		case STRING:
-			*dc += strlen(stmt->target_operand)+1;
+			if(is_valid_string(stmt->target_operand))
+				dc += strlen(stmt->target_operand)+1;
+			else
+				add_error(line_number,INVALID_STRING);
 			break;
 	}
 }
@@ -476,5 +486,13 @@ Boolean is_number(char *token)
 			return FALSE;
 		i++;
 	} while(token[i]);
+	return TRUE;
+}
+
+Boolean is_valid_string(char *str)
+{
+	int length = strlen(str);
+	if(str[0] != '\"' || str[length-1] != '\"')
+		return FALSE;
 	return TRUE;
 }

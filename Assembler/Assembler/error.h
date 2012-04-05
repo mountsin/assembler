@@ -11,6 +11,8 @@ typedef enum error_type
 	ILLEGAL_DATA_ADDRESS,				/* The label is pointing to Illegal address */
 	SYMBOL_ALREADY_EXISTS,				/* The symbol is definded more than once */
 	MULTIPLE_ENTRYLABEL_USE,			/* entry row should have a uniqe label and cannot be used more then once*/
+	INVALID_DATA,						/* The data argumnet is not a valid number */
+	INVALID_STRING,						/* The string argument is not a valid string */
 	UNKNOWN_ERROR = 99					/* Other error */
 } ErrorType;
 
