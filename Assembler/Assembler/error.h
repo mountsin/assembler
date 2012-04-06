@@ -13,6 +13,8 @@ typedef enum error_type
 	MULTIPLE_ENTRYLABEL_USE,			/* entry row should have a uniqe label and cannot be used more then once*/
 	INVALID_DATA,						/* The data argumnet is not a valid number */
 	INVALID_STRING,						/* The string argument is not a valid string */
+	INVALID_SOURCE_OPERNAD,				/* The first operand is illegal for this command type */
+	INVALID_TARGET_OPERNAD,				/* The second operand is illegal for this command type */
 	UNKNOWN_ERROR = 99					/* Other error */
 } ErrorType;
 
@@ -26,5 +28,5 @@ typedef struct error
 	int line_number;				/* assembly (input) file line number */
 } Error;
 
-void add_error(int line_number,ErrorType error);
+void add_error(int line_number, enum error_type error);
 Error *get_errors_list();

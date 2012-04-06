@@ -35,6 +35,7 @@ Boolean is_comment(char* line);
 Boolean try_parse_number(char *token, int *number);
 Boolean is_valid_string(char *str);
 void set_binary_code(CompilerNodePtr stmt);
+void validate_addressing_and_operands(CompilerNodePtr stmt);
 
 /* Commands_list - table(array) contains each assembly command and its rules */
 CommandStruct commands_list[] = 
@@ -111,6 +112,7 @@ void first_scan(char *filename)
 
 			set_addressing_and_register(stmt->source_operand, &stmt->sourceAddressing, &stmt->source_register);
 			set_addressing_and_register(stmt->target_operand, &stmt->targetAddressing, &stmt->target_register);
+			validate_addressing_and_operands(stmt);
 
 			build_binary_machine_code(stmt);
 			stmt->address = ic;
@@ -519,4 +521,57 @@ Boolean is_valid_string(char *str)
 	if(str[0] != '\"' || str[length-1] != '\"')
 		return FALSE;
 	return TRUE;
+}
+
+void validate_addressing_and_operands(CompilerNodePtr stmt)
+{
+	switch(stmt->cmd_type)
+	{
+		case MOV:
+		case ADD:
+		case SUB:
+			if(stmt->targetAddressing == IMMEDIATE)
+				add_error(line_number, INVALID_TARGET_OPERNAD);
+			break;
+		case NOT:
+			if(stmt->source_operand)
+				add_error(line_number, INVALID_SOURCE_OPERNAD);
+			if(stmt->targetAddressing == DIRECT || stmt->targetAddressing == IMMEDIATE)
+				add_error(line_number, INVALID_TARGET_OPERNAD);
+			break;
+		case CLR:
+		case INC:
+		case DEC:
+		case JMP:
+		case BNE:
+		case RED:
+			if(stmt->source_operand)
+				add_error(line_number, INVALID_SOURCE_OPERNAD);
+			if(stmt->targetAddressing == IMMEDIATE)
+				add_error(line_number, INVALID_TARGET_OPERNAD);
+			break;
+		case LEA:
+			if(stmt->sourceAddressing == IMMEDIATE || stmt->sourceAddressing == REGISTER)
+				add_error(line_number, INVALID_SOURCE_OPERNAD);
+			if(stmt->targetAddressing == IMMEDIATE)
+				add_error(line_number, INVALID_TARGET_OPERNAD);
+			break;
+		case PRN:
+			if(stmt->source_operand)
+				add_error(line_number, INVALID_SOURCE_OPERNAD);
+			break;
+		case JSR:
+			if(stmt->source_operand)
+				add_error(line_number, INVALID_SOURCE_OPERNAD);
+			if(stmt->targetAddressing != DIRECT)
+				add_error(line_number, INVALID_TARGET_OPERNAD);
+			break;
+		case RTS:
+		case STOP:
+			if(stmt->source_operand)
+				add_error(line_number, INVALID_SOURCE_OPERNAD);
+			if(stmt->target_operand)
+				add_error(line_number, INVALID_TARGET_OPERNAD);
+			break;
+	}
 }
