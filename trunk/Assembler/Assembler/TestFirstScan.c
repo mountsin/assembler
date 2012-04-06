@@ -214,12 +214,14 @@ void TestAtoi(CuTest *tc)
 
 void TestIsNumber(CuTest *tc)
 {
-	CuAssertTrue(tc,is_number("+5"));
+	int n;
+	CuAssertTrue(tc,try_parse_number("+5",&n));
 }
 
 void TestIsNumber2(CuTest *tc)
 {
-	CuAssertTrue(tc,!is_number("+"));
+	int n;
+	CuAssertTrue(tc,!try_parse_number("+",&n));
 }
 
 void TestString(CuTest *tc)
@@ -230,6 +232,16 @@ void TestString(CuTest *tc)
 void TestString2(CuTest *tc)
 {
 	CuAssertIntEquals(tc,FALSE,is_valid_string("abcde"));
+}
+
+void TestDec2bin(CuTest *tc)
+{
+	int x = 5;
+	char binary[17];
+	x = -x;
+	CuAssertIntEquals(tc,-5,x);
+	dec2bin(x,binary,16);
+	CuAssertStrEquals(tc,"1111111111111011",binary);
 }
 
 CuSuite* FirstScanGetSuite()
@@ -266,6 +278,7 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite,TestIsNumber2);
 	SUITE_ADD_TEST(suite,TestString);
 	SUITE_ADD_TEST(suite,TestString2);
+	SUITE_ADD_TEST(suite,TestDec2bin);
 	return suite;
 }
 

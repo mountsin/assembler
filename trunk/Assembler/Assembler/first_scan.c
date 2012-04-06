@@ -11,6 +11,7 @@
 #include "global_constants.h"
 
 #define LINE_SIZE 100
+#define MEMORY_WORD_SIZE 16
 
 #define ASM_COMMAND_BITS	 4
 #define ASM_ADDRESSING_BITS	 3
@@ -31,7 +32,7 @@ Boolean is_literal(char *str);
 Boolean is_index(char *str);
 Boolean is_double_index(char *str);
 Boolean is_comment(char* line);
-Boolean is_number(char *token);
+Boolean try_parse_number(char *token, int *number);
 Boolean is_valid_string(char *str);
 void set_binary_code(CompilerNodePtr stmt);
 
@@ -204,18 +205,25 @@ enum addressing_method get_addressing_for(char *operand)
 /* This funcitons handles data instructions such as .data and .string and increment the data counter (dc) */
 void parse_and_load_data(CompilerNodePtr stmt)
 {
-	char *tmp;
+	char *token;			/* single numer of the comma seperated numbers operand */
+	int number;				/* the number as integer type after parsing */
+	CompilerNodePtr node;	/* the node that will be added to the data nodes list */
+	int i;					/* index of current character inside a string */
 
 	switch(stmt->cmd_type)
 	{
 		case DATA:
-			tmp = get_first_token(stmt->target_operand);
-			while(tmp != NULL)
+			token = get_first_token(stmt->target_operand);
+			while(token != NULL)
 			{
-				if(is_number(tmp))
+				if(try_parse_number(token,&number))
 				{
-					dc++;
-					tmp = get_next_token();
+					node = create_compiler_node();
+					node->address = dc++;
+					node->cmd_type = DATA;
+					dec2bin(number,node->binary_machine_code,MEMORY_WORD_SIZE);
+					add_data_node(node);
+					token = get_next_token();
 				}
 				else
 				{
@@ -225,7 +233,16 @@ void parse_and_load_data(CompilerNodePtr stmt)
 			break;
 		case STRING:
 			if(is_valid_string(stmt->target_operand))
-				dc += strlen(stmt->target_operand)+1;
+			{
+				for(i = 1; stmt->target_operand[i] != '"';i++)
+				{
+					node = create_compiler_node();
+					node->address = dc++;
+					node->cmd_type = STRING;
+					dec2bin(stmt->target_operand[i],node->binary_machine_code,MEMORY_WORD_SIZE);
+					add_data_node(node);
+				}
+			}
 			else
 				add_error(line_number,INVALID_STRING);
 			break;
@@ -475,9 +492,11 @@ Boolean is_comment(char* line)
 	return FALSE;
 }
 
-Boolean is_number(char *token)
+Boolean try_parse_number(char *token, int *number)
 {
-	int i = 0;
+	int i = 0; /* character index inside the token */
+	int is_negative = token[0] == '-';
+
 	if(token[0] == '+' || token[0] == '-')
 		i++;
 	do
@@ -486,6 +505,10 @@ Boolean is_number(char *token)
 			return FALSE;
 		i++;
 	} while(token[i]);
+
+	*number = atoi(++token);
+	if(is_negative)
+		*number = -(*number);
 	return TRUE;
 }
 
