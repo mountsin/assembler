@@ -320,16 +320,8 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 {
 	char *token;
 
-#if DUBUG
-	debug_output(line);	
-#endif
-
 	if(is_comment(line))
 	{
-#if DEBUG
-		debug_output("DEBUG: Comment line ignored");
-#endif
-
 		stmt->cmd_type = COMMENT;
 		return;
 	}
@@ -424,8 +416,6 @@ Cmd get_command(char *token)
 	for(tmp = commands_list; strlen(tmp->name) > 0 && strcmp(token, tmp->name); tmp++);
 	return tmp->cmd_type;
 }
-
-
 
 /* public function used be the second scan function to get the instrctions counter */
 int get_IC()

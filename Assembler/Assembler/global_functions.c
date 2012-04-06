@@ -133,11 +133,6 @@ char *get_token(char *text)
 	char *delimiters = " ,\t\n\r";
 	char *temp;
 	temp = strtok(text, delimiters);
-	//TODO: remove
-#if DEBUG
-	if(temp)
-		debug_output(temp);
-#endif
 	return temp;
 }
 
@@ -153,11 +148,4 @@ int get_Longest_length(char *str1 , char *str2)
 		return length1;
 	else
 		return length2;
-}
-
-
-//TODO: remove
-void debug_output(char *what)
-{
-	puts(what);
 }
