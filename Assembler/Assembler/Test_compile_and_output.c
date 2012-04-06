@@ -28,8 +28,8 @@ void Test_create_file_ob(CuTest *tc)
 
 
 	/*set cn_list*/
-	add_compiler_node(stmt);
-	cn_list = get_compiler_nodes_list_head();
+	add_code_node(stmt);
+	cn_list = get_code_list_head();
 	strcpy(cn_list->binary_machine_code, machine_code);
 	cn_list->linker_flag = ABSOLUTE;
 	cn_list->sourceAddressing = DIRECT;
@@ -72,7 +72,7 @@ void Test_create_file_ext(CuTest *tc)
 
 void Test_runFileCreators_lite(CuTest *tc)
 {
-	create_file_ob("tester", get_compiler_nodes_list_head());
+	create_file_ob("tester", get_code_list_head());
 	create_file_ent("tester", get_entries_symbols_list());
 	create_file_ext("tester", get_external_symbols_list());
 }

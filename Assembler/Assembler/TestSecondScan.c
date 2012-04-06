@@ -25,8 +25,8 @@ void Test_second_scan(CuTest *tc)
 	stmt->target_operand = "var1"; 
 
 	/*set cn_list*/
-	add_compiler_node(stmt);
-	cn_list = get_compiler_nodes_list_head();
+	add_code_node(stmt);
+	cn_list = get_code_list_head();
 	strcpy(cn_list->binary_machine_code,"1011111010111110");
 	cn_list->linker_flag = ABSOLUTE;
 	cn_list->second_scan_type = SKIP; //TODO: Yuval please verify me
@@ -45,7 +45,7 @@ void Test_second_scan(CuTest *tc)
 	stmt->targetAddressing = DIRECT;
 	stmt->target_operand = "var1";
 
-	add_compiler_node(stmt);
+	add_code_node(stmt);
 	cn_list = cn_list->next;
 	strcpy(cn_list->binary_machine_code,"LABEL1");
 	cn_list->second_scan_type != SKIP; //TODO: Yuval please verify me
@@ -65,7 +65,7 @@ void Test_second_scan(CuTest *tc)
 	stmt->targetAddressing = DIRECT;
 	stmt->target_operand = "var1";
 
-	add_compiler_node(stmt);
+	add_code_node(stmt);
 	cn_list = cn_list->next;
 	strcpy(cn_list->binary_machine_code,"EXT1");
 	cn_list->second_scan_type != SKIP; //TODO: Yuval please verify me
@@ -104,7 +104,7 @@ void Test_get_sym_by_name_and_set_external(CuTest *tc)
 	Symbol *current_symbol = (Symbol *)malloc(sizeof(Symbol));
 
 
-	h = get_compiler_nodes_list_head();
+	h = get_code_list_head();
 
 
 	//CuAssertStrEquals(tc,"STR",h2->name);

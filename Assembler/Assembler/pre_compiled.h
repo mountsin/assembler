@@ -2,8 +2,10 @@ typedef struct compiler_node* CompilerNodePtr;
 
 CompilerNodePtr create_compiler_node();
 void destroy_compiler_node(CompilerNodePtr node);
-void add_compiler_node(CompilerNodePtr stmt);
-CompilerNodePtr get_compiler_nodes_list_head();
+void add_code_node(CompilerNodePtr stmt);
+void add_data_node(CompilerNodePtr stmt);
+CompilerNodePtr get_code_list_head();
+CompilerNodePtr get_data_list_head();
 int get_instruction_counter();
 int get_data_counter();
 

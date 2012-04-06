@@ -113,7 +113,7 @@ void first_scan(char *filename)
 
 			build_binary_machine_code(stmt);
 			stmt->address = ic;
-			add_compiler_node(stmt);
+			add_code_node(stmt);
 
 			add_operand_nodes(stmt->cmd_type,stmt->sourceAddressing,stmt->source_operand);
 			add_operand_nodes(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand);
@@ -453,7 +453,7 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 			strcpy(node1->label,operand);								/* The operand is a symbol that should be translated to it's addresss value in the second scan phase */
 			node1->second_scan_type = LABEL;							/* I save the symble name as is in the label field and tell the second scan that it needs to translate it to the address value of the symbol */
 			node1->address = ++ic;
-			add_compiler_node(node1);
+			add_code_node(node1);
 			break;
 		default:
 			extract_symbol(operand,node1->label);
@@ -461,8 +461,8 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 			node1->second_scan_type = LABEL;
 			node1->address = ++ic;
 			node2->address = ++ic;
-			add_compiler_node(node1);
-			add_compiler_node(node2);
+			add_code_node(node1);
+			add_code_node(node2);
 			break;
 	}
 }

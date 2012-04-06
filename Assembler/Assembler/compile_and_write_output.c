@@ -75,7 +75,7 @@ void compile_and_write_output(char *filename)
 		print_errors_report(errors_collector);
 	else
 	{
-		create_file_ob(filename, get_compiler_nodes_list_head());
+		create_file_ob(filename, get_code_list_head());
 
 		create_file_ent(filename, get_entriesFile_head());
 		
