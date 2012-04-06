@@ -4,6 +4,7 @@
 
 CuSuite* FirstScanGetSuite();
 CuSuite* SecondScanGetSuite();
+CuSuite* SymbolsGetSuite();
 CuSuite* Compile_and_outputGetSuite();
 
 void RunAllTests(void)
@@ -14,7 +15,7 @@ void RunAllTests(void)
 	CuSuiteAddSuite(suite, FirstScanGetSuite());
 	CuSuiteAddSuite(suite, SymbolsGetSuite());
 	//CuSuiteAddSuite(suite, SecondScanGetSuite());
-	//CuSuiteAddSuite(suite, Compile_and_outputGetSuite());
+	CuSuiteAddSuite(suite, Compile_and_outputGetSuite());
 
 	CuSuiteRun(suite);
 	CuSuiteSummary(suite, output);
