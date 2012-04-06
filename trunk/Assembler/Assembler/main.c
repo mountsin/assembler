@@ -6,7 +6,6 @@
 #include "AllTests.h"
 
 #define TEST
-//#define DEBUG
 #define FILENAME_MAX 100
 
 
