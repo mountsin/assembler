@@ -37,31 +37,31 @@ Boolean is_valid_string(char *str);
 void set_binary_code(CompilerNodePtr stmt);
 void validate_addressing_and_operands(CompilerNodePtr stmt);
 
-/* Commands_list - table(array) contains each assembly command and its rules */
+/* Commands_list - table(array) contains each assembly command and its string name */
 CommandStruct commands_list[] = 
 {
-/*	cmd_type	name		how many operands		source_addressing_options	dest_addressing_options */
-	MOV,		"mov", 		TWO_OPERANDS,			{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	CMP,		"cmp", 		TWO_OPERANDS,			{0,1,2,3,4},				 {0,1,2,3,4},
-	ADD,		"add", 		TWO_OPERANDS,			{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	SUB,		"sub", 		TWO_OPERANDS,			{0,1,2,3,4},				 {1,2,3,4,EMPTY},
-	NOT,		"not", 		NO_OPERANDS,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	CLR,		"clr", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	LEA,		"lea", 		TWO_OPERANDS,			{1,2,3,EMPTY,EMPTY},		 {1,2,3,4,EMPTY},
-	INC,		"inc", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	DEC,		"dec", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	JMP,		"jmp", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	BNE,		"bne", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	RED,		"red", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,2,3,4,EMPTY},
-	PRN,		"prn", 		ONE_OPERAND,			EMPTY_ARRAY,				 {0,1,2,3,4},
-	JSR,		"jsr", 		ONE_OPERAND,			EMPTY_ARRAY,				 {1,EMPTY,EMPTY,EMPTY,EMPTY},
-	RTS,		"rts", 		NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
-	STOP,		"stop",		NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
-	DATA,		".data",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
-	STRING,		".string",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,
-	ENTRY,		".entry",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,	
-	EXTERN,		".extern",	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY,	
-	UNKNOWN_CMD,""		  ,	NO_OPERANDS,			EMPTY_ARRAY,				 EMPTY_ARRAY
+/*	cmd_type	name		*/
+	MOV,		"mov", 		
+	CMP,		"cmp", 		
+	ADD,		"add", 		
+	SUB,		"sub", 		
+	NOT,		"not", 		
+	CLR,		"clr", 		
+	LEA,		"lea", 		
+	INC,		"inc", 		
+	DEC,		"dec", 		
+	JMP,		"jmp", 		
+	BNE,		"bne", 		
+	RED,		"red", 		
+	PRN,		"prn", 		
+	JSR,		"jsr", 		
+	RTS,		"rts", 		
+	STOP,		"stop",		
+	DATA,		".data",	
+	STRING,		".string",	
+	ENTRY,		".entry",	
+	EXTERN,		".extern",	
+	UNKNOWN_CMD,""		  ,	
 };
 
 int ic = 0;								/* Instructions counter */

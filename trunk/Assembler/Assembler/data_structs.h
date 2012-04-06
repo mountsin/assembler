@@ -1,6 +1,3 @@
-#define EMPTY -1
-#define EMPTY_ARRAY {-1,-1,-1,-1,-1}
-
 /*===== enums ================== */
 
 typedef enum boolean
@@ -41,17 +38,8 @@ typedef enum cmd
 	ENTRY,				/* .entry */
 	EXTERN,				/* .extern */
 	COMMENT,			/* comment line or white chars line -  the assmbler will ignore */
-	UNKNOWN_CMD = 99	//TODO: duplicate with stasus enum values
+	UNKNOWN_CMD = 99	
 } Cmd;
-
-/* cmd = define command / instruction type */
-typedef enum cmd_parameters_type 
-{
-	NO_OPERANDS,
-	ONE_OPERAND,
-	TWO_OPERANDS
-
-}Cmd_parameters_type;
 
 /* addressing_method - addresing method (0-4) */
 typedef enum addressing_method
@@ -97,19 +85,15 @@ typedef struct
 {
 	Cmd cmd_type;
 	char name[8];
-	Cmd_parameters_type cmd_params_type;	/* how many operands the assembly command require */ 
-	int source_addressing_options[5];		/* legal source addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
-	int dest_addressing_options[5];			/* legal destination addressing typr for that command (cell can be 0-4 or EMPTY if not needed) */
-	
 } CommandStruct;
 
-//===================  Tables & Collectors ==========================
+/*===================  Tables & Collectors ==========================*/
 
-//Table (linked list of structs) of all assembly Labels
+/* Table (linked list of structs) of all assembly Labels */
 typedef struct labelNode
 {
 	struct labelNode *next;  
-	enum cmd type;			//can get enum values 16 - 19 (data, string...)
+	enum cmd type;			/* can get enum values 16 - 19 (data, string...) */
 	int decimalAddr;
 }
 LabelNode;
