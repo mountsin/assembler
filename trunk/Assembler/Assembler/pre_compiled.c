@@ -59,11 +59,6 @@ CompilerNodePtr get_code_list_head()
 	return code_list_head;
 }
 
-CompilerNodePtr get_data_list_head()
-{
-	return data_list_head;
-}
-
 /* Add a new struct to the end of the list */
 void add_node_to(CompilerNodePtr node, CompilerNodePtr *list_head, CompilerNodePtr *list_tail)
 {
