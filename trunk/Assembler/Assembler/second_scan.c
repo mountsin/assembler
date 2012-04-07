@@ -19,26 +19,37 @@
 
 int set_binary_machine_code(enum boolean is_external, SymbolPtr current_symbol, CompilerNode *cn);
 enum boolean_ex get_sym_by_name_and_set_external(SymbolPtr current_symbol, char *symbol_name);
+void add_data_entries_to_output_list();
+int set_entry(CompilerNode *cn);
+void set_entry_with_data_address(SymbolPtr current_entry, CompilerNode *cn);
+void set_entry_with_code_address(SymbolPtr current_entry, CompilerNode *cn);
+int check_entries();
 
 /**
 * perform second scan on compile node list
 * set binary machine code by symbols list if needed
 * set a flag for the linker program
+* set lists for entries & external files
 */
 void second_scan()
 {
 
 	/* set local variabels*/
-	int tempAddress;
 	CompilerNode *h = get_code_list_head();
 
 	boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
-	SymbolPtr current_symbol = NULL;
-
+	SymbolPtr current_symbol = create_symbol(); /*need to be memory allocated for copying data to it*/
+	SymbolPtr temp_symbol = NULL;
 
 	while(h != NULL) 
 	{
-		
+		if(h->second_scan_type == DATA_NODE) /*this is a data node - skip all*/
+		{
+				/*skip to next node*/
+				h = h->next;
+				continue;
+		}
+
 		if(h->second_scan_type == SKIP) /*this is a command node - set entry if needed*/
 		{
 
@@ -51,38 +62,14 @@ void second_scan()
 				continue;
 			}
 
-			/*1- add to symbol_outpuFile_list*/
-			if ( get_external_symbol_by_name(h->label)  != NULL)
+			if(set_entry(h) != OK)
 			{
-				/*add error - label should be entry only TODO: add error*/
-				
 				/*skip to next node*/
 				h = h->next;
 				continue;
 			}
 
-			if ( (current_symbol = get_entry_symbol_by_name(h->label) ) == NULL)
-			{
-				/*add error  - label should defined as entry(should be entry) TODO: add error*/
-				
-				/*skip to next node*/
-				h = h->next;
-				continue;
-			}
-
-			/*label is entry type and valid - add to entry output file*/
-			if(get_code_symbol_by_name(h->label)  != NULL)
-				add_entriesFile_row(h->label, h->address, h->line_number); /*add with code address*/
-			else if( (current_symbol = get_data_symbol_by_name(h->label) ) == NULL)
-			{
-				tempAddress = MINIMAL_DATA_ADDRESS +  current_symbol->address + get_instruction_counter();
-				add_entriesFile_row(h->label, h->address, tempAddress ); /*add with data address*/
-			}
-			else
-			{
-				/*add error  - entry does not found in data & code symbol lists TODO: add error*/
-				add_error(h->line_number, LABEL_NOT_DEFINED); //TODO: CORRECT ERROR
-			}
+			
 		}
 		else /* second scan required*/ 
 		{
@@ -90,8 +77,6 @@ void second_scan()
 			{
 				/* 1 - find the correct label if exist */
 				is_external = get_sym_by_name_and_set_external(current_symbol, h->label);
-
-			
 
 				if (is_external == NEITHER)	/* error - label is not in the symbols lists*/
 				{
@@ -101,7 +86,6 @@ void second_scan()
 					 h = h->next;
 					continue;
 				}
-				
 
 				/*2 - set binary machine code*/
 				if (set_binary_machine_code(is_external, current_symbol, h) != OK ) /* check for errors*/
@@ -111,7 +95,6 @@ void second_scan()
 
 					/*skip to next node*/
 					h = h->next;
-
 					continue;
 				}
 			}
@@ -129,15 +112,10 @@ void second_scan()
 			if (is_external == YES)
 				add_externalFile_row(h->label, h->address, h->line_number);
 
+			/*5 - if entry - set with data address*/
+			if (get_entry_symbol_by_name(current_symbol->name) != NULL)
+				set_entry_with_data_address(current_symbol->name, h);
 		}
-
-		/*5 - add entries of data type*/
-		//add_data_entries_to_output_list(); TODO: 1-CREATE FUNc, 2- use Same entrylist 3- check addresses(take from data list if needed)
-		//TODO: else /*second scan not needed - just set entries and external symbols*/
-		//{
-					
-		//Symbol = get_external_symbol_by_name(symbol_name);
-		//if(h->)
 
 		/*final check - binary machine code is really a binary*/	
 		if(is_binary_Str(h->binary_machine_code) != TRUE) /*not a binary string*/
@@ -147,6 +125,9 @@ void second_scan()
 		/*go to next node*/
 		h = h->next;
 	}
+
+	/*check that entries are ok*/
+	check_entries();
 }
 
 /**
@@ -168,7 +149,11 @@ int set_binary_machine_code(enum boolean_ex is_external, SymbolPtr current_symbo
 	high = MINIMAL_DATA_ADDRESS + get_data_counter();
 
 	if (is_external == YES)
-		label_address = EMPTY_ADDRESS;
+	{
+		/*external - set row of 0's*/
+		dec2bin(EMPTY_ADDRESS, cn->binary_machine_code, MACHINE_CODE_WORD_BITLENGTH);
+		return OK;
+	}
 	else
 		label_address = current_symbol->address;					/* get the label address from sybol*/
 			
@@ -226,29 +211,105 @@ enum boolean_ex get_sym_by_name_and_set_external(SymbolPtr current_symbol, char 
 }
 
 /**
-* get label name and return 1 if offset (absolute number) or an adress (relocatable)
-* input - label name (label / %label)
-* output - real label name (name with not & sign)
-* return - 1 if offset (absolute number), 0 if address(relocatable)
+* set entry 
 */
-//TODO: remove if not needed
-int get_second_scan_definitions(char *input, char *output)
+int set_entry(CompilerNode *cn)
 {
-	int i,j,is_offset_flag;
-	
-	if(input[0] == '%')
-		is_offset_flag == 1;  /* operand use % - get relative(offset) data label location(a)*/
-	else
-		is_offset_flag = 0;	/* operand use % - get data label address(r)*/
+	SymbolPtr current_symbol = NULL;
+	SymbolPtr temp_symbol = NULL;
 
-	j = 0;
-
-	for(i = 0; input[i]; i++)
+	/*1- add to symbol_outpuFile_list*/
+	if ( get_external_symbol_by_name(cn->label)  != NULL)
 	{
-		if (input[i] != '%')
+		/*add error - label should be defined as entry*/
+		add_error(cn->line_number, ENTRY_LABEL_UNDEFINED);
+
+		return ERROR;
+	}
+
+	if ( (current_symbol = get_entry_symbol_by_name(cn->label) ) == NULL)
+	{
+		/*add error  - label should be defined as entry*/
+		add_error(cn->line_number, ENTRY_LABEL_UNDEFINED);
+
+		return ERROR;
+	}
+
+	if (current_symbol->address == UNDEFINED_ADDRESS)
+	{	/*set entry address*/
+				
+		if( (temp_symbol = get_code_symbol_by_name(cn->label))   != NULL)
+			current_symbol->address = temp_symbol->address; /*set with code address*/
+
+		else if( (temp_symbol = get_data_symbol_by_name(cn->label) ) != NULL)
+			current_symbol->address = MINIMAL_DATA_ADDRESS + temp_symbol->address + get_instruction_counter(); /*set with data address*/
+				
+		else
 		{
-			output[j] = input[i];
-			j++;
+			/*add error  - entry does not found in data & code symbol lists (shouldn't be possible)*/
+			add_error(cn->line_number, UNKNOWN_ERROR);
+			
+			return ERROR;
 		}
 	}
+	return OK;
+}
+
+/**
+* set entry symbol with data address
+*/
+void set_entry_with_data_address(char * current_entry_name, CompilerNode *cn)
+{
+	SymbolPtr current_entry = get_entry_symbol_by_name(current_entry_name);
+	SymbolPtr temp_symbol = NULL;
+	
+	if (current_entry->address <= get_instruction_counter())
+	{
+		if( (temp_symbol = get_data_symbol_by_name(current_entry->name) ) != NULL)
+				current_entry->address = MINIMAL_DATA_ADDRESS + temp_symbol->address + get_instruction_counter(); /*set data address*/
+			
+		else
+			/*add error  - entry  is defined but not been used*/
+			add_error(cn->line_number, ENTRY_LABEL_NOT_SET);
+	}
+}
+
+/**
+* set entry symbol with code address
+*/
+void set_entry_with_code_address(char *current_entry_name, CompilerNode *cn)
+{
+	SymbolPtr current_entry = get_entry_symbol_by_name(current_entry_name);
+	SymbolPtr temp_symbol = NULL;
+
+	if (current_entry->address == UNDEFINED_ADDRESS)
+	{
+		if( (temp_symbol = get_code_symbol_by_name(current_entry->name) ) != NULL)
+				current_entry->address = temp_symbol->address; /*set code address*/
+			
+		else
+			/*add error  - entry  is defined but not been used*/
+			add_error(cn->line_number, ENTRY_LABEL_NOT_SET);
+	}
+}
+
+/**
+* make sure all entries have adresses
+*/
+int check_entries()
+{
+	SymbolPtr entries_head = get_entries_symbols_list();
+
+	while(entries_head)
+	{
+		if (entries_head->address == UNDEFINED_ADDRESS)
+		{
+			/*add error  - entry  is defined but not been used*/
+			add_error(UNDEFINED_ADDRESS, ENTRY_LABEL_NOT_SET);
+			
+			return ERROR;
+		}
+		entries_head = entries_head->next;
+	}
+	return OK;
 }

@@ -13,7 +13,8 @@ typedef enum second_scan_type
 {
 	SKIP,
 	LABEL,
-	LABEL_OFFSET
+	LABEL_OFFSET,
+	DATA_NODE
 } SecondScanType;
 
 /**

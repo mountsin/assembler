@@ -103,7 +103,7 @@ void first_scan(char *filename)
 			}
 			if(stmt->cmd_type == ENTRY)										/* Check if it's .entry instruction */
 			{
-				add_entries_symbol(stmt->target_operand, UNDEFINED_ADDRESS); 
+				add_entries_symbol(stmt->target_operand, UNDEFINED_ADDRESS, line_number); /*TODO: I've add line_number PLZ verify*/
 				continue;
 			}
 
