@@ -22,8 +22,8 @@ void parst_and_set_command_type(char* command_name, Cmd *command);
 void parse_and_load_data(CompilerNodePtr stmt);
 Cmd get_command(char *token);
 AddressingMethod get_addressing_for(char *source_operand);
-void extract_symbol(char *str,char *result[]);
-void extract_index(char *str,char *result[]);
+void extract_symbol(char *str,char *result);
+void extract_index(char *str,char *result, SecondScanType *scan_type);
 void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
 void add_operand_nodes(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand);
 Boolean is_valid_label(char *token, CompilerNodePtr stmt, char *line);
@@ -36,6 +36,7 @@ Boolean try_parse_number(char *token, int *number);
 Boolean is_valid_string(char *str);
 void set_binary_code(CompilerNodePtr stmt);
 void validate_addressing_and_operands(CompilerNodePtr stmt);
+Boolean build_binary_machine_code(CompilerNodePtr cn_ptr);
 
 /* Commands_list - table(array) contains each assembly command and its string name */
 CommandStruct commands_list[] = 

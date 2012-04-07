@@ -24,7 +24,7 @@
 #define EXT_STRING		"e"
 #define EMPTY_STRING	""
 
-/*files extentions*/
+/*files extensions*/
 #define OBJECT_FILE_EXT		".ob"
 #define ENTRIES_FILE_EXT	".ent"
 #define EXTERNAL_FILE_EXT	".ext"
@@ -135,16 +135,17 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 	char *filefullname =  (char *)calloc(strlen(filename) + 1, sizeof(char)); /*allocate memory for filename */
 	strcpy(filefullname,filename);
 	
-	filefullname = strcat(filefullname, OBJECT_FILE_EXT);	 /*add extention to filename */
+	filefullname = strcat(filefullname, OBJECT_FILE_EXT);	 /* add extension to filename */
 	filefullname[strlen(filefullname)] = '\0';
 		
 	fp = fopen(filefullname, "w");
 	if(!fp)
-		return CREATE_FILE_ERR; /* error occured while trying to creat new file*/
+		return CREATE_FILE_ERR; /* error occurred while trying to create new file*/
 
 
-	/* write 1th row - columns headers*  - can be removed/
-	/*fprintf(fp, OBJECT_ROW_FORMAT, HEADER_ADDRESS, HEADER_MACHINE_CODE, HEADER_LINKER_FLAG);*/
+	/*
+	 * write 1th row - columns headers  - can be removed
+	 * fprintf(fp, OBJECT_ROW_FORMAT, HEADER_ADDRESS, HEADER_MACHINE_CODE, HEADER_LINKER_FLAG);*/
 	
 	IC = get_instruction_counter();
 	DC = get_data_counter();

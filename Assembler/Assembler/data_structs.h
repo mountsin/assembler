@@ -16,26 +16,6 @@ typedef enum boolean_ex
 
 
 
-/* addressing_method - addresing method (0-4) */
-typedef enum addressing_method
-{	
-	IMMEDIATE,
-	DIRECT,
-	INDEX,
-	DOUBLE_INDEX,
-	REGISTER,
-	UNKNOWN
-} AddressingMethod;
-
-/* linker info enum */
-enum linker_enum
-{	
-	ABSOLUTE,
-	RELOCATABLE,
-	EXTERNAL,
-	NONE
-};
-
 
 /* paramType = define assembly command param type */
 enum paramTypeEnum 
@@ -46,7 +26,6 @@ enum paramTypeEnum
 	ASSEMBLY_LABEL = 3
 };
 
-
 /* CmdParam - represent a parameter of assembly command */
 typedef struct
 {
@@ -54,6 +33,3 @@ typedef struct
 	char *paramData;
 }
 CmdParam;
-
-
-
