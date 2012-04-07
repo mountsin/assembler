@@ -7,7 +7,6 @@
 #include "error.h"
 #include "global_functions.h"
 #include "pre_compiled.h"
-#include "data_structs.h"
 #include "global_constants.h"
 
 #define LINE_SIZE 100
@@ -16,6 +15,8 @@
 #define ASM_COMMAND_BITS	 4
 #define ASM_ADDRESSING_BITS	 3
 #define ASM_REGISTER_BITS	 3
+
+
 
 void read_line_and_set_compiler_node(char *line, CompilerNodePtr node);
 void parst_and_set_command_type(char* command_name, Cmd *command);

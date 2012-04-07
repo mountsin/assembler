@@ -63,7 +63,6 @@
     <ClInclude Include="AllTests.h" />
     <ClInclude Include="compile_and_write_output.h" />
     <ClInclude Include="CuTest.h" />
-    <ClInclude Include="data_structs.h" />
     <ClInclude Include="error.h" />
     <ClInclude Include="first_scan.h" />
     <ClInclude Include="global_constants.h" />
