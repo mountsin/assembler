@@ -42,27 +42,27 @@ Boolean build_binary_machine_code(CompilerNodePtr cn_ptr);
 CommandStruct commands_list[] = 
 {
 /*	cmd_type	name		*/
-	MOV,		"mov",
-	CMP,		"cmp", 		
-	ADD,		"add", 		
-	SUB,		"sub", 		
-	NOT,		"not", 		
-	CLR,		"clr", 		
-	LEA,		"lea", 		
-	INC,		"inc", 		
-	DEC,		"dec", 		
-	JMP,		"jmp", 		
-	BNE,		"bne", 		
-	RED,		"red", 		
-	PRN,		"prn", 		
-	JSR,		"jsr", 		
-	RTS,		"rts", 		
-	STOP,		"stop",		
-	DATA,		".data",	
-	STRING,		".string",	
-	ENTRY,		".entry",	
-	EXTERN,		".extern",	
-	UNKNOWN_CMD,""		  ,	
+	{ MOV,		"mov"},
+	{ CMP,		"cmp"},
+	{ ADD,		"add"},
+	{ SUB,		"sub"},
+	{ NOT,		"not"},
+	{ CLR,		"clr"},
+	{ LEA,		"lea"},
+	{ INC,		"inc"},
+	{ DEC,		"dec"},
+	{ JMP,		"jmp"},
+	{ BNE,		"bne"},
+	{ RED,		"red"},
+	{ PRN,		"prn"},
+	{ JSR,		"jsr"},
+	{ RTS,		"rts"},
+	{ STOP,		"stop"},
+	{ DATA,		".data"},
+	{ STRING,		".string"},
+	{ ENTRY,		".entry"},
+	{ EXTERN,		".extern"},
+	{UNKNOWN_CMD,""		  },
 };
 
 int ic = 100;							/* Instructions counter */
@@ -75,7 +75,6 @@ void first_scan(char *filename)
 	FILE *fp;
 	char line[LINE_SIZE];
 	CompilerNodePtr stmt;													/* Each code line will be parsed and stored in this struct */
-	Boolean label_exist = FALSE;
 
 	fp = fopen(filename,"r");
 	if(fp)
@@ -134,19 +133,19 @@ void set_binary_code(CompilerNodePtr stmt)
 {
 	char temp[5];
 	dec2bin(stmt->cmd_type,temp,4);
-	temp[4]= NULL;
+	temp[4]= '\0';
 	strcat(stmt->binary_machine_code,temp);
 	dec2bin(stmt->sourceAddressing,temp,3);
-	temp[3] = NULL;
+	temp[3] = '\0';
 	strcat(stmt->binary_machine_code,temp);
 	dec2bin(stmt->source_register,temp,3);
-	temp[3] = NULL;
+	temp[3] = '\0';
 	strcat(stmt->binary_machine_code,temp);
 	dec2bin(stmt->targetAddressing ,temp,3);
-	temp[3] = NULL;
+	temp[3] = '\0';
 	strcat(stmt->binary_machine_code,temp);
 	dec2bin(stmt->target_register,temp,3);
-	temp[3] = NULL;
+	temp[3] = '\0';
 	strcat(stmt->binary_machine_code,temp);
 }
 
@@ -167,7 +166,7 @@ void extract_symbol(char *str,char *result)
 		length = strchr(str,'[')-str;
 		strncpy(result,str,length);
 	}
-	result[length] = NULL;
+	result[length] = '\0';
 }
 
 /* This function extracts the index out of the operand in case of index or double index addressing method */
@@ -187,7 +186,7 @@ void extract_index(char *str,char *result, SecondScanType *scan_type)
 		*scan_type = LABEL;
 	}
 	strncpy(result,start_of_index,length);
-	result[length] = NULL;
+	result[length] = '\0';
 }
 
 /* This function gets the correct addressing method of the operand */
@@ -359,7 +358,6 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 Boolean is_valid_label(char *token, CompilerNodePtr stmt, char  *line)
 {
 	char label[31];
-	Cmd command;
 	int length_without_colon = strlen(token)-1;
 	if(length_without_colon > 29)						/* label length should be less or equal to 30 */
 	{
@@ -369,7 +367,7 @@ Boolean is_valid_label(char *token, CompilerNodePtr stmt, char  *line)
 	if(token[length_without_colon] == ':')
 	{
 		strncpy(label,token,length_without_colon);
-		label[length_without_colon] = NULL;
+		label[length_without_colon] = '\0';
 
 		if(line[0] == ' ' || line[0] == '\t')			/* label should start on the first column of the lien */
 		{
@@ -395,7 +393,7 @@ Boolean is_valid_label(char *token, CompilerNodePtr stmt, char  *line)
 			return FALSE;
 		}
 		strcpy(stmt->label, label);			
-		stmt->label[length_without_colon] = NULL;
+		stmt->label[length_without_colon] = '\0';
 		return TRUE;
 	}
 	return FALSE;
