@@ -41,6 +41,7 @@ void set_binary_code(CompilerNodePtr stmt);
 void validate_addressing_and_operands(CompilerNodePtr stmt);
 Boolean build_binary_machine_code(CompilerNodePtr cn_ptr);
 void validate_second_index(char *operand);
+void dec2bin_codebuilder(long decimal, char *binary, int binLength);
 
 /* Commands_list - table(array) contains each assembly command and its string name */
 CommandStruct commands_list[] = 
