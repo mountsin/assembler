@@ -128,6 +128,7 @@ void first_scan(char *filename)
 	{
 		add_error(line_number,INPUT_FILE_FAILURE);
 	}
+	connect_data_list_to_code_list();
 }
 
 void set_binary_code(CompilerNodePtr stmt)
@@ -241,6 +242,7 @@ void parse_and_load_data(CompilerNodePtr stmt)
 				{
 					node = create_compiler_node();
 					node->address = dc++;
+					node->second_scan_type = DATA_NODE;
 					node->cmd_type = STRING;
 					dec2bin(stmt->target_operand[i],node->binary_machine_code,MEMORY_WORD_SIZE);
 					add_data_node(node);
