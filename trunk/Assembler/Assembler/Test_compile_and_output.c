@@ -14,7 +14,7 @@ void Test_create_file_ob(CuTest *tc)
 	
 	stmt->address = 122;
 	stmt->cmd_type = MOV;
-	stmt->second_scan_type = SKIP; //TODO: Yuval please verify me
+	stmt->second_scan_type = SKIP;
 	strcpy(stmt->label,"LABEL1");
 	stmt->line_number = 111;
 	stmt->linker_flag = ABSOLUTE;

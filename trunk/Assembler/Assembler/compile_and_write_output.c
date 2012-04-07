@@ -26,9 +26,10 @@
 #define OBJECT_FILE_EXT		".ob"
 #define ENTRIES_FILE_EXT	".ent"
 #define EXTERNAL_FILE_EXT	".ext"
+#define INPUT_FILE_EXT		".as"
 
 /* error collector messages*/
-#define GENERAL_ERROR_MESSAGE		"One or more errors occurred while trying to compile the assembly file:"
+#define GENERAL_ERROR_MESSAGE		"One or more errors occurred while trying to compile the assembly file"
 #define INPUT_FILE_OPEN_FAIL		"One of the input file could not been opened"
 #define UNKNOWN_ASSEMBLY_COMMAND	"Assembly command is not recognized"
 #define LABEL_DOUBLE_DEFINITION		"Trying to set a value to the same label already defined"
@@ -55,7 +56,7 @@
 /**
 
 */
-void print_errors_report(Error *errors_collector);
+void print_errors_report(Error *errors_collector, char *filename);
 
 int create_file_ob(char *filename, CompilerNode *cn_list);
 int create_file_ent(char *filename, Symbol *entries_list);
@@ -67,7 +68,7 @@ void compile_and_write_output(char *filename)
 	Error *errors_collector = get_errors_list();
 
 	if(errors_collector != NULL)
-		print_errors_report(errors_collector);
+		print_errors_report(errors_collector, filename);
 	else
 	{
 		create_file_ob(filename, get_code_list_head());
@@ -78,11 +79,11 @@ void compile_and_write_output(char *filename)
 	}
 }
 
-void print_errors_report(Error *errors_collector)
+void print_errors_report(Error *errors_collector, char *filename)
 {
 	char *current_err_msg;
 
-	printf("%s\n",GENERAL_ERROR_MESSAGE);
+	printf("%s %s%s :\n",GENERAL_ERROR_MESSAGE, filename,INPUT_FILE_EXT);
 	
 	while(errors_collector)
 	{
@@ -172,7 +173,7 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 
 
 	if(fclose(fp) != OK)
-			return	CLOSE_FILE_ERR; //Error occured while trying to close the file Stream
+			return	CLOSE_FILE_ERR; /*Error occured while trying to close the file Stream*/
 	else
 			return OK; /* everthing is OK*/ 
 
@@ -185,7 +186,6 @@ int create_file_ent(char *filename, Symbol *entries_symbols_list)
 
 	FILE *fp;
 
-	//TODO: dispose
 	char *filefullname =  (char *)calloc(strlen(filename) + 1, sizeof(char)); /*allocate memory for filefullname */
 	strcpy(filefullname,filename);
 	
@@ -205,12 +205,10 @@ int create_file_ent(char *filename, Symbol *entries_symbols_list)
 		fprintf(fp, EXT_ENT_ROW_FORMAT, entries_symbols_list->name, address_binary_string);
 		
 		entries_symbols_list = entries_symbols_list->next; /* point to next node*/
-
-		//TODO: free entries_symbols_list current node;
 	}
 
 	if(fclose(fp) != OK)
-			return	CLOSE_FILE_ERR; //Error occured while trying to close the file Stream
+			return	CLOSE_FILE_ERR; /*Error occured while trying to close the file Stream*/
 	else
 			return OK; /* everthing is OK*/ 
 }
@@ -222,7 +220,6 @@ int create_file_ext(char *filename, Symbol *external_symbols_list)
 
 	FILE *fp;
 
-	//TODO: dispose
 	char *filefullname =  (char *)calloc(strlen(filename) + 1, sizeof(char)); /*allocate memory for filefullname */
 	strcpy(filefullname,filename);
 	
@@ -242,12 +239,10 @@ int create_file_ext(char *filename, Symbol *external_symbols_list)
 		fprintf(fp, EXT_ENT_ROW_FORMAT, external_symbols_list->name, address_binary_string);
 		
 		external_symbols_list = external_symbols_list->next; /* point to next node*/
-
-		//TODO: free entries_symbols_list current node;
 	}
 
 	if(fclose(fp) != OK)
-			return	CLOSE_FILE_ERR; //Error occured while trying to close the file Stream
+			return	CLOSE_FILE_ERR; /*Error occured while trying to close the file Stream*/
 	else
 			return OK; /* everthing is OK*/ 
 }
