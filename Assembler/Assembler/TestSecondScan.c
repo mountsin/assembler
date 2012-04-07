@@ -3,7 +3,7 @@
 #include <string.h>
 #include "CuTest.h"
 #include "pre_compiled.h"
-#include "data_structs.h"
+#include "global_constants.h"
 #include "second_scan.h"
 #include "symbols.h"
 

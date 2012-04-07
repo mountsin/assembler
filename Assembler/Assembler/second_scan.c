@@ -8,7 +8,6 @@
 #include "error.h"
 #include "pre_compiled.h"
 #include "global_constants.h"
-#include "data_structs.h"
 
 #define MACHINE_CODE_WORD_BITLENGTH 16
 #define EMPTY_ADDRESS 0

@@ -18,9 +18,6 @@
     <ClInclude Include="symbols.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="data_structs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="first_scan.h">
       <Filter>Header Files</Filter>
     </ClInclude>

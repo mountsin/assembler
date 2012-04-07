@@ -5,7 +5,7 @@
 #include "CuTest.h"
 #include "first_scan.h"
 #include "global_functions.h"
-#include "data_structs.h"
+#include "global_constants.h"
 #include "pre_compiled.h"
 #include "error.h"
 
