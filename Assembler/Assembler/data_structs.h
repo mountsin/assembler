@@ -87,15 +87,3 @@ typedef struct
 	char name[8];
 } CommandStruct;
 
-/*===================  Tables & Collectors ==========================*/
-
-/* Table (linked list of structs) of all assembly Labels */
-typedef struct labelNode
-{
-	struct labelNode *next;  
-	enum cmd type;			/* can get enum values 16 - 19 (data, string...) */
-	int decimalAddr;
-}
-LabelNode;
-
-
