@@ -39,6 +39,7 @@ Boolean is_valid_string(char *str);
 void set_binary_code(CompilerNodePtr stmt);
 void validate_addressing_and_operands(CompilerNodePtr stmt);
 Boolean build_binary_machine_code(CompilerNodePtr cn_ptr);
+void dec2bin_codebuilder(long decimal, char *binary, int binLength);
 
 /* Commands_list - table(array) contains each assembly command and its string name */
 CommandStruct commands_list[] = 
@@ -259,11 +260,11 @@ Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
 	char *target_addressing_method =	(char *)malloc(sizeof(char)*(ASM_ADDRESSING_BITS+1));	/*target operand addressing method code  - 3 bits*/
 	char *target_register =				(char *)malloc(sizeof(char)*(ASM_REGISTER_BITS+1));		/*source operand register  - 3 bits*/
 	
-	dec2bin(cn_ptr->cmd_type,			command,					ASM_COMMAND_BITS);
-	dec2bin(cn_ptr->sourceAddressing,	source_addressing_method,	ASM_ADDRESSING_BITS);
-	dec2bin(cn_ptr->source_register,	source_register,			ASM_REGISTER_BITS);
-	dec2bin(cn_ptr->targetAddressing,	target_addressing_method,	ASM_ADDRESSING_BITS);
-	dec2bin(cn_ptr->target_register,	target_register,			ASM_REGISTER_BITS);
+	dec2bin_codebuilder(cn_ptr->cmd_type,			command,					ASM_COMMAND_BITS);
+	dec2bin_codebuilder(cn_ptr->sourceAddressing,	source_addressing_method,	ASM_ADDRESSING_BITS);
+	dec2bin_codebuilder(cn_ptr->source_register,	source_register,			ASM_REGISTER_BITS);
+	dec2bin_codebuilder(cn_ptr->targetAddressing,	target_addressing_method,	ASM_ADDRESSING_BITS);
+	dec2bin_codebuilder(cn_ptr->target_register,	target_register,			ASM_REGISTER_BITS);
 	
 	strcat(cn_ptr->binary_machine_code, command);					/* add command bits*/
 	strcat(cn_ptr->binary_machine_code, source_addressing_method);	/* add source addressing method bits*/
