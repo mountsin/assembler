@@ -65,3 +65,15 @@ Error *get_errors_list()
 {
 	return errors_list;
 }
+
+void free_errors_collector()
+{
+	Error *error_node = errors_list;
+	
+	while(errors_list != NULL)
+	{
+		errors_list = errors_list->next;		/*advance head pointer*/
+		free(error_node);							/*free current node*/
+		error_node = errors_list;				/*point current node to head pointer*/
+	}
+}

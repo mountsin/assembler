@@ -4,9 +4,12 @@
 #include "second_scan.h"
 #include "compile_and_write_output.h"
 #include "AllTests.h"
+#include "error.h"
+
 
 //#define TEST
 #define FILENAME_MAX 100
+#define FILES_PER_INPUT 3
 
 /*free all memory allocations*/
 void dispose_all();
@@ -34,16 +37,19 @@ void main(int argc, char *argv[])
 		dispose_all();
 	}
 
-	//TODO: remove (testing)
+	printf("%s %d %s", "Compilation Successful.", (i-1)*FILES_PER_INPUT, "Files were Created.");
 
 	getchar();
 }
 
 void dispose_all()
 {
-	//free all symbols lists
+	/* free memory allocations */
 	free_all_symbols_lists();
 
+	free_compiler_node_list();
+
+	free_errors_collector();
 	
 }
 #endif

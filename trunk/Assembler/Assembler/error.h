@@ -33,3 +33,6 @@ typedef struct error
 
 void add_error(int line_number, enum error_type error);
 Error *get_errors_list();
+
+/*free errors list memory allocations*/
+void free_errors_collector();
