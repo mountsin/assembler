@@ -15,6 +15,10 @@
 #define ASM_ADDRESSING_BITS	 3
 #define ASM_REGISTER_BITS	 3
 
+/* machine code builer boundries*/
+#define BUILDER_LOW 0
+#define BUILDER_HIGH 98
+
 void read_line_and_set_compiler_node(char *line, CompilerNodePtr node);
 void parst_and_set_command_type(char* command_name, Cmd *command);
 void parse_and_load_data(CompilerNodePtr stmt);
@@ -274,6 +278,15 @@ Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
 	free(target_register);
 	return TRUE;
 }
+
+/*
+* used dec2bin_withBoundries with boudries: BUILDER_LOW, BUILDER_HIGH
+*/
+void dec2bin_codebuilder(long decimal, char *binary, int binLength)
+{
+	dec2bin_withBoundries(decimal, binary, binLength, BUILDER_LOW, BUILDER_HIGH);
+}
+	
 /* This function accepts an operand string and checks if it is a literal value (a number) */
 Boolean is_literal(char *str)
 {

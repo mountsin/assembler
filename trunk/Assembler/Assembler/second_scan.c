@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "global_functions.h"
-//TODO: REMOVE COMMENTS IN FILE #include "first_scan.h"
 #include "second_scan.h"
 #include "symbols.h"
 #include "error.h"
@@ -36,7 +35,7 @@ void second_scan()
 	/* set local variabels*/
 	CompilerNode *h = get_code_list_head();
 
-	boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
+	boolean_ex is_external = NO;
 	SymbolPtr current_symbol = create_symbol(); /*need to be memory allocated for copying data to it*/
 
 	while(h != NULL) 
@@ -103,7 +102,12 @@ void second_scan()
 				if (is_external == YES)
 					h->linker_flag = EXTERNAL;
 				else
-					h->linker_flag = RELOCATABLE;
+				{
+					if(h->second_scan_type == LABEL_OFFSET)
+						h->linker_flag = ABSOLUTE;
+					else
+						h->linker_flag = RELOCATABLE;
+				}
 			}
 
 			/*4 - if external - add to externals file*/
@@ -126,6 +130,9 @@ void second_scan()
 
 	/*check that entries are ok*/
 	check_entries();
+
+	/*free memory allocations*/
+	free(current_symbol);
 }
 
 /**
@@ -161,11 +168,11 @@ int set_binary_machine_code(enum boolean_ex is_external, SymbolPtr current_symbo
 	}
 	else /*actual label required*/
 	{
-		machine_code_integer = MINIMAL_DATA_ADDRESS + label_address + get_instruction_counter(); /*binary machine code will get the address value*/
+		machine_code_integer = label_address + get_instruction_counter(); /*binary machine code will get the address value*/
 
-		/* set data boundries*/
-		low += get_instruction_counter();
-		high += get_instruction_counter();
+		/* set data boundries for relocatable*/
+		low += get_instruction_counter() - MINIMAL_DATA_ADDRESS;
+		high += get_instruction_counter() - MINIMAL_DATA_ADDRESS;
 	}
 			
 
