@@ -271,7 +271,7 @@ void set_entry_with_data_address(char * current_entry_name, CompilerNode *cn)
 	if (current_entry->address <= get_instruction_counter())
 	{
 		if( (temp_symbol = get_data_symbol_by_name(current_entry->name) ) != NULL)
-				current_entry->address = MINIMAL_DATA_ADDRESS + temp_symbol->address + get_instruction_counter(); /*set data address*/
+				current_entry->address =  temp_symbol->address + get_instruction_counter(); /*set data address*/
 			
 		else
 			/*add error  - entry  is defined but not been used*/
