@@ -75,11 +75,16 @@ int dc = 0;								/* Data counter */
 int line_number = 0;					/* Line number in the assembly file for the errors report */
 
 /* Read the assembly file, line by line and process the statements */
-void first_scan(char *filename)
+void first_scan(char *filename_noEx)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	CompilerNodePtr stmt;													/* Each code line will be parsed and stored in this struct */
+	CompilerNodePtr stmt;		/* Each code line will be parsed and stored in this struct */
+	
+	/*set file name with extention*/
+	char filename[FILENAME_MAX];
+	strcpy(filename, filename_noEx);
+	strcat(filename, INPUT_FILE_EXT);
 
 	fp = fopen(filename,"r");
 	if(fp)

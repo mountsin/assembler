@@ -2,15 +2,10 @@
 #include <stdlib.h>
 #include "error.h"
 
-
-Error *errors_list = NULL;		/*error list head*/
+Error *errors_list = NULL;			/*error list head*/
 
 void add_errorNode_by_line_number(Error *new_node);
 
-//TODO: reverse error list (like in pre - compiled nodes)
-//add an option to insert the error in the middle of the list (by line number) OR - 
-// add function to order the list by line numbers (so error list output will be by order)
-// by the way - maybe we should add an optional error string to struct "Error"? (like - name of label which is missing and so on)
 void add_error(int line_number, enum error_type error)
 {
 	Error *tmp = (Error *)malloc(sizeof(Error));
@@ -18,13 +13,13 @@ void add_error(int line_number, enum error_type error)
 	tmp->line_number = line_number;
 	tmp->next = NULL;
 	
-	if (errors_list == NULL)/*adding first node*/
-		errors_list = tmp;
-	else
+	/*set linked list nodes*/
+	if(errors_list != NULL) /*tail already defined*/
+	{
 		add_errorNode_by_line_number(tmp);
-	
-	//TODO: REMOVE
-	printf("Error - tester\n");
+	}
+	else
+		errors_list = tmp;		/*first node - set head and tail*/
 }
 
 void add_errorNode_by_line_number(Error *new_node)
@@ -58,7 +53,6 @@ void add_errorNode_by_line_number(Error *new_node)
 	/* new node have not been set and next node is NULL (new node should be the last node in error lists)*/
 	this_node->next = new_node;
 	return;
-
 }
 
 Error *get_errors_list()
@@ -73,7 +67,7 @@ void free_errors_collector()
 	while(errors_list != NULL)
 	{
 		errors_list = errors_list->next;		/*advance head pointer*/
-		free(error_node);							/*free current node*/
+		free(error_node);						/*free current node*/
 		error_node = errors_list;				/*point current node to head pointer*/
 	}
 }
