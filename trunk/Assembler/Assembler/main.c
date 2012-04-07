@@ -5,7 +5,7 @@
 #include "compile_and_write_output.h"
 #include "AllTests.h"
 
-//#define TEST
+#define TEST
 #define FILENAME_MAX 100
 
 

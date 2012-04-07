@@ -26,6 +26,7 @@ Cmd get_command(char *token);
 AddressingMethod get_addressing_for(char *source_operand);
 void extract_symbol(char *str,char *result);
 void extract_index(char *str,char *result, SecondScanType *scan_type);
+void extract_second_index(char *str,char *result);
 void set_addressing_and_register(char *operand,AddressingMethod *addressing ,int *reg);
 void add_operand_nodes(Cmd cmd_type, AddressingMethod source_addressing,char *source_operand);
 Boolean is_valid_label(char *token, CompilerNodePtr stmt, char *line);
@@ -39,7 +40,7 @@ Boolean is_valid_string(char *str);
 void set_binary_code(CompilerNodePtr stmt);
 void validate_addressing_and_operands(CompilerNodePtr stmt);
 Boolean build_binary_machine_code(CompilerNodePtr cn_ptr);
-void dec2bin_codebuilder(long decimal, char *binary, int binLength);
+void validate_second_index(char *operand);
 
 /* Commands_list - table(array) contains each assembly command and its string name */
 CommandStruct commands_list[] = 
@@ -173,6 +174,16 @@ void extract_index(char *str,char *result, SecondScanType *scan_type)
 	result[length] = '\0';
 }
 
+/* This function extracts the second index out of the operand in case of index or double index addressing method */
+void extract_second_index(char *str,char *result)
+{
+	char *start_of_index = strrchr(str,'[')+1;
+	char *end_of_index = strrchr(str,']');
+	int length = end_of_index - start_of_index;
+	strncpy(result,start_of_index,length);
+	result[length] = '\0';
+}
+
 /* This function gets the correct addressing method of the operand */
 enum addressing_method get_addressing_for(char *operand)
 {
@@ -181,7 +192,10 @@ enum addressing_method get_addressing_for(char *operand)
 	if(is_register(operand))
 		return REGISTER;
 	if(is_double_index(operand))
+	{
+		validate_second_index(operand);
 		return DOUBLE_INDEX;
+	}
 	if(is_index(operand))
 		return INDEX;
 	return DIRECT;
@@ -232,6 +246,7 @@ void parse_and_load_data(CompilerNodePtr stmt)
 				node = create_compiler_node();
 				node->address = dc++;
 				node->cmd_type = STRING;
+				node->second_scan_type = DATA_NODE;
 				dec2bin(0, node->binary_machine_code,MEMORY_WORD_SIZE);
 				add_data_node(node);
 			}
@@ -561,4 +576,12 @@ void validate_addressing_and_operands(CompilerNodePtr stmt)
 				add_error(line_number, INVALID_TARGET_OPERNAD);
 			break;
 	}
+}
+
+void validate_second_index(char *operand)
+{
+	char second_index[31];
+	extract_second_index(operand,second_index);
+	if(!is_register(second_index))
+		add_error(line_number,INVALID_SECOND_INDEX);
 }

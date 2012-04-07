@@ -236,6 +236,13 @@ void TestDec2bin(CuTest *tc)
 	CuAssertStrEquals(tc,"1111111111111011",binary);
 }
 
+void TestExtractSecondIndex(CuTest *tc)
+{
+	char result[10] = "";
+	extract_second_index("[K]LASTCHAR[R3]",result);
+	CuAssertStrEquals(tc,"R3",result);
+}
+
 CuSuite* FirstScanGetSuite()
 {
 	CuSuite* suite = CuSuiteNew();
@@ -268,6 +275,7 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite,TestString);
 	SUITE_ADD_TEST(suite,TestString2);
 	SUITE_ADD_TEST(suite,TestDec2bin);
+	SUITE_ADD_TEST(suite, TestExtractSecondIndex);
 	return suite;
 }
 
