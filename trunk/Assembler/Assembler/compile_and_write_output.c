@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "global_functions.h"
 #include "compile_and_write_output.h"
-//#include "symbols.h"
 #include "error.h"
-#include <stdlib.h>
-//#include "pre_compiled.h"
+
 
 /*bit usage*/
 #define ONEBYTE_BITSNUM		8

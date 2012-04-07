@@ -8,6 +8,7 @@ CompilerNodePtr get_code_list_head();
 CompilerNodePtr get_data_list_head();
 int get_instruction_counter();
 int get_data_counter();
+void connect_data_list_to_code_list();
 
 /* cmd = define command / instruction type */
 typedef enum cmd

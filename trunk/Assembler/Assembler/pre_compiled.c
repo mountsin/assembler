@@ -46,12 +46,12 @@ void destroy_compiler_node(CompilerNodePtr node)
 
 void add_code_node(CompilerNodePtr stmt)
 {
-	add_node_to(stmt,code_list_head,code_list_tail);
+	add_node_to(stmt,&code_list_head,&code_list_tail);
 }
 
 void add_data_node(CompilerNodePtr stmt)
 {
-	add_node_to(stmt,data_list_head,data_list_tail);
+	add_node_to(stmt,&data_list_head,&data_list_tail);
 }
 
 CompilerNodePtr get_code_list_head()
@@ -65,17 +65,29 @@ CompilerNodePtr get_data_list_head()
 }
 
 /* Add a new struct to the end of the list */
-void add_node_to(CompilerNodePtr node, CompilerNodePtr list_head, CompilerNodePtr list_tail)
+void add_node_to(CompilerNodePtr node, CompilerNodePtr *list_head, CompilerNodePtr *list_tail)
 {
 	/*set linked list nodes*/
-	if(code_list_tail) /*code_list_tail already defined*/
+	if(*list_tail) /*code_list_tail already defined*/
 	{
-		code_list_tail->next = node;
-		code_list_tail = code_list_tail->next;
+		(*list_tail)->next = node;
+		*list_tail = (*list_tail)->next;
 	}
 	else
-		code_list_tail = node;
+		*list_tail = node;
 	
-	if(!code_list_head)/*code_list_head not defined - first node*/
-		code_list_head = code_list_tail;
+	if(!*list_head)/*code_list_head not defined - first node*/
+		*list_head = *list_tail;
+}
+
+void connect_data_list_to_code_list()
+{
+	int last_code_address = code_list_tail->address;
+	CompilerNodePtr current = data_list_head;
+	while(current)
+	{
+		current->address += last_code_address +1;
+		current = current->next;
+	}
+	code_list_tail->next = data_list_head;
 }
