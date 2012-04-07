@@ -227,6 +227,7 @@ void parse_and_load_data(CompilerNodePtr stmt)
 				node = create_compiler_node();
 				node->address = dc++;
 				node->cmd_type = STRING;
+				dec2bin(0, node->binary_machine_code,MEMORY_WORD_SIZE);
 				add_data_node(node);
 			}
 			else
