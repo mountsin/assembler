@@ -39,9 +39,16 @@ CompilerNodePtr create_compiler_node()
 	return node;
 }
 	
-void destroy_compiler_node(CompilerNodePtr node)
+void free_compiler_node_list()
 {
-	free(node);
+	CompilerNodePtr current_cn = code_list_head;
+	
+	while(code_list_head != NULL)
+	{
+		code_list_head = code_list_head->next;		/*advance head pointer*/
+		free(current_cn);							/*free current node*/
+		current_cn = code_list_head;				/*point current node to head pointer*/
+	}
 }
 
 void add_code_node(CompilerNodePtr stmt)
