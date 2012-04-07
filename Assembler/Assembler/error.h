@@ -15,6 +15,8 @@ typedef enum error_type
 	INVALID_STRING,						/* The string argument is not a valid string */
 	INVALID_SOURCE_OPERNAD,				/* The first operand is illegal for this command type */
 	INVALID_TARGET_OPERNAD,				/* The second operand is illegal for this command type */
+	ENTRY_LABEL_UNDEFINED,				/* label should be defined as entry*/
+	ENTRY_LABEL_NOT_SET,				/* label defined but not been used in code*/
 	UNKNOWN_ERROR = 99					/* Other error */
 } ErrorType;
 

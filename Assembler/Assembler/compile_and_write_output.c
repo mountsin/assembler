@@ -41,6 +41,8 @@
 #define ILLEGAL_ADDRESS				"The label is pointing to Illegal address"
 #define	MULTIPLE_ENTRYLABEL_USE_MSG	"entry row should have a uniqe label and cannot be used more then once"
 #define SYMBOL_ALREADY_EXISTS_MSG	"The symbol is definded more than once"
+#define ENTRY_LABEL_UNDEFINED_MSG	"Symbol should be defined as entry"
+#define ENTRY_LABEL_NOT_SET_MSG		"label defined but not been used in code"
 #define UNKNOWN_ERROR_MESSAGE		"Unknown error occurred"
 
 /*file stream error messages*/
@@ -77,7 +79,7 @@ void compile_and_write_output(char *filename)
 	{
 		create_file_ob(filename, get_code_list_head());
 
-		create_file_ent(filename, get_entriesFile_head());
+		create_file_ent(filename, get_entries_symbols_list());
 		
 		create_file_ext(filename, get_externalFile_head());
 	}
@@ -103,6 +105,8 @@ void print_errors_report(Error *errors_collector)
 			case ILLEGAL_DATA_ADDRESS:		current_err_msg = ILLEGAL_ADDRESS;break;			 /* The label is pointing to Illegal address */
 			case SYMBOL_ALREADY_EXISTS:		current_err_msg = SYMBOL_ALREADY_EXISTS_MSG;break;	 /* The symbol is definded more than once */
 			case MULTIPLE_ENTRYLABEL_USE:	current_err_msg = MULTIPLE_ENTRYLABEL_USE_MSG;break; /* entry row should have a uniqe label and cannot be used more then once*/
+			case ENTRY_LABEL_UNDEFINED:		current_err_msg = ENTRY_LABEL_UNDEFINED_MSG;break;	 /*Symbol should be defined as entry"*/
+			case ENTRY_LABEL_NOT_SET:		current_err_msg = ENTRY_LABEL_NOT_SET_MSG;break;	 /*"label defined but not been used in code"*/
 			case UNKNOWN_ERROR:				current_err_msg = UNKNOWN_ERROR_MESSAGE;break;		 /*Unknown error occurred */
 			default:						current_err_msg = "Unknown error occurred - error could not be recognized";
 		}

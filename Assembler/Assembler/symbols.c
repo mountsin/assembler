@@ -11,7 +11,7 @@ SymbolPtr data_symbols_list = NULL;
 SymbolPtr code_symbols_list = NULL;
 SymbolPtr entries_symbols_list = NULL;
 SymbolPtr external_symbols_list = NULL;
-SymbolPtr entriesFile_rows = NULL;
+//SymbolPtr entriesFile_rows = NULL;
 SymbolPtr externalFile_rows = NULL;
 
 /*symbol list tail pointers*/
@@ -19,7 +19,7 @@ SymbolPtr data_symbols_list_tail = NULL;
 SymbolPtr code_symbols_list_tail = NULL;
 SymbolPtr entries_symbols_list_tail = NULL;
 SymbolPtr external_symbols_list_tail = NULL;
-SymbolPtr entriesFile_rows_tail = NULL;
+//SymbolPtr entriesFile_rows_tail = NULL;
 SymbolPtr externalFile_rows_tail = NULL;
 
 
@@ -50,10 +50,10 @@ SymbolPtr get_external_symbols_list()
 	return external_symbols_list;
 }
 
-SymbolPtr get_entriesFile_head()
+/*SymbolPtr get_entriesFile_head()
 {
 	return entriesFile_rows;
-}
+}*/
 
 SymbolPtr get_externalFile_head()
 {
@@ -207,6 +207,7 @@ SymbolPtr get_external_symbol_by_name(char *name_to_find)
 	return NULL;
 }
 
+/*private function for making sure entries are uniqe*/
 SymbolPtr get_entry_symbol_by_name(char *name_to_find)
 {
 	SymbolPtr entsym_pointer = entries_symbols_list;
@@ -219,41 +220,44 @@ SymbolPtr get_entry_symbol_by_name(char *name_to_find)
 	return NULL;
 }
 
+
 /*private function for making sure entries are uniqe*/
+/*
 SymbolPtr get_entryFile_row_by_name(char *name_to_find)
 {
 	SymbolPtr entrow_pointer = entriesFile_rows;
 	while(entrow_pointer)
 	{
-		if (strncmp(entrow_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
+		if (strncmp(entrow_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) 
 			return entrow_pointer;
 		entrow_pointer = entrow_pointer->next;
 	}
 	return NULL;
-}
+}*/
 
-
+/* entry row should have a uniqe label and cannot be used more then once*/
+/*set linked list nodes*/
+/*
 void add_entriesFile_row(char *name, int address, int line_number)
 {
 	SymbolPtr tmp = create_symbol();
 	strcpy(tmp->name, name);
 	tmp->address = address;
 
-	if(get_entryFile_row_by_name(name) != NULL) /* entry row should have a uniqe label and cannot be used more then once*/
+	if(get_entryFile_row_by_name(name) != NULL) 
 	{
 		add_error(line_number,MULTIPLE_ENTRYLABEL_USE);
 		return;
 	}
-
-	/*set linked list nodes*/
-	if(entriesFile_rows_tail) /*at least one node (row) in list*/
+	if(entriesFile_rows_tail) 
 	{
-		entriesFile_rows_tail->next = tmp;						/*add new node as next node (row)*/
-		entriesFile_rows_tail = entriesFile_rows_tail->next;	/*advacne tail*/
+		entriesFile_rows_tail->next = tmp;						
+		entriesFile_rows_tail = entriesFile_rows_tail->next;	//
 	}
 	else
-		entriesFile_rows_tail = entriesFile_rows = tmp;		/*first node - set head and tail*/
+		entriesFile_rows_tail = entriesFile_rows = tmp;		
 }
+*/
 
 void add_externalFile_row(char *name, int address, int line_number)
 {
