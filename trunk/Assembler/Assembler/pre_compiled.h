@@ -9,6 +9,40 @@ CompilerNodePtr get_data_list_head();
 int get_instruction_counter();
 int get_data_counter();
 
+/* cmd = define command / instruction type */
+typedef enum cmd
+{
+	MOV,
+	CMP,
+	ADD,
+	SUB,
+	NOT,
+	CLR,
+	LEA,
+	INC,
+	DEC,
+	JMP,
+	BNE,
+	RED,
+	PRN,
+	JSR,
+	RTS,
+	STOP,
+	DATA,				/* .data */
+	STRING,				/* .string */
+	ENTRY,				/* .entry */
+	EXTERN,				/* .extern */
+	COMMENT,			/* comment line or white chars line -  the assmbler will ignore */
+	UNKNOWN_CMD = 99
+} Cmd;
+
+/* Command - define an assembly command binary code and legitimate addressing methods (0-4) */
+typedef struct
+{
+	Cmd cmd_type;
+	char name[8];
+} CommandStruct;
+
 typedef enum second_scan_type
 {
 	SKIP,
