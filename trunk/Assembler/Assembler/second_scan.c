@@ -17,12 +17,12 @@
 #define OK 0
 #define ERROR -1
 
-int set_binary_machine_code(enum boolean is_external, SymbolPtr current_symbol, CompilerNode *cn);
+int set_binary_machine_code(enum boolean_ex is_external, SymbolPtr current_symbol, CompilerNode *cn);
 enum boolean_ex get_sym_by_name_and_set_external(SymbolPtr current_symbol, char *symbol_name);
 void add_data_entries_to_output_list();
 int set_entry(CompilerNode *cn);
-void set_entry_with_data_address(SymbolPtr current_entry, CompilerNode *cn);
-void set_entry_with_code_address(SymbolPtr current_entry, CompilerNode *cn);
+void set_entry_with_data_address(char * current_entry_name, CompilerNode *cn);
+void set_entry_with_code_address(char *current_entry_name, CompilerNode *cn);
 int check_entries();
 
 /**
@@ -39,7 +39,6 @@ void second_scan()
 
 	boolean_ex is_external = NO; //TODO: Yuval - it was not initialized, please verify me
 	SymbolPtr current_symbol = create_symbol(); /*need to be memory allocated for copying data to it*/
-	SymbolPtr temp_symbol = NULL;
 
 	while(h != NULL) 
 	{
@@ -55,7 +54,7 @@ void second_scan()
 
 			h->linker_flag = ABSOLUTE;
 
-			if(h->label[0] == NULL)
+			if(!h->label[0])
 			{
 				/*skip to next node*/
 				h = h->next;

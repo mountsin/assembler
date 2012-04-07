@@ -43,6 +43,17 @@ typedef struct
 	char name[8];
 } CommandStruct;
 
+/* addressing_method - addresing method (0-4) */
+typedef enum addressing_method
+{
+	IMMEDIATE,
+	DIRECT,
+	INDEX,
+	DOUBLE_INDEX,
+	REGISTER,
+	UNKNOWN
+} AddressingMethod;
+
 typedef enum second_scan_type
 {
 	SKIP,
@@ -50,6 +61,15 @@ typedef enum second_scan_type
 	LABEL_OFFSET,
 	DATA_NODE
 } SecondScanType;
+
+/* linker info enum */
+enum linker_enum
+{
+	ABSOLUTE,
+	RELOCATABLE,
+	EXTERNAL,
+	NONE
+};
 
 /**
 * compiler_Node (linked list of structs) table of nodes
