@@ -5,9 +5,11 @@
 #include "compile_and_write_output.h"
 #include "AllTests.h"
 
-#define TEST
+//#define TEST
 #define FILENAME_MAX 100
 
+/*free all memory allocations*/
+void dispose_all();
 
 #ifdef TEST
 
@@ -29,14 +31,19 @@ void main(int argc, char *argv[])
 		first_scan(filename); 
 		second_scan();
 		compile_and_write_output(filename);
+		dispose_all();
 	}
 
 	//TODO: remove (testing)
+
 	getchar();
 }
 
 void dispose_all()
 {
-	//TODO: dispose compiler node list and symbols list
+	//free all symbols lists
+	free_all_symbols_lists();
+
+	
 }
 #endif

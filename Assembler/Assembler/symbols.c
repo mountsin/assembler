@@ -11,7 +11,6 @@ SymbolPtr data_symbols_list = NULL;
 SymbolPtr code_symbols_list = NULL;
 SymbolPtr entries_symbols_list = NULL;
 SymbolPtr external_symbols_list = NULL;
-//SymbolPtr entriesFile_rows = NULL;
 SymbolPtr externalFile_rows = NULL;
 
 /*symbol list tail pointers*/
@@ -19,7 +18,6 @@ SymbolPtr data_symbols_list_tail = NULL;
 SymbolPtr code_symbols_list_tail = NULL;
 SymbolPtr entries_symbols_list_tail = NULL;
 SymbolPtr external_symbols_list_tail = NULL;
-//SymbolPtr entriesFile_rows_tail = NULL;
 SymbolPtr externalFile_rows_tail = NULL;
 
 
@@ -283,7 +281,25 @@ void copy_symbol_contant(SymbolPtr source, SymbolPtr target)
 	strcpy(target->name, source->name);	
 }
 
-void destroy_symbol(SymbolPtr symbol)
+/*free all symbols list memory allocations*/
+
+void free_all_symbols_lists()
 {
-	free(symbol);
+	free_symbols_list(data_symbols_list);
+	free_symbols_list(code_symbols_list);
+	free_symbols_list(entries_symbols_list);
+	free_symbols_list(external_symbols_list);
+	free_symbols_list(externalFile_rows);
+}
+
+void free_symbols_list(SymbolPtr symbols_list_head)
+{
+	SymbolPtr current_sym = symbols_list_head;
+
+	while(symbols_list_head != NULL)
+	{
+		symbols_list_head = symbols_list_head->next;		/*advance head pointer*/
+		free(current_sym);									/*free current node*/
+		current_sym = symbols_list_head;					/*point current node to head pointer*/
+	}
 }
