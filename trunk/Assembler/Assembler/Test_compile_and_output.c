@@ -3,8 +3,6 @@
 #include <string.h>
 #include "CuTest.h"
 #include "compile_and_write_output.h"
-#include "data_structs.h"
-//#include "symbols.h"
 
 void Test_create_file_ob(CuTest *tc)
 {

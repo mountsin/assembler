@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include "data_structs.h"
 #include "global_functions.h"
 #include "compile_and_write_output.h"
 //#include "symbols.h"

@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pre_compiled.h"
-#include "data_structs.h"
 
 /* Functions prototypes */
 void set_binary_machine_code_to(CompilerNodePtr compiler_node);
@@ -23,10 +22,10 @@ CompilerNodePtr create_compiler_node()
 	if(node)
 	{
 		node->address = 0;
-		node->binary_machine_code[0] = NULL;
+		node->binary_machine_code[0] = '\0';
 		node->cmd_type = UNKNOWN_CMD;
 		node->second_scan_type = SKIP;
-		node->label[0] = NULL;
+		node->label[0] = '\0';
 		node->line_number = 0;
 		node->linker_flag = NONE;
 		node->next = NULL;
