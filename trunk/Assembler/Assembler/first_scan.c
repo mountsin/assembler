@@ -11,12 +11,9 @@
 
 #define LINE_SIZE 100
 #define MEMORY_WORD_SIZE 16
-
 #define ASM_COMMAND_BITS	 4
 #define ASM_ADDRESSING_BITS	 3
 #define ASM_REGISTER_BITS	 3
-
-
 
 void read_line_and_set_compiler_node(char *line, CompilerNodePtr node);
 void parst_and_set_command_type(char* command_name, Cmd *command);
@@ -131,26 +128,6 @@ void first_scan(char *filename)
 	connect_data_list_to_code_list();
 }
 
-void set_binary_code(CompilerNodePtr stmt)
-{
-	char temp[5];
-	dec2bin(stmt->cmd_type,temp,4);
-	temp[4]= '\0';
-	strcat(stmt->binary_machine_code,temp);
-	dec2bin(stmt->sourceAddressing,temp,3);
-	temp[3] = '\0';
-	strcat(stmt->binary_machine_code,temp);
-	dec2bin(stmt->source_register,temp,3);
-	temp[3] = '\0';
-	strcat(stmt->binary_machine_code,temp);
-	dec2bin(stmt->targetAddressing ,temp,3);
-	temp[3] = '\0';
-	strcat(stmt->binary_machine_code,temp);
-	dec2bin(stmt->target_register,temp,3);
-	temp[3] = '\0';
-	strcat(stmt->binary_machine_code,temp);
-}
-
 /* This function extracts the symbol out of the operand in case of index or double index addressing method */
 void extract_symbol(char *str,char *result)
 {
@@ -247,6 +224,10 @@ void parse_and_load_data(CompilerNodePtr stmt)
 					dec2bin(stmt->target_operand[i],node->binary_machine_code,MEMORY_WORD_SIZE);
 					add_data_node(node);
 				}
+				node = create_compiler_node();
+				node->address = dc++;
+				node->cmd_type = STRING;
+				add_data_node(node);
 			}
 			else
 				add_error(line_number,INVALID_STRING);
@@ -273,7 +254,6 @@ Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
 	char *target_addressing_method =	(char *)malloc(sizeof(char)*(ASM_ADDRESSING_BITS+1));	/*target operand addressing method code  - 3 bits*/
 	char *target_register =				(char *)malloc(sizeof(char)*(ASM_REGISTER_BITS+1));		/*source operand register  - 3 bits*/
 	
-	/*TODO: check that cmd_type<=15 if not - add error and return FALSE*/
 	dec2bin(cn_ptr->cmd_type,			command,					ASM_COMMAND_BITS);
 	dec2bin(cn_ptr->sourceAddressing,	source_addressing_method,	ASM_ADDRESSING_BITS);
 	dec2bin(cn_ptr->source_register,	source_register,			ASM_REGISTER_BITS);
@@ -286,7 +266,6 @@ Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
 	strcat(cn_ptr->binary_machine_code, target_addressing_method);	/* add target addressing method bits*/
 	strcat(cn_ptr->binary_machine_code, target_register);			/* add target register register bits*/
 	
-	//TODO: use dispose instead
 	free(command);
 	free(source_addressing_method);
 	free(source_register);
@@ -351,7 +330,6 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 			stmt->source_operand = NULL;
 		}
 	}
-	//set_binary_code(stmt); 
 }
 
 /*
@@ -412,6 +390,7 @@ void parst_and_set_command_type(char* command_name, Cmd *command)
 	*command = result;
 }
 
+/* This function parse the token string and return the command enum type */
 Cmd get_command(char *token)
 {
 	CommandStruct* tmp;
@@ -442,7 +421,7 @@ void set_addressing_and_register(char *operand, enum addressing_method *addressi
 	}
 }
 
-/* This function is used for adding nodes of the operand if necessary */
+/* This function is used for adding nodes of the operands if necessary */
 void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 {
 	CompilerNodePtr node1 = create_compiler_node();
@@ -486,6 +465,7 @@ Boolean is_comment(char* line)
 	return FALSE;
 }
 
+/* This function convert the token to integer number and return true if succeed or false if faild */
 Boolean try_parse_number(char *token, int *number)
 {
 	int i = 0; /* character index inside the token */

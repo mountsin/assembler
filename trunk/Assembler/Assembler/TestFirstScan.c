@@ -153,21 +153,13 @@ void TestReadLineBinaryLea(CuTest *tc)
 	CuAssertStrEquals(tc,"0110010000001000",p->binary_machine_code);
 }
 
-void TestBuildBinaryCode(CuTest *tc)
-{
-	CompilerNodePtr p = create_compiler_node();
-	set_binary_code(p);
-	p->cmd_type = STOP;
-	CuAssertStrEquals(tc,"1111000000000000",p->binary_machine_code);
-}
-
 void TestDec2Bin(CuTest *tc)
 {
 	char binary_machine_code[17];
 	char bin_code[5];
-	binary_machine_code[0] = NULL;
+	binary_machine_code[0] = '\0';
 	dec2bin(LEA,bin_code,4);
-	bin_code[4] = NULL;
+	bin_code[4] = '\0';
 	strcat(binary_machine_code,bin_code);
 	CuAssertStrEquals(tc,"0110",binary_machine_code);
 }
@@ -266,9 +258,6 @@ CuSuite* FirstScanGetSuite()
 	SUITE_ADD_TEST(suite,TestReadLineCmdTypeLea);
 	SUITE_ADD_TEST(suite,TestReadLineLabelLea);
 	SUITE_ADD_TEST(suite,TestReadLineIsSecondNeededLea);
-	//SUITE_ADD_TEST(suite,TestBuildBinaryCode);
-	//SUITE_ADD_TEST(suite,TestReadLineBinaryLea);
-	//SUITE_ADD_TEST(suite,TestDec2Bin);
 	SUITE_ADD_TEST(suite,TestAddExtSymbol);
 	SUITE_ADD_TEST(suite,TestIsValidLabel);
 	SUITE_ADD_TEST(suite,TestIsValidLabel2);
