@@ -52,7 +52,7 @@ typedef enum addressing_method
 	INDEX,
 	DOUBLE_INDEX,
 	REGISTER,
-	UNKNOWN
+	UNKNOWN = 99
 } AddressingMethod;
 
 typedef enum second_scan_type

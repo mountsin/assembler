@@ -48,11 +48,6 @@
 #define CREATE_FILE_ERR__MSG		"One or more errors occurred while trying to create file"
 #define CLOSE_FILE_ERR__MSG			"Error occurred while trying to finalize file"
 
-/*TODO: Remove
-#define HEADER_ADDRESS		"Base 2 adress"
-#define HEADER_MACHINE_CODE	"Base 2 Machine code"
-#define HEADER_LINKER_FLAG	"linker flag (a/r/e)"*/
-
 /*printf formats*/
 #define OBJECT_ROW_FORMAT		"%30s%30s%25s\n"
 #define EXT_ENT_ROW_FORMAT		"%32s \t %32s\n"
@@ -169,9 +164,12 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 
 		fprintf(fp, OBJECT_ROW_FORMAT, address_binary_string, cn_list->binary_machine_code, linker_flag_string);
 		cn_list = cn_list->next;  /* point to next node*/
-
-		//TODO: free cn_list current node;
 	}
+
+	/*free memory allocations*/
+	free(code_length_in_binary);
+	free(data_length_in_binary);
+
 
 	if(fclose(fp) != OK)
 			return	CLOSE_FILE_ERR; //Error occured while trying to close the file Stream

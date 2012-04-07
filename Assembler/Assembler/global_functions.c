@@ -1,10 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 
 #include "global_functions.h"
 #include "first_scan.h"
 #include "global_constants.h"
 #include "symbols.h"
+
+
+ 
+
 
 char *get_token(char *text);
  
@@ -50,7 +56,18 @@ void dec2bin(long decimal, char *binary, int binLength)
 		convert_negative_binary_2complement(binary);  
 }
 
- 
+/*
+* convert to binary using dec2bin.
+* if decimal is out of bouds send it with decimal 0
+*/
+void dec2bin_withBoundries(long decimal, char *binary, int binLength, int low, int high)
+{
+	if( (decimal < low) || (high < decimal) )
+		dec2bin(0, binary, binLength);
+	else
+		dec2bin(decimal, binary, binLength);
+}
+
 /**
 * convert a binary string to it's negative equivalent in the Two's complement method
 */
@@ -107,13 +124,6 @@ int get_data_counter()
 {
 	return get_DC();
 }
-
-/*
-void dispose(void *)
-{
-	
-}
-*/
 
 /* Utility function that encapsulates the strtok library function */
 char *get_first_token(char *text)
