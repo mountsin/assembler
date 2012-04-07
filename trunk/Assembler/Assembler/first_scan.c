@@ -42,7 +42,7 @@ Boolean build_binary_machine_code(CompilerNodePtr cn_ptr);
 CommandStruct commands_list[] = 
 {
 /*	cmd_type	name		*/
-	MOV,		"mov", 		
+	MOV,		"mov",
 	CMP,		"cmp", 		
 	ADD,		"add", 		
 	SUB,		"sub", 		
@@ -65,7 +65,7 @@ CommandStruct commands_list[] =
 	UNKNOWN_CMD,""		  ,	
 };
 
-int ic = 0;								/* Instructions counter */
+int ic = 100;							/* Instructions counter */
 int dc = 0;								/* Data counter */
 int line_number = 0;					/* Line number in the assembly file for the errors report */
 
@@ -74,8 +74,7 @@ void first_scan(char *filename)
 {
 	FILE *fp;
 	char line[LINE_SIZE];
-	CompilerNodePtr stmt;														/* Each code line will be parsed and stored in this struct */
-	CommandStruct command_struct_from_validation_list; //TODO: check if needed
+	CompilerNodePtr stmt;													/* Each code line will be parsed and stored in this struct */
 	Boolean label_exist = FALSE;
 
 	fp = fopen(filename,"r");
@@ -104,7 +103,7 @@ void first_scan(char *filename)
 			}
 			if(stmt->cmd_type == ENTRY)										/* Check if it's .entry instruction */
 			{
-				add_entries_symbol(stmt->target_operand, UNDEFINED_ADDRESS, line_number); /*TODO: I've add line_number PLZ verify*/
+				add_entries_symbol(stmt->target_operand, UNDEFINED_ADDRESS, line_number);
 				continue;
 			}
 
@@ -151,7 +150,7 @@ void set_binary_code(CompilerNodePtr stmt)
 	strcat(stmt->binary_machine_code,temp);
 }
 
-/* This function extracts the symbl out of the operand in case of index or double index adressing method */
+/* This function extracts the symbol out of the operand in case of index or double index addressing method */
 void extract_symbol(char *str,char *result)
 {
 	char *start_of_symbol;
@@ -171,7 +170,7 @@ void extract_symbol(char *str,char *result)
 	result[length] = NULL;
 }
 
-/* This function extracts the index out of the operand in case of index or double index adressing method */
+/* This function extracts the index out of the operand in case of index or double index addressing method */
 void extract_index(char *str,char *result, SecondScanType *scan_type)
 {
 	char *start_of_index = strchr(str,'[')+1;
@@ -191,7 +190,7 @@ void extract_index(char *str,char *result, SecondScanType *scan_type)
 	result[length] = NULL;
 }
 
-/* This function gets the correct adressing method of the operand */
+/* This function gets the correct addressing method of the operand */
 enum addressing_method get_addressing_for(char *operand)
 {
 	if(is_literal(operand))
@@ -205,10 +204,10 @@ enum addressing_method get_addressing_for(char *operand)
 	return DIRECT;
 }
 
-/* This funcitons handles data instructions such as .data and .string and increment the data counter (dc) */
+/* This functions handles data instructions such as .data and .string and increment the data counter (dc) */
 void parse_and_load_data(CompilerNodePtr stmt)
 {
-	char *token;			/* single numer of the comma seperated numbers operand */
+	char *token;			/* single number of the comma separated numbers operand */
 	int number;				/* the number as integer type after parsing */
 	CompilerNodePtr node;	/* the node that will be added to the data nodes list */
 	int i;					/* index of current character inside a string */
@@ -222,6 +221,7 @@ void parse_and_load_data(CompilerNodePtr stmt)
 				if(try_parse_number(token,&number))
 				{
 					node = create_compiler_node();
+					node->second_scan_type = DATA_NODE;
 					node->address = dc++;
 					node->cmd_type = DATA;
 					dec2bin(number,node->binary_machine_code,MEMORY_WORD_SIZE);
@@ -262,7 +262,7 @@ Boolean is_register(char *str)
 
 Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
 {
-	/*machin code word structure:*/
+	/*machine code word structure:*/
 	/* command(4) + source addressing(3) + source registry(3) + target addressing(3) + target registry(3) */
 
 	char *command =						(char *)malloc(sizeof(char)*(ASM_COMMAND_BITS+1));		/*command code - 4 bits*/
@@ -278,13 +278,13 @@ Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
 	dec2bin(cn_ptr->targetAddressing,	target_addressing_method,	ASM_ADDRESSING_BITS);
 	dec2bin(cn_ptr->target_register,	target_register,			ASM_REGISTER_BITS);
 	
-	strcat(cn_ptr->binary_machine_code, command);					/* add comman bits*/
+	strcat(cn_ptr->binary_machine_code, command);					/* add command bits*/
 	strcat(cn_ptr->binary_machine_code, source_addressing_method);	/* add source addressing method bits*/
 	strcat(cn_ptr->binary_machine_code, source_register);			/* add source register bits*/
 	strcat(cn_ptr->binary_machine_code, target_addressing_method);	/* add target addressing method bits*/
 	strcat(cn_ptr->binary_machine_code, target_register);			/* add target register register bits*/
 	
-	//TODO: use dipose instead
+	//TODO: use dispose instead
 	free(command);
 	free(source_addressing_method);
 	free(source_register);
@@ -354,7 +354,7 @@ void read_line_and_set_compiler_node(char *line, CompilerNodePtr stmt)
 
 /*
 * Accepts a token and checks if it is a valid label.
-* If so, copy the token to the lable field of the CompilerNode struct and advance to the next token 
+* If so, copy the token to the label field of the CompilerNode struct and advance to the next token
 */
 Boolean is_valid_label(char *token, CompilerNodePtr stmt, char  *line)
 {
@@ -418,7 +418,7 @@ Cmd get_command(char *token)
 	return tmp->cmd_type;
 }
 
-/* public function used be the second scan function to get the instrctions counter */
+/* public function used be the second scan function to get the instructions counter */
 int get_IC()
 {
 	return ic;
@@ -441,7 +441,7 @@ void set_addressing_and_register(char *operand, enum addressing_method *addressi
 	}
 }
 
-/* This function is used for adding nodes of the operand if neccessery */
+/* This function is used for adding nodes of the operand if necessary */
 void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 {
 	CompilerNodePtr node1 = create_compiler_node();
@@ -456,12 +456,12 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 		case REGISTER:
 			break;
 		case IMMEDIATE:
-			dec2bin(atoi(&operand[1]),node1->binary_machine_code,8);	/* The second operand is a number so I convert it's valu to binary code */
+			dec2bin(atoi(&operand[1]),node1->binary_machine_code,8);	/* The second operand is a number so I convert it's value to binary code */
 			node1->second_scan_type = LABEL;
 			break;
 		case DIRECT:
-			strcpy(node1->label,operand);								/* The operand is a symbol that should be translated to it's addresss value in the second scan phase */
-			node1->second_scan_type = LABEL;							/* I save the symble name as is in the label field and tell the second scan that it needs to translate it to the address value of the symbol */
+			strcpy(node1->label,operand);								/* The operand is a symbol that should be translated to it's address value in the second scan phase */
+			node1->second_scan_type = LABEL;							/* I save the symbol name as is in the label field and tell the second scan that it needs to translate it to the address value of the symbol */
 			node1->address = ++ic;
 			add_code_node(node1);
 			break;
@@ -477,7 +477,7 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 	}
 }
 
-/* This function check if the code line is a comment */
+/* This function checks if the code line is a comment */
 Boolean is_comment(char* line)
 {
 	if(line[0] == ';')
