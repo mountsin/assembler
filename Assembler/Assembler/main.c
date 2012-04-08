@@ -81,6 +81,9 @@ void dispose_all()
 	free_compiler_node_list();
 
 	free_errors_collector();
-	
+
+	/*initialize list for the next use*/
+	initializeSymbolsLists();
+	initializeCopmilerLists();
 }
 #endif

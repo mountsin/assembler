@@ -110,3 +110,18 @@ void connect_data_list_to_code_list()
 		code_list_tail->next = data_list_head;
 	}
 }
+
+/*
+*set all Symbols lists head & tail to NULL
+*/
+void initializeCopmilerLists()
+{
+	/* Head of code nodes list */
+	code_list_head = NULL;
+	/* Tail of code nodes list */
+	code_list_tail = NULL;
+	/* Head of data nodes list */
+	data_list_head = NULL;
+	/*Tail of data nodes list */
+	data_list_tail = NULL;
+}

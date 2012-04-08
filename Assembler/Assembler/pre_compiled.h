@@ -8,6 +8,7 @@ CompilerNodePtr get_data_list_head();
 int get_instruction_counter();
 int get_data_counter();
 void connect_data_list_to_code_list();
+void initializeCopmilerLists();
 
 /*free compiler node list memory allocations*/
 void free_compiler_node_list();
