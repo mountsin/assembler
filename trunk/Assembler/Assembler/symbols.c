@@ -265,3 +265,21 @@ void free_symbols_list(SymbolPtr symbols_list_head)
 		current_sym = symbols_list_head;					/*point current node to head pointer*/
 	}
 }
+/*
+*set all Symbols lists head & tail to NULL
+*/
+void initializeSymbolsLists()
+{
+	data_symbols_list = NULL;
+	code_symbols_list = NULL;
+	entries_symbols_list = NULL;
+	external_symbols_list = NULL;
+	externalFile_rows = NULL;
+
+
+	data_symbols_list_tail = NULL;
+	code_symbols_list_tail = NULL;
+	entries_symbols_list_tail = NULL;
+	external_symbols_list_tail = NULL;
+	externalFile_rows_tail = NULL;
+}

@@ -22,6 +22,7 @@ SymbolPtr get_externalFile_head();
 /*free symbols list memory allocations*/
 void free_all_symbols_lists();
 void free_symbols_list(SymbolPtr symbols_list_head);
+void initializeSymbolsLists();
 
 /*copy fields of source symbol to taget symbol*/
 void copy_symbol_contant(SymbolPtr source, SymbolPtr target);

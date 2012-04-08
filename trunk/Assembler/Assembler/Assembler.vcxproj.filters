@@ -80,9 +80,6 @@
     <ClCompile Include="pre_compiled.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestSecondScan.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Test_compile_and_output.c">
       <Filter>Source Files</Filter>
     </ClCompile>
