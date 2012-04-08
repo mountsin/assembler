@@ -29,9 +29,11 @@ void add_errorNode_by_line_number(Error *new_node)
 	next_node = errors_list->next;
 
 	/*1 - check first node*/
-	if(new_node->line_number  < this_node->line_number) /*first node line exceeding new node line*/
+	if(new_node->line_number < this_node->line_number) /*first node line exceeding new node line*/
 	{	
-		new_node->next = this_node; return; 
+		new_node->next = this_node; 
+		errors_list = new_node;
+		return; 
 	}
 
 	/*2 - check middle nodes*/

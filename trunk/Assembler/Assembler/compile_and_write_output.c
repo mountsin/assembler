@@ -46,6 +46,8 @@
 #define	INVALID_SOURCE_OPERNAD_MSG	"The first operand is illegal for this command type"
 #define	INVALID_TARGET_OPERNAD_MSG	"The second operand is illegal for this command type"
 #define	INVALID_SECOND_INDEX_MSG	"The second index in a double indexed addressing method must be a register"
+#define	INVALID_DATA_MSG			"The data argument is not a valid number"
+#define	INVALID_STRING_MSG			"The string argument is not a valid string"
 #define UNKNOWN_ERROR_MESSAGE		"Unknown error occurred"
 
 /*file stream error messages*/
@@ -124,7 +126,9 @@ void print_errors_report(Error *errors_collector, char *filename)
 			case ENTRY_LABEL_NOT_SET:		current_err_msg = ENTRY_LABEL_NOT_SET_MSG;break;	 /*"label defined but not been used in code"*/
 			case INVALID_SOURCE_OPERNAD:	current_err_msg = INVALID_SOURCE_OPERNAD_MSG;break;	 /* The first operand is illegal for this command type */
 			case INVALID_TARGET_OPERNAD:	current_err_msg = INVALID_TARGET_OPERNAD_MSG;break;	 /* The second operand is illegal for this command type */
-			case INVALID_SECOND_INDEX:		current_err_msg = INVALID_SECOND_INDEX_MSG;break;	  /* The second index in a double indexed addressing method must be a register */
+			case INVALID_SECOND_INDEX:		current_err_msg = INVALID_SECOND_INDEX_MSG;break;	 /* The second index in a double indexed addressing method must be a register */
+			case INVALID_DATA:				current_err_msg = INVALID_DATA_MSG;break;			 /* The data argument is not a valid number */
+			case INVALID_STRING:			current_err_msg = INVALID_STRING_MSG;break;			 /* The string argument is not a valid string */
 			case UNKNOWN_ERROR:				current_err_msg = UNKNOWN_ERROR_MESSAGE;break;		 /*Unknown error occurred */
 			default:						current_err_msg = "Unknown error occurred - error could not be recognized";
 		}
