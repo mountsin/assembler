@@ -146,12 +146,13 @@ void second_scan()
 int set_binary_machine_code(enum boolean_ex is_external, SymbolPtr current_symbol, CompilerNode *cn)
 {
 	/* set local variabels*/
-	int label_address, machine_code_integer;
+	int label_address = 0;
+	int machine_code_integer = 0;
 
 	/* set local variabels - data address boundries*/
 	int low, high;
 	low = MINIMAL_DATA_ADDRESS;
-	high = MINIMAL_DATA_ADDRESS + get_data_counter();
+	high = get_data_counter();
 
 	if (is_external == YES)
 	{
@@ -168,11 +169,13 @@ int set_binary_machine_code(enum boolean_ex is_external, SymbolPtr current_symbo
 	}
 	else /*actual label required*/
 	{
-		machine_code_integer = label_address + get_instruction_counter(); /*binary machine code will get the address value*/
+		if(get_data_symbol_by_name(current_symbol->name) != NULL) /*if is data symbol*/
+			machine_code_integer = label_address + MINIMAL_DATA_ADDRESS + get_instruction_counter(); /*binary machine code will get the address value*/
+		else
+			machine_code_integer = label_address;
 
 		/* set data boundries for relocatable*/
-		low += get_instruction_counter() - MINIMAL_DATA_ADDRESS;
-		high += get_instruction_counter() - MINIMAL_DATA_ADDRESS;
+		high += get_instruction_counter();
 	}
 			
 
@@ -199,6 +202,11 @@ enum boolean_ex get_sym_by_name_and_set_external(SymbolPtr current_symbol, char 
 	SymbolPtr found_symbols = get_data_symbol_by_name(symbol_name); /* try to get data symbol by binary_machine_code temporary string*/
 
 	if(found_symbols != NULL) /* label is a data symbol*/
+		returnVal = NO; /*mark symbol as NOT external*/
+	else
+		found_symbols = get_code_symbol_by_name(symbol_name);
+	
+	if (found_symbols != NULL) /* label is a code symbol*/
 		returnVal = NO; /*mark symbol as NOT external*/
 	else
 	{
@@ -233,12 +241,7 @@ int set_entry(CompilerNode *cn)
 	}
 
 	if ( (current_symbol = get_entry_symbol_by_name(cn->label) ) == NULL)
-	{
-		/*add error  - label should be defined as entry*/
-		add_error(cn->line_number, ENTRY_LABEL_UNDEFINED);
-
-		return ERROR;
-	}
+		return OK; /*may be a useless label(still valid)*/
 
 	if (current_symbol->address == UNDEFINED_ADDRESS)
 	{	/*set entry address*/
