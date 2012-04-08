@@ -45,9 +45,6 @@
     <ClInclude Include="global_constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="linked_list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -87,9 +84,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Test_compile_and_output.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="linked_list.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestSymbols.c">
