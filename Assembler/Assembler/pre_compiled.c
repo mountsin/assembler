@@ -84,12 +84,18 @@ void add_node_to(CompilerNodePtr node, CompilerNodePtr *list_head, CompilerNodeP
 
 void connect_data_list_to_code_list()
 {
-	int last_code_address = code_list_tail->address;
-	CompilerNodePtr current = data_list_head;
-	while(current)
+	int last_code_address = 0;
+	CompilerNodePtr current = NULL;
+
+	if(code_list_tail != NULL)
 	{
-		current->address += last_code_address +1;
-		current = current->next;
+		last_code_address = code_list_tail->address;
+		current = data_list_head;
+		while(current)
+		{
+			current->address += last_code_address +1;
+			current = current->next;
+		}
+		code_list_tail->next = data_list_head;
 	}
-	code_list_tail->next = data_list_head;
 }
