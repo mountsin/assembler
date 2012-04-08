@@ -10,7 +10,7 @@ enum fileStream_enum
 	CLOSE_FILE_ERR
 };
 
-void compile_and_write_output(char *filename);
+int compile_and_write_output(char *filename);
 
 
 int create_file_ob(char *filename, CompilerNode *cn_list);
