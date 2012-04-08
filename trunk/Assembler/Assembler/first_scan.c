@@ -517,7 +517,6 @@ Boolean is_comment(char* line)
 Boolean try_parse_number(char *token, int *number)
 {
 	int i = 0; /* character index inside the token */
-	int is_negative = token[0] == '-';
 
 	if(token[0] == '+' || token[0] == '-')
 		i++;
