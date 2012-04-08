@@ -42,6 +42,9 @@
 #define SYMBOL_ALREADY_EXISTS_MSG	"The symbol is definded more than once"
 #define ENTRY_LABEL_UNDEFINED_MSG	"Symbol should be defined as entry"
 #define ENTRY_LABEL_NOT_SET_MSG		"label defined but not been used in code"
+#define	INVALID_SOURCE_OPERNAD_MSG	"The first operand is illegal for this command type"
+#define	INVALID_TARGET_OPERNAD_MSG	"The second operand is illegal for this command type"
+#define	INVALID_SECOND_INDEX_MSG	"The second index in a double indexed addressing method must be a register"
 #define UNKNOWN_ERROR_MESSAGE		"Unknown error occurred"
 
 /*file stream error messages*/
@@ -101,6 +104,9 @@ void print_errors_report(Error *errors_collector, char *filename)
 			case MULTIPLE_ENTRYLABEL_USE:	current_err_msg = MULTIPLE_ENTRYLABEL_USE_MSG;break; /* entry row should have a uniqe label and cannot be used more then once*/
 			case ENTRY_LABEL_UNDEFINED:		current_err_msg = ENTRY_LABEL_UNDEFINED_MSG;break;	 /*Symbol should be defined as entry"*/
 			case ENTRY_LABEL_NOT_SET:		current_err_msg = ENTRY_LABEL_NOT_SET_MSG;break;	 /*"label defined but not been used in code"*/
+			case INVALID_SOURCE_OPERNAD:	current_err_msg = INVALID_SOURCE_OPERNAD_MSG;break;	 /* The first operand is illegal for this command type */
+			case INVALID_TARGET_OPERNAD:	current_err_msg = INVALID_TARGET_OPERNAD_MSG;break;	 /* The second operand is illegal for this command type */
+			case INVALID_SECOND_INDEX:		current_err_msg = INVALID_SECOND_INDEX_MSG;break;	  /* The second index in a double indexed addressing method must be a register */
 			case UNKNOWN_ERROR:				current_err_msg = UNKNOWN_ERROR_MESSAGE;break;		 /*Unknown error occurred */
 			default:						current_err_msg = "Unknown error occurred - error could not be recognized";
 		}
