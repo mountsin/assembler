@@ -82,6 +82,7 @@ void add_node_to(CompilerNodePtr node, CompilerNodePtr *list_head, CompilerNodeP
 		*list_head = *list_tail;
 }
 
+/* This function connect the data list to the end of the code list and increment the data counter addresses */
 void connect_data_list_to_code_list()
 {
 	int last_code_address = 0;
