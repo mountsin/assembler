@@ -15,7 +15,7 @@
 #define ASM_ADDRESSING_BITS	 3
 #define ASM_REGISTER_BITS	 3
 
-/* machine code builer boundries*/
+/* machine code builder boundaries*/
 #define BUILDER_LOW 0
 #define BUILDER_HIGH 98
 
@@ -269,6 +269,7 @@ Boolean is_register(char *str)
 	return FALSE;
 }
 
+/* This function set the binary machine code field according to to first word structure as defined in the spec */
 Boolean build_binary_machine_code(CompilerNodePtr cn_ptr)
 {
 	/*machine code word structure:*/
@@ -530,7 +531,8 @@ Boolean is_valid_string(char *str)
 	return TRUE;
 }
 
-void validate_addressing_and_operands(CompilerNodePtr stmt)
+/* This function validate all the optional operands and addressing method for each command, according to the spec */
+ void validate_addressing_and_operands(CompilerNodePtr stmt)
 {
 	switch(stmt->cmd_type)
 	{
@@ -583,6 +585,7 @@ void validate_addressing_and_operands(CompilerNodePtr stmt)
 	}
 }
 
+/* This function validate that the second indexer is a register, according to the spec */
 void validate_second_index(char *operand)
 {
 	char second_index[31];
