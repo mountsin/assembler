@@ -25,7 +25,8 @@ void main()
 int main(int argc, char *argv[])
 {
 	int i;
-	int successfulComp = 0;
+	int filesCreated = 0;
+	Boolean isAllOK = TRUE;
 
 	char filename[MAX_FILENAME];
 
@@ -35,23 +36,23 @@ int main(int argc, char *argv[])
 
 		first_scan(filename); 
 		second_scan();
-		compile_and_write_output(filename);
+		filesCreated += compile_and_write_output(filename); /*compile, count how many files were created*/
 
-		if(get_errors_list() == NULL) successfulComp++; /*if OK - count as successful compilation*/
+		if(get_errors_list() != NULL) isAllOK = FALSE; /*if not OK - Mark error*/
 
-		dispose_all();
+		dispose_all(); /*free all memory allocations*/
 	}
 
-	if(successfulComp == (i-1)) /*All Files successful*/
+	if(isAllOK == TRUE) /*All Files successful*/
 	{
-		printf("\n%s %d %s\n", "Compilation Successful.", successfulComp*FILES_PER_INPUT, "Files were Created.");
+		printf("\n%s %d %s\n", "Compilation Successful.", filesCreated, "Files were Created.");
 		printf("%s\n", STD_QUIT_MSG);
 		getchar();
 		return 0;
 	}
 	else
 	{
-		printf("\n%s %d %s\n", "Some files have failed compilation.", successfulComp*FILES_PER_INPUT, "Files were Created.");
+		printf("\n%s %d %s\n", "Some files have failed compilation.", filesCreated, "Files were Created.");
 		printf("%s\n", STD_QUIT_MSG);
 		getchar();
 		return -1;

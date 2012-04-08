@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "global_functions.h"
+
 #include "compile_and_write_output.h"
 #include "error.h"
 
@@ -56,6 +57,9 @@
 #define OBJECT_ROW_FORMAT		"%30s%30s%25s\n"
 #define EXT_ENT_ROW_FORMAT		"%32s \t %32s\n"
 
+/*functions return value*/
+#define ERROR -1
+
 /**
 
 */
@@ -66,19 +70,33 @@ int create_file_ent(char *filename, Symbol *entries_list);
 int create_file_ext(char *filename, Symbol *entries_symbols_list);
 void get_linker_flag_str(enum linker_enum linker, char *external_symbols_list);
 
-void compile_and_write_output(char *filename)
+int compile_and_write_output(char *filename)
 {
+	int filesCreated = 1;
 	Error *errors_collector = get_errors_list();
 
 	if(errors_collector != NULL)
+	{
 		print_errors_report(errors_collector, filename);
+		return ERROR;
+	}
 	else
 	{
 		create_file_ob(filename, get_code_list_head());
 
-		create_file_ent(filename, get_entries_symbols_list());
-		
-		create_file_ext(filename, get_externalFile_head());
+		if(get_entries_symbols_list() != NULL) /*create entries file if needed*/
+		{
+			create_file_ent(filename, get_entries_symbols_list());
+			filesCreated++;
+		}
+
+		if(get_externalFile_head() != NULL) /*create externals file if needed*/
+		{	
+			create_file_ext(filename, get_externalFile_head());
+			filesCreated++;
+		}
+
+		return filesCreated;
 	}
 }
 
