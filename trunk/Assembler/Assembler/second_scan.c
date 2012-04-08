@@ -170,7 +170,7 @@ int set_binary_machine_code(enum boolean_ex is_external, SymbolPtr current_symbo
 	else /*actual label required*/
 	{
 		if(get_data_symbol_by_name(current_symbol->name) != NULL) /*if is data symbol*/
-			machine_code_integer = label_address + get_instruction_counter(); /*binary machine code will get the address value*/
+			machine_code_integer = label_address + MINIMAL_DATA_ADDRESS + get_instruction_counter(); /*binary machine code will get the address value*/
 		else
 			machine_code_integer = label_address;
 
