@@ -451,11 +451,18 @@ int get_DC()
 /* Set the addressing method and the register value according to the operand */
 void set_addressing_and_register(char *operand, enum addressing_method *addressing ,int *reg)
 {
+	char result[3];
+
 	if(operand)
 	{
 		*addressing = get_addressing_for(operand);
 		if(*addressing == REGISTER)
 			*reg = atoi(++operand);
+		if(*addressing == DOUBLE_INDEX)
+		{
+			extract_second_index(operand,result);
+			*reg = atoi(&result[1]);
+		}
 	}
 }
 
