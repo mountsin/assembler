@@ -2,6 +2,7 @@
 #define ERROR -1
 #define UNDEFINED_ADDRESS -1
 #define MACHINE_WORD_BITLENGTH 16
+#define MAX_LABEL_SIZE 31
 
 /*file constants*/
 #define INPUT_FILE_EXT		".as"
