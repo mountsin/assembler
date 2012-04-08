@@ -42,11 +42,15 @@ int main(int argc, char *argv[])
 	}
 
 	if(successfulComp == (i-1)) /*All Files successful*/
+	{
 		printf("\n%s %d %s\n", "Compilation Successful.", successfulComp*FILES_PER_INPUT, "Files were Created.");
+		return 0;
+	}
 	else
+	{
 		printf("\n%s %d %s\n", "Some files have failed compilation.", successfulComp*FILES_PER_INPUT, "Files were Created.");
-
-	return 0;
+		return -1;
+	}
 }
 
 void dispose_all()
