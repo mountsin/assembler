@@ -8,10 +8,6 @@
 #include "global_constants.h"
 #include "symbols.h"
 
-
- 
-
-
 char *get_token(char *text);
  
 /**
@@ -114,7 +110,7 @@ enum boolean is_binary_Str(char *str)
 	return TRUE;
 }
 
-
+/*==== get counters functions: ====*/
 int get_instruction_counter()
 {
 	return get_IC();
@@ -124,6 +120,7 @@ int get_data_counter()
 {
 	return get_DC();
 }
+/*=================================*/
 
 /* Utility function that encapsulates the strtok library function */
 char *get_first_token(char *text)

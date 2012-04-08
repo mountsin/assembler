@@ -224,7 +224,7 @@ enum boolean_ex get_sym_by_name_and_set_external(SymbolPtr current_symbol, char 
 }
 
 /**
-* set entry 
+* set entry by compiler node, add errors if needed. return global constant OK / ERROR
 */
 int set_entry(CompilerNode *cn)
 {

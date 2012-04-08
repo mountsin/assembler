@@ -1,3 +1,12 @@
+
+/********************************************************
+*   Assembler Compiler - course 20465 Final project		*
+*	Authors: Sefi Bar - El								*
+*			 Yuval Bar - Levi							*
+*	Created: Mar-2012									*
+*	(c) All right reserved								*
+********************************************************/
+
 #include <stdio.h>
 #include <string.h>
 #include "first_scan.h"
@@ -7,6 +16,7 @@
 #include "error.h"
 #include "global_constants.h"
 
+/*Standart quit message*/
 #define STD_QUIT_MSG "Press any key to quit."
 /* #define TEST */
 
