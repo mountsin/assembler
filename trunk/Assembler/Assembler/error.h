@@ -7,11 +7,11 @@ typedef enum error_type
 	TOO_MUCH_PARAMS,					/* Number of parameters exceeding assembly command rules */
 	MISSING_PARAMS,						/* Number of parameters is not enough for assembly command rules */
 	LABEL_NOT_DEFINED,					/* Trying to use a label which not defined in the file */
-	INVALID_LABEL,						/* The label name is not followning naming rules */
+	INVALID_LABEL,						/* The label name is not following naming rules */
 	ILLEGAL_DATA_ADDRESS,				/* The label is pointing to Illegal address */
-	SYMBOL_ALREADY_EXISTS,				/* The symbol is definded more than once */
-	MULTIPLE_ENTRYLABEL_USE,			/* entry row should have a uniqe label and cannot be used more then once*/
-	INVALID_DATA,						/* The data argumnet is not a valid number */
+	SYMBOL_ALREADY_EXISTS,				/* The symbol is defined more than once */
+	MULTIPLE_ENTRYLABEL_USE,			/* entry row should have a unique label and cannot be used more then once*/
+	INVALID_DATA,						/* The data argument is not a valid number */
 	INVALID_STRING,						/* The string argument is not a valid string */
 	INVALID_SOURCE_OPERNAD,				/* The first operand is illegal for this command type */
 	INVALID_TARGET_OPERNAD,				/* The second operand is illegal for this command type */
