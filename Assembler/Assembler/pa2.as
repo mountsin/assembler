@@ -7,6 +7,6 @@ inc r0
 mov r3,STR[%K]
 bne LOOP
 END: stop
-STR: .string “abcdef”
+STR: .string "abcdef"
 LENGTH: .data 6
 K: .data 2

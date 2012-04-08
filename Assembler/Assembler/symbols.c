@@ -20,6 +20,7 @@ SymbolPtr entries_symbols_list_tail = NULL;
 SymbolPtr external_symbols_list_tail = NULL;
 SymbolPtr externalFile_rows_tail = NULL;
 
+/*create and initialize an empty symbol pointer (include memory allocation)*/
 SymbolPtr create_symbol()
 {
 	SymbolPtr symbol = (SymbolPtr)malloc(sizeof * symbol);
@@ -32,6 +33,8 @@ SymbolPtr create_symbol()
 	return symbol;
 }
 
+
+/*==== get symbols lists functions: ====*/
 SymbolPtr get_data_symbols_list()
 {
 	return data_symbols_list;
@@ -51,7 +54,11 @@ SymbolPtr get_externalFile_head()
 {
 	return externalFile_rows;
 }
+/*======================================*/
 
+/**
+* add a data symbol
+*/
 void add_data_symbol(char *name, int address, int line_number)
 {
 	SymbolPtr tmp = create_symbol();
@@ -102,10 +109,10 @@ void add_code_symbol(char *name, int address, int line_number)
 	if(code_symbols_list_tail) /*tail already defined*/
 	{
 		code_symbols_list_tail->next = tmp;						/*add new node to tail*/
-		code_symbols_list_tail = data_symbols_list_tail->next;
+		code_symbols_list_tail = code_symbols_list_tail->next;
 	}
 	else
-		code_symbols_list = data_symbols_list_tail = tmp;		/*first node - set head and tail*/
+		code_symbols_list = code_symbols_list_tail = tmp;		/*first node - set head and tail*/
 }
 
 void add_external_symbol(char *name, int address, int line_number)
@@ -177,12 +184,12 @@ SymbolPtr get_data_symbol_by_name(char *name_to_find)
 
 SymbolPtr get_code_symbol_by_name(char *name_to_find)
 {
-	SymbolPtr datasym_pointer = code_symbols_list;
-	while(datasym_pointer)
+	SymbolPtr codesym_pointer = code_symbols_list;
+	while(codesym_pointer)
 	{
-		if (strncmp(datasym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
-			return datasym_pointer;
-		datasym_pointer = datasym_pointer->next;
+		if (strncmp(codesym_pointer->name, name_to_find, MACHINE_WORD_BITLENGTH) == 0) /* name has found*/
+			return codesym_pointer;
+		codesym_pointer = codesym_pointer->next;
 	}
 	return NULL; /* symbol not found*/
 }

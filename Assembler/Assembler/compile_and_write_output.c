@@ -41,7 +41,6 @@
 #define ILLEGAL_ADDRESS				"The label is pointing to Illegal address"
 #define	MULTIPLE_ENTRYLABEL_USE_MSG	"entry row should have a unique label and cannot be used more then once"
 #define SYMBOL_ALREADY_EXISTS_MSG	"The symbol is defined more than once"
-#define ENTRY_LABEL_UNDEFINED_MSG	"Symbol should be defined as entry"
 #define ENTRY_LABEL_NOT_SET_MSG		"label defined but not been used in code"
 #define	INVALID_SOURCE_OPERNAD_MSG	"The first operand is illegal for this command type"
 #define	INVALID_TARGET_OPERNAD_MSG	"The second operand is illegal for this command type"
@@ -122,7 +121,6 @@ void print_errors_report(Error *errors_collector, char *filename)
 			case ILLEGAL_DATA_ADDRESS:		current_err_msg = ILLEGAL_ADDRESS;break;			 /* The label is pointing to Illegal address */
 			case SYMBOL_ALREADY_EXISTS:		current_err_msg = SYMBOL_ALREADY_EXISTS_MSG;break;	 /* The symbol is definded more than once */
 			case MULTIPLE_ENTRYLABEL_USE:	current_err_msg = MULTIPLE_ENTRYLABEL_USE_MSG;break; /* entry row should have a uniqe label and cannot be used more then once*/
-			case ENTRY_LABEL_UNDEFINED:		current_err_msg = ENTRY_LABEL_UNDEFINED_MSG;break;	 /*Symbol should be defined as entry"*/
 			case ENTRY_LABEL_NOT_SET:		current_err_msg = ENTRY_LABEL_NOT_SET_MSG;break;	 /*"label defined but not been used in code"*/
 			case INVALID_SOURCE_OPERNAD:	current_err_msg = INVALID_SOURCE_OPERNAD_MSG;break;	 /* The first operand is illegal for this command type */
 			case INVALID_TARGET_OPERNAD:	current_err_msg = INVALID_TARGET_OPERNAD_MSG;break;	 /* The second operand is illegal for this command type */
