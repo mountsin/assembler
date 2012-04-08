@@ -15,7 +15,6 @@ SymbolPtr get_external_symbol_by_name(char *name_to_find);
 SymbolPtr get_entry_symbol_by_name(char *name_to_find);
 
 /*symbols output Files lists*/
-//void add_entriesFile_row(char *name, int address, int line_number);
 void add_externalFile_row(char *name, int address, int line_number);
 
 SymbolPtr get_externalFile_head();

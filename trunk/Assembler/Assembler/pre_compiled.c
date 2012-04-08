@@ -4,7 +4,7 @@
 
 /* Functions prototypes */
 void set_binary_machine_code_to(CompilerNodePtr compiler_node);
-void add_node_to(CompilerNodePtr node, CompilerNodePtr list_head, CompilerNodePtr list_tail);
+void add_node_to(CompilerNodePtr node, CompilerNodePtr *list_head, CompilerNodePtr *list_tail);
 
 /* Head of code nodes list */
 CompilerNodePtr code_list_head = NULL;

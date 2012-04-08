@@ -81,7 +81,7 @@ void first_scan(char *filename_noEx)
 	CompilerNodePtr stmt;		/* Each code line will be parsed and stored in this struct */
 	
 	/*set file name with extension*/
-	char filename[FILENAME_MAX];
+	char filename[MAX_FILENAME];
 	strcpy(filename, filename_noEx);
 	strcat(filename, INPUT_FILE_EXT);
 
@@ -257,6 +257,8 @@ void parse_and_load_data(CompilerNodePtr stmt)
 			}
 			else
 				add_error(line_number,INVALID_STRING);
+			break;
+		default:
 			break;
 	}
 }
@@ -581,6 +583,8 @@ Boolean is_valid_string(char *str)
 				add_error(line_number, INVALID_SOURCE_OPERNAD);
 			if(stmt->target_operand)
 				add_error(line_number, INVALID_TARGET_OPERNAD);
+			break;
+		default:
 			break;
 	}
 }
