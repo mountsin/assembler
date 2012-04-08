@@ -528,9 +528,7 @@ Boolean try_parse_number(char *token, int *number)
 		i++;
 	} while(token[i]);
 
-	*number = atoi(++token);
-	if(is_negative)
-		*number = -(*number);
+	*number = atoi(token);
 	return TRUE;
 }
 
