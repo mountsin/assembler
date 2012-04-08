@@ -1,7 +1,6 @@
 typedef struct compiler_node* CompilerNodePtr;
 
 CompilerNodePtr create_compiler_node();
-void destroy_compiler_node(CompilerNodePtr node);
 void add_code_node(CompilerNodePtr stmt);
 void add_data_node(CompilerNodePtr stmt);
 CompilerNodePtr get_code_list_head();

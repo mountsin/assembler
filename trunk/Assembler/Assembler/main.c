@@ -7,7 +7,7 @@
 #include "error.h"
 #include "global_constants.h"
 
-#define TEST
+//#define TEST
 
 
 /*free all memory allocations*/
