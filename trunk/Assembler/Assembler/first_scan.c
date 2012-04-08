@@ -130,6 +130,7 @@ void first_scan(char *filename_noEx)
 			add_operand_nodes(stmt->cmd_type,stmt->targetAddressing,stmt->target_operand);
 			ic++;
 		}
+		ic--;	
 		fclose(fp);
 	}
 	else
