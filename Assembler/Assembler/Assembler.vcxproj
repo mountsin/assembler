@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="pa.as" />
+    <None Include="pa2.as" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -92,5 +92,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="pa.as" />
+    <None Include="pa2.as" />
   </ItemGroup>
 </Project>
