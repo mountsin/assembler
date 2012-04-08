@@ -15,6 +15,10 @@ CompilerNodePtr data_list_head = NULL;
 /*Tail of data nodes list */
 CompilerNodePtr data_list_tail = NULL;
 
+
+/*
+* creat and initialize new compiler node pointer (include memory allocation)
+*/
 CompilerNodePtr create_compiler_node()
 {
 	CompilerNodePtr node = (CompilerNodePtr)malloc(sizeof * node);
@@ -38,7 +42,10 @@ CompilerNodePtr create_compiler_node()
 	}
 	return node;
 }
-	
+
+/*
+* free compiler node list memory allocations
+*/
 void free_compiler_node_list()
 {
 	CompilerNodePtr current_cn = code_list_head;
@@ -51,16 +58,19 @@ void free_compiler_node_list()
 	}
 }
 
+/*add a compiler node to the code list */
 void add_code_node(CompilerNodePtr stmt)
 {
 	add_node_to(stmt,&code_list_head,&code_list_tail);
 }
 
+/*add a compiler node to the data list */
 void add_data_node(CompilerNodePtr stmt)
 {
 	add_node_to(stmt,&data_list_head,&data_list_tail);
 }
 
+/*get compiler node list*/
 CompilerNodePtr get_code_list_head()
 {
 	return code_list_head;

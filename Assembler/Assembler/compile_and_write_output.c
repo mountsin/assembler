@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "global_functions.h"
-
 #include "compile_and_write_output.h"
 #include "error.h"
 
@@ -61,9 +60,7 @@
 /*functions return value*/
 #define ERROR -1
 
-/**
 
-*/
 void print_errors_report(Error *errors_collector, char *filename);
 
 int create_file_ob(char *filename, CompilerNode *cn_list);
@@ -101,6 +98,11 @@ int compile_and_write_output(char *filename)
 	}
 }
 
+/**
+*	print messages for all errors in error collertor
+*	errors_collector - linked list of Error structs
+*	filename - char pointer, name of current file which have the errors
+*/
 void print_errors_report(Error *errors_collector, char *filename)
 {
 	char *current_err_msg;
@@ -136,8 +138,9 @@ void print_errors_report(Error *errors_collector, char *filename)
 		errors_collector = errors_collector->next;
 	}
 }
+
 /*
-*
+*	create file ob - the output binary machine  code
 */
 int create_file_ob(char *filename, CompilerNode *cn_list)
 {	
@@ -161,11 +164,6 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 	fp = fopen(filefullname, "w");
 	if(!fp)
 		return CREATE_FILE_ERR; /* error occurred while trying to create new file*/
-
-
-	/*
-	 * write 1th row - columns headers  - can be removed
-	 * fprintf(fp, OBJECT_ROW_FORMAT, HEADER_ADDRESS, HEADER_MACHINE_CODE, HEADER_LINKER_FLAG);*/
 	
 	IC = get_instruction_counter();
 	DC = get_data_counter();
@@ -205,6 +203,11 @@ int create_file_ob(char *filename, CompilerNode *cn_list)
 
 }
 
+/*
+*	create file entries (filename.ent) for all symbols in entries_symbols_list
+*	filename - current file name
+*	entries_symbols_list - entries symbols list
+*/
 int create_file_ent(char *filename, Symbol *entries_symbols_list)
 {
 	int how_many_bits_to_use;
@@ -239,6 +242,11 @@ int create_file_ent(char *filename, Symbol *entries_symbols_list)
 			return OK; /* everthing is OK*/ 
 }
 
+/*
+*	create file external (filename.ext) for all external symbols 
+*	filename - current file name
+*	external symbols list - external_symbols_list symbols list
+*/
 int create_file_ext(char *filename, Symbol *external_symbols_list)
 {
 	int how_many_bits_to_use;
@@ -273,6 +281,9 @@ int create_file_ext(char *filename, Symbol *external_symbols_list)
 			return OK; /* everthing is OK*/ 
 }
 
+/*
+* get linker flag string by linker_enum, and set it into char pointer result_string
+*/
 void get_linker_flag_str(enum linker_enum linker, char *result_string)
 {
 	switch(linker)
