@@ -81,7 +81,7 @@ void first_scan(char *filename_noEx)
 	char line[LINE_SIZE];
 	CompilerNodePtr stmt;		/* Each code line will be parsed and stored in this struct */
 	
-	/*set file name with extention*/
+	/*set file name with extension*/
 	char filename[FILENAME_MAX];
 	strcpy(filename, filename_noEx);
 	strcat(filename, INPUT_FILE_EXT);
