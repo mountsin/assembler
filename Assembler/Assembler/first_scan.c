@@ -63,13 +63,13 @@ CommandStruct commands_list[] =
 	{ RTS,		"rts"},
 	{ STOP,		"stop"},
 	{ DATA,		".data"},
-	{ STRING,		".string"},
-	{ ENTRY,		".entry"},
-	{ EXTERN,		".extern"},
+	{ STRING,	".string"},
+	{ ENTRY,	".entry"},
+	{ EXTERN,	".extern"},
 	{UNKNOWN_CMD,""		  },
 };
 
-int ic = 100;							/* Instructions counter */
+int ic = 0;								/* Instructions counter */
 int dc = 0;								/* Data counter */
 int line_number = 0;					/* Line number in the assembly file for the errors report */
 
