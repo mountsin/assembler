@@ -20,11 +20,11 @@ char *get_token(char *text);
 void dec2bin(long decimal, char *binary, int binLength)
 {
 	int  i = 0, n = 0;
-	int  neg_flag = 0; //get 1 if number is negative
+	int  neg_flag = 0; /* get 1 if number is negative */
 	int  remain;
 	char temp[80];
  
-	// take care of negative input
+	/* take care of negative input */
 	if (decimal < 0)
 	{      
 		decimal = -decimal;
@@ -33,26 +33,26 @@ void dec2bin(long decimal, char *binary, int binLength)
 	do 
 	{
 		remain    = decimal % 2;
-		// whittle down the decimal number
+		/* whittle down the decimal number */
 		decimal   = decimal / 2;
 
-		// converts digit 0 or 1 to character '0' or '1'
+		/* converts digit 0 or 1 to character '0' or '1' */
 		temp[i++] = remain + '0';
 	} while (decimal > 0);
  
 
-	//add extra zeroes
+	/* add extra zeroes */
 	while (i < binLength)
 	temp[i++] = '0';
    
-	// reverse the spelling
+	/* reverse the spelling */
 	while (i >= 0)
 	binary[n++] = temp[--i];
 
-	// end with NULL
+	/* end with NULL */
 	binary[n-1] = 0; 
 
-	if (neg_flag)//if number is negative - convert in 2complement method
+	if (neg_flag)									 	/* if number is negative - convert in 2complement method */
 		convert_negative_binary_2complement(binary);  
 }
 
@@ -104,7 +104,7 @@ enum boolean is_binary_Str(char *str)
 {
 	int i;
 
-	if( (!str) || (strlen(str) == 0) || (str[0] == NULL) ) /*null / empty string*/
+	if( (str == NULL) || (strlen(str) == 0) || (str[0] == '\0') ) /* null / empty string */
 		return FALSE;
 
 	for(i = 0; str[i]; i++)
@@ -146,7 +146,7 @@ char *get_token(char *text)
 	return temp;
 }
 
-/*check the length of two string and retun the bigger value*/
+/*check the length of two string and return the bigger value*/
 int get_Longest_length(char *str1 , char *str2)
 {
 	int length1, length2;

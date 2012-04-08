@@ -26,7 +26,7 @@ SymbolPtr create_symbol()
 	if(symbol)
 	{
 		symbol->address = UNDEFINED_ADDRESS;
-		symbol->name[0] = NULL;
+		symbol->name[0] = '\0';
 		symbol->next = NULL;
 	}
 	return symbol;

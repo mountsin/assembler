@@ -7,7 +7,7 @@
 #include "error.h"
 #include "global_constants.h"
 
-//#define TEST
+/* #define TEST */
 
 
 /*free all memory allocations*/
@@ -21,18 +21,16 @@ void main()
 	getchar();
 }
 #else 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	int i;
 	int successfulComp = 0;
-	Boolean isAllOK = TRUE;
 
-	char filename[FILENAME_MAX];
+	char filename[MAX_FILENAME];
 
 	for(i = 1; i < argc; i++)					/* files loop */
 	{
 		strcpy(filename, argv[i]);
-		//strcat(filename_withEX, INPUT_FILE_EXT);
 
 		first_scan(filename); 
 		second_scan();
@@ -48,7 +46,7 @@ void main(int argc, char *argv[])
 	else
 		printf("\n%s %d %s\n", "Some files have failed compilation.", successfulComp*FILES_PER_INPUT, "Files were Created.");
 
-	getchar();
+	return 0;
 }
 
 void dispose_all()

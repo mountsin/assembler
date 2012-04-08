@@ -5,7 +5,7 @@
 
 /*file constants*/
 #define INPUT_FILE_EXT		".as"
-#define FILENAME_MAX 100
+#define MAX_FILENAME 100
 #define FILES_PER_INPUT 3
 
 /*===== enums ================== */
