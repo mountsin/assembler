@@ -1,7 +1,6 @@
 typedef struct symbol *SymbolPtr;
 
 SymbolPtr create_symbol();
-void destroy_symbol(SymbolPtr symbol);
 void add_data_symbol(char *name, int address, int line_number);
 void add_code_symbol(char *name, int address, int line_number);
 void add_entries_symbol(char *name, int address, int line_number);
