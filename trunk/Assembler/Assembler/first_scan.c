@@ -37,7 +37,6 @@ Boolean is_double_index(char *str);
 Boolean is_comment(char* line);
 Boolean try_parse_number(char *token, int *number);
 Boolean is_valid_string(char *str);
-void set_binary_code(CompilerNodePtr stmt);
 void validate_addressing_and_operands(CompilerNodePtr stmt);
 Boolean build_binary_machine_code(CompilerNodePtr cn_ptr);
 void validate_second_index(char *operand);
