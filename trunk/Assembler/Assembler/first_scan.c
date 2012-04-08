@@ -481,8 +481,10 @@ void add_operand_nodes(Cmd cmd_type, AddressingMethod addressing,char *operand)
 		case REGISTER:
 			break;
 		case IMMEDIATE:
-			dec2bin(atoi(&operand[1]),node1->binary_machine_code,8);	/* The second operand is a number so I convert it's value to binary code */
+			dec2bin(atoi(&operand[1]),node1->binary_machine_code,16);	/* The operand is a number so I convert it's value to binary code */
 			node1->second_scan_type = LABEL;
+			node1->address = ++ic;
+			add_code_node(node1);
 			break;
 		case DIRECT:
 			strcpy(node1->label,operand);								/* The operand is a symbol that should be translated to it's address value in the second scan phase */
